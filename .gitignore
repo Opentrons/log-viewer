@@ -1,0 +1,32 @@
+# node packages
+node_modules
+.pnpm-store/
+package-lock.json
+
+# Unit test / coverage reports
+
+*.DS_Store
+
+# local IDE configs
+.vscode
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# typescript incremental files
+*.tsbuildinfo
+
+# Static storybook build artifacts
+storybook-static/
+
+# ignore linux swap files
+*.swp
+
+# asdf versions file
+.tool-versions
+mock_dir
+.npm-cache/
+.eslintcache
+
+# mise versions file
+mise.toml
