@@ -1,0 +1,39 @@
+{
+  "name": "log-viewer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Flex CRS Log Viewer",
+  "license": "Apache-2",
+  "workspaces": {
+    "packages": [
+      "app",
+      "app-shell"
+    ]
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.31.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "oxlint-tsgolint": "^7.0.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vitest": "^4.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.17.0",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": "24.17.0",
+    "pnpm": "11.21.0"
+  },
+  "packageManager": "pnpm@11.21.0"
+}

@@ -1,0 +1,79 @@
+name: "JS checks"
+
+on:
+  pull_request:
+    paths:
+      - "**.js"
+      - "**.cjs"
+      - "**.mjs"
+      - "**.ts"
+      - "**.cts"
+      - "**.mts"
+      - "**.tsx"
+      - "**.json"
+      - "**.css"
+      - "**.md"
+      - ".github/workflows/js-check.yaml"
+  push:
+    paths:
+      - "**.js"
+      - "**.cjs"
+      - "**.mjs"
+      - "**.ts"
+      - "**.cts"
+      - "**.mts"
+      - "**.tsx"
+      - "**.json"
+      - "**.css"
+      - "**.md"
+      - ".github/workflows/js-check.yaml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI: true
+
+jobs:
+  checks:
+    name: "js-checks"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+      - uses: "pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2" # v2.0.2
+        with:
+          cache: true
+      - uses: "extractions/setup-crate@7577c1bdf2d95e6d65d532788f35ed79d4b1dda2" # v2.0.1
+        with:
+          repo: casey/just
+          version: 1.58.0
+      - name: "Setup"
+        run: just setup
+      - name: "Format-check"
+        run: just format-check
+      - name: "Type-aware linting"
+        run: just lint
+  tests:
+    name: "js-tests-${{matrix.target_dir}}-${{matrix.os}}"
+    strategy:
+      matrix:
+        os: ["windows-2022", "ubuntu-22.04", "macos-latest"]
+        target_dir: ["app", "app-shell"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: "pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2" # v2.0.2
+        with:
+          cache: true
+      - uses: "extractions/setup-crate@7577c1bdf2d95e6d65d532788f35ed79d4b1dda2" # v2.0.1
+        with:
+          repo: casey/just
+          version: 1.58.0
+      - name: "Setup"
+        run: just setup
+      - name: "Test"
+        run: just test ${{ matrix.target_dir }}
