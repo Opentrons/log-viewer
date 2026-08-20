@@ -1,0 +1,78 @@
+name: 'JS checks'
+
+on:
+  pull_request:
+    paths:
+      - '**.js'
+      - '**.cjs'
+      - '**.mjs'
+      - '**.ts'
+      - '**.cts'
+      - '**.mts'
+      - '**.tsx'
+      - '**.json'
+      - '**.css'
+      - '**.md'
+      - '.github/workflows/js-check.yaml'
+  push:
+    paths:
+      - '**.js'
+      - '**.cjs'
+      - '**.mjs'
+      - '**.ts'
+      - '**.cts'
+      - '**.mts'
+      - '**.tsx'
+      - '**.json'
+      - '**.css'
+      - '**.md'
+      - '.github/workflows/js-check.yaml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI: true
+
+jobs:
+  checks:
+    name: 'js-checks'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24.17.0'
+      - uses: 'pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320' # v4.4.0
+        with:
+          version: 11.21.0
+      - name: 'Setup'
+        run: just setup
+      - name: 'Format-check'
+        run: just format-check
+      - name: 'Type-aware linting'
+        run: just lint
+  tests:
+    needs: [checks]
+    name: 'js-tests-${{matrix.target_dir}}-${{matrix.os}}'
+    strategy:
+      matrix:
+        os: ['windows-2022', 'ubuntu-22.04', 'macos-latest']
+        target_dir: ['app', 'app-shell']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24.17.0'
+      - uses: 'pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320' # v4.4.0
+        with:
+          version: 11.21.0
+      - name: 'Setup'
+        run: just setup
+      - name: "Test"
+        run: just test ${{ matrix.target_dir }}

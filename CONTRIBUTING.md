@@ -9,7 +9,6 @@ Thanks for your interest in contributing to the Flex CRS Log Viewer! This Contri
 - [Project and Repository Structure](#project-and-repository-structure)
 - [Development Setup](#development-setup)
 
-
 This Contributing Guide was influenced by a lot of work done on existing Contributing Guides. They're great reads if you have the time!
 
 - [React.js Contributing Guide][react-contributing]
@@ -145,7 +144,7 @@ Generally, the directory / file structure of our monorepo looks something like t
 - \[Another Project]
 - etc.
 - `scripts` - Repository level scripts (mostly for CI)
-- Justfile - top level task runner orchestration 
+- Justfile - top level task runner orchestration
 - Various repository level dotfiles (CI and git config)
 - `README.md`, `CONTRIBUTING.md`, `LICENSE`, etc.
 
@@ -159,13 +158,11 @@ Individual projects may have additional instructions, so be sure to check out th
 
 ### System and repository setup
 
-You will need the following tools installed to develop on the Opentrons platform.
+You will need the following tools installed to develop the Log Viewer:
 
-- make
+- [just](https://github.com/casey/just)
 - git
-- curl
-- ssh
-- Node.js v22.12.0+
+- Node.js v24.17.0+
 - [pnpm][pnpm]
 
 See [DEV_SETUP.md](./DEV_SETUP.md) for our recommended development setup guides for macOS, Windows, and Linux.
@@ -188,14 +185,14 @@ You can pass some options to the JavaScript tests:
 
 ```shell
 # run JavaScript tests in watch mode
-just test-js watch=true
+just test watch=true
 
 # disable test coverage
-just test-js cover=false
+just test cover=false
 
 # update snapshot tests
 # https://vitest.dev/guide/snapshot.html
-just test-js updateSnapshot=true
+just test updateSnapshot=true
 ```
 
 And you can run code linting / typechecking with:
@@ -203,11 +200,6 @@ And you can run code linting / typechecking with:
 ```shell
 # lint all code
 just lint
-
-# lint + typecheck specific languages
-just lint-js
-just lint-css
-jsut check-js
 ```
 
 [vitest]: https://vitest.dev/
@@ -270,7 +262,11 @@ Most, if not all, of the tools above have plugins available for your code editor
 
 JavaScript dependencies are installed by [pnpm][]. When calling pnpm, you should do so from the repository level.
 
-##### Adding a development dependency
+##### Adding a dependency
+
+dependencies should be added _to the specific project that depends on them_.
+
+###### Development
 
 A development dependency is any dependency that is used only to help manage the project. Examples of development dependencies would be:
 
@@ -282,23 +278,21 @@ To add a development dependency:
 
 ```shell
 # with long option names
-pnpm add -w --dev <dependency_name>
+pnpm add -w --dev --filter=<project_name> <dependency_name>
 
 # or, with less typing
-pnpm add -DW <dependency_name>
+pnpm add -DW --filter=<project_name> <dependency_name>
 ```
 
-##### Adding a project dependency
+##### Runtime
 
 A project dependency is a dependency that an application or library will `import` _at run time_. Examples of project dependencies would be:
 
 - UI / state-management libraries (react, redux)
 - General utility libraries (lodash)
 
-Project dependencies should be added _to the specific project that depends on them_. To add one:
-
 ```shell
-pnpm add -w --dev --filter=<project_name> <dependency_name>
+pnpm add -w --filter=<project_name> <dependency_name>
 ```
 
 ##### Adding type definitions
@@ -307,7 +301,6 @@ After you have installed a dependency (development or project), you may find tha
 
 Not every JavaScript package has an available TypeScript definition. If you find yourself using such a library, you may need to create your own [ambient type declaration](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html).
 
-
 [easyfix]: https://github.com/Opentrons/opentrons/issues?q=is%3Aopen+is%3Aissue+label%3Aeasyfix
 [support]: https://support.opentrons.com/
 [fork-and-pull]: https://blog.scottlowe.org/2015/01/27/using-fork-branch-git-workflow/
@@ -315,8 +308,6 @@ Not every JavaScript package has an available TypeScript definition. If you find
 [unwritten-guide-to-pr]: https://www.atlassian.com/blog/git/written-unwritten-guide-pull-requests
 [art-of-pr]: https://ponyfoo.com/articles/art-of-pull-request
 [commit-message-how-to]: https://chris.beams.io/posts/git-commit/
-[makefiles]: https://en.wikipedia.org/wiki/Makefile
-[nvm]: https://github.com/creationix/nvm
 [pnpm]: https://pnpm.io/
 [conventional-commits]: https://conventionalcommits.org/
 [lerna]: https://github.com/lerna/lerna

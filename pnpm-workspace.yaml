@@ -1,0 +1,12 @@
+packages:
+  - "app"
+  - "app-shell"
+
+onlyBuiltDependencies:
+  - electron
+  - electron-winstaller
+
+minimumReleaseAge: 10080 # 1 week
+
+allowBuilds:
+  electron-winstaller: true
