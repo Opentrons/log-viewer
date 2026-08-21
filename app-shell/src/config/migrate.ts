@@ -32,7 +32,7 @@ export const DEFAULTS_V0: ConfigV0 = {
     minHeight: 600,
     url: {
       protocol: "file:",
-      path: "ui/index.html",
+      path: "lib/ui/index.html",
     },
   },
 }

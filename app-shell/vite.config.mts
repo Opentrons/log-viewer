@@ -9,7 +9,7 @@ export default defineConfig(async (): Promise<UserConfig> => {
     build: {
       // Relative to the root
       ssr: "src/main.ts",
-      outDir: "lib",
+      outDir: "lib/shell",
       commonjsOptions: {
         transformMixedEsModules: true,
         esmExternals: true,

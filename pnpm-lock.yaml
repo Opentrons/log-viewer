@@ -69,9 +69,6 @@ importers:
       dateformat:
         specifier: 5.0.3
         version: 5.0.3
-      electron:
-        specifier: 43.3.0
-        version: 43.3.0(supports-color@7.2.0)
       electron-store:
         specifier: 11.0.2
         version: 11.0.2
@@ -112,6 +109,9 @@ importers:
       conf:
         specifier: 15.1.0
         version: 15.1.0
+      electron:
+        specifier: 43.3.0
+        version: 43.3.0(supports-color@7.2.0)
       electron-builder:
         specifier: 26.15.6
         version: 26.15.6(electron-builder-squirrel-windows@26.15.6)(supports-color@7.2.0)

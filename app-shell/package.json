@@ -2,12 +2,17 @@
   "name": "@log-viewer/app-shell",
   "version": "0.0.1",
   "description": "Log viewer electron shell application",
-  "main": "lib/main.js",
-  "types": "lib/main.d.ts",
+  "main": "lib/shell/main.js",
+    "types": "lib/shell/main.d.ts",
+    "author": {
+        "name": "Opentrons Labworks",
+        "email": "engineering@opentrons.com"
+    },
+    "license": "Apache-2.0",
+    "productName": "Log Viewer",
   "dependencies": {
     "@log-viewer/app": "workspace:*",
     "dateformat": "5.0.3",
-    "electron": "43.3.0",
     "electron-store": "11.0.2",
     "electron-updater": "6.8.9",
     "fs-extra": "11.4.0",
@@ -25,14 +30,16 @@
     "conf": "15.1.0",
     "electron-builder": "26.15.6",
     "vite": "8.2.0",
-    "winston-transport": "4.9.0"
+    "winston-transport": "4.9.0",
+    "electron": "43.3.0"
   },
   "build": {
     "appId": "com.opentrons.log-viewer",
     "electronVersion": "43.3.0",
-    "files": [
+      "files": [
+          "package.json",
       {
-        "from": "../app/dist",
+        "from": "../app/lib",
         "to": "./lib/ui",
         "filter": [
           "**/*"
@@ -44,27 +51,15 @@
     "asar": true,
     "mac": {
       "target": [
-        "dmg"
+        "dmg", "zip"
       ],
-      "category": "public.app-category.productivity",
-      "forceCodeSigning": true,
-      "gateKeeperAssess": true
+      "category": "public.app-category.productivity"
+      
     },
     "win": {
       "target": [
-        "nsis"
-      ],
-      "forceCodeSigning": true,
-      "signTooloptions": {
-        "publisherName": [
-          "Opentrons Labworks Inc.",
-          "OPENTRONS LABWORKS INC."
-        ],
-        "rfc3161TimeStampServer": "http://timestamp.digicert.com",
-        "signingHashAlgorithms": [
-          "sha256"
-        ]
-      }
+        "msi"
+      ]
     },
     "linux": {
       "target": [
@@ -73,6 +68,6 @@
       "executableName": "log-viewer",
       "category": "Science"
     },
-    "generateUpdateFilesForALlChannels": true
+    "generateUpdatesFilesForAllChannels": true
   }
 }

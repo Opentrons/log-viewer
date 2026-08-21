@@ -3,6 +3,12 @@ node_modules
 .pnpm-store/
 package-lock.json
 
+app-shell/lib
+app-shell/dist
+app/lib
+app/dist
+
+
 # Unit test / coverage reports
 
 *.DS_Store
