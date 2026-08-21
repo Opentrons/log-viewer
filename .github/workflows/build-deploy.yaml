@@ -3,12 +3,12 @@ name: "Build and deploy"
 on:
   push:
     branches:
-      - 'main'
-      - 'release'
-      - 'chore_release-*'
-      - 'build-*'
+      - "main"
+      - "release"
+      - "chore_release-*"
+      - "build-*"
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 env:

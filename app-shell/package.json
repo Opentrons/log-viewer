@@ -2,14 +2,13 @@
   "name": "@log-viewer/app-shell",
   "version": "0.0.1",
   "description": "Log viewer electron shell application",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Opentrons Labworks",
+    "email": "engineering@opentrons.com"
+  },
   "main": "lib/shell/main.js",
-    "types": "lib/shell/main.d.ts",
-    "author": {
-        "name": "Opentrons Labworks",
-        "email": "engineering@opentrons.com"
-    },
-    "license": "Apache-2.0",
-    "productName": "Log Viewer",
+  "types": "lib/shell/main.d.ts",
   "dependencies": {
     "@log-viewer/app": "workspace:*",
     "dateformat": "5.0.3",
@@ -28,16 +27,16 @@
     "@types/lodash": "^4.17.25",
     "@types/yargs-parser": "^21.0.3",
     "conf": "15.1.0",
+    "electron": "43.3.0",
     "electron-builder": "26.15.6",
     "vite": "8.2.0",
-    "winston-transport": "4.9.0",
-    "electron": "43.3.0"
+    "winston-transport": "4.9.0"
   },
   "build": {
     "appId": "com.opentrons.log-viewer",
     "electronVersion": "43.3.0",
-      "files": [
-          "package.json",
+    "files": [
+      "package.json",
       {
         "from": "../app/lib",
         "to": "./lib/ui",
@@ -51,10 +50,10 @@
     "asar": true,
     "mac": {
       "target": [
-        "dmg", "zip"
+        "dmg",
+        "zip"
       ],
       "category": "public.app-category.productivity"
-      
     },
     "win": {
       "target": [
@@ -69,5 +68,6 @@
       "category": "Science"
     },
     "generateUpdatesFilesForAllChannels": true
-  }
+  },
+  "productName": "Log Viewer"
 }
