@@ -59,7 +59,13 @@
       "target": [
         "msi"
       ],
-      "icon": "assets/logviewer.ico"
+      "icon": "assets/logviewer.ico",
+      "azureSignOptions": {
+        "publisherName": "OPENTRONS LABWORKS INC.",
+        "codeSigningAccountName": "desktop-app-signing",
+        "certificateProfileName": "OpentronsDesktopApp",
+        "endpoint": "https://eus.codesigning.azure.net"
+      }
     },
     "linux": {
       "target": [

@@ -36,6 +36,15 @@ jobs:
         run: just setup
       - name: "Build"
         run: just build
+        env:
+          AZURE_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+          AZURE_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+          AZURE_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+          CSC_LINK: ${{ secrets.OT_APP_CSC_MACOS }}
+          CSC_KEY_PASSWORD: ${{ secrets.OT_APP_CSC_KEY_MACOS }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.OT_APP_APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.OT_APP_APPLE_TEAM_ID }}
       - name: "Upload artifact"
         id: "artifact-upload"
         uses: "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a" # v7.0.1
