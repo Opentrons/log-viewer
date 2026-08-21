@@ -58,7 +58,8 @@
     "win": {
       "target": [
         "msi"
-      ]
+      ],
+      "icon": "assets/logviewer.ico"
     },
     "linux": {
       "target": [
