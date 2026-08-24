@@ -3,9 +3,9 @@
 GitHub Actions uploads signed Log Viewer installers to the existing builds website
 buckets, under `logviewer/` — the same pattern as the desktop app's `app/` prefix.
 
-| Channel | URL |
-| --- | --- |
-| Release | https://builds.opentrons.com/logviewer |
+| Channel  | URL                                                    |
+| -------- | ------------------------------------------------------ |
+| Release  | https://builds.opentrons.com/logviewer                 |
 | Internal | https://ot3-development.builds.opentrons.com/logviewer |
 
 This stack does **not** create those buckets. It creates an IAM role that GitHub
