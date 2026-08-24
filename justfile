@@ -1,6 +1,7 @@
 default_port := '3000'
 test_target := ''
 test_opts := ''
+default_build_id := "dev"
 
 setup:
     pnpm install
@@ -11,14 +12,22 @@ electron-rebuild:
 
 [working-directory: './app-shell']
 dist-shell:
+    rm -rf lib
     pnpm exec vite build
 
 [working-directory: './app']
 dist-app:
+    rm -rf lib
     pnpm exec vite build
 
-build:
-    pnpm run electron-builder
+[working-directory: './app-shell']
+[parallel]
+build $BUILD_ID=default_build_id: dist-app dist-shell
+    pnpm electron-builder
+
+[working-directory: './app-shell']
+build-only:
+    pnpm electron-builder
 
 [working-directory: './app-shell']
 dev-shell port=default_port: dist-shell
