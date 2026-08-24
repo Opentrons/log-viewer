@@ -27,6 +27,16 @@ data "aws_s3_bucket" "ot3_development_builds" {
 }
 
 locals {
+  # GitHub issues this repo's OIDC subject with immutable org/repo IDs
+  # ("repo:Opentrons@<org id>/log-viewer@<repo id>:..."), which is why the plain
+  # "repo:Opentrons/opentrons:*" form used by the monorepo role does not match here.
+  # See: gh api /repos/Opentrons/log-viewer/actions/oidc/customization/sub
+  # Both forms are allowed so the role keeps working if the claim format changes.
+  github_sub_patterns = [
+    "repo:Opentrons/log-viewer:*",
+    "repo:Opentrons@6139147/log-viewer@1332098088:*",
+  ]
+
   object_arns = [
     "${data.aws_s3_bucket.builds.arn}/logviewer/*",
     "${data.aws_s3_bucket.ot3_development_builds.arn}/logviewer/*",
@@ -52,7 +62,7 @@ resource "aws_iam_role" "github_actions_log_viewer_deploy" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:Opentrons/log-viewer:*"
+            "token.actions.githubusercontent.com:sub" = local.github_sub_patterns
           }
         }
       }
