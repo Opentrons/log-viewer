@@ -4,3 +4,5 @@
 *.hex binary
 *.bat binary
 *.gltf binary
+# .icons are icon composer generated files and should be untouched
+app-shell/assets/*.icon/* binary
