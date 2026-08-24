@@ -13,6 +13,9 @@ on:
 
 env:
   CI: true
+  _DEPLOY_BUCKET_RELEASE: builds.opentrons.com
+  _DEPLOY_BUCKET_INTERNAL: ot3-development.builds.opentrons.com
+  _DEPLOY_FOLDER: logviewer
 
 jobs:
   build:
@@ -54,3 +57,65 @@ jobs:
           path: "app-shell/dist/*"
       - name: "Artifact result"
         run: echo "Artifact is ${{ steps.artifact-upload.outputs.artifact-url }}"
+
+  deploy:
+    name: "Deploy artifacts to S3"
+    needs: ["build"]
+    if: vars.OT_LOGVIEWER_DEPLOY_ROLE != ''
+    runs-on: "ubuntu-22.04"
+    environment: "prod"
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: "Choose S3 destination"
+        id: "target"
+        shell: bash
+        run: |
+          ref="${{ github.ref }}"
+          if [[ "$ref" == refs/tags/v* ]] || [[ "$ref" == refs/heads/release ]] || [[ "$ref" == refs/heads/chore_release-* ]]; then
+            echo "bucket=${{ env._DEPLOY_BUCKET_RELEASE }}" >> "$GITHUB_OUTPUT"
+            echo "invalidate=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "bucket=${{ env._DEPLOY_BUCKET_INTERNAL }}" >> "$GITHUB_OUTPUT"
+            echo "invalidate=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: "Download build artifacts"
+        uses: "actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131" # v7.0.0
+        with:
+          pattern: "logviewer-*"
+          path: "artifacts"
+          merge-multiple: true
+      - name: "Stage installer files"
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p to_upload
+          find artifacts -type f \( \
+            -name '*.exe' -o -name '*.msi' -o -name '*.dmg' -o -name '*.zip' \
+            -o -name '*.AppImage' -o -name '*.yml' -o -name '*.yaml' \
+            -o -name '*.blockmap' \
+          \) -exec cp -v {} to_upload/ \;
+          echo "Staged:"
+          ls -la to_upload
+      - name: "Configure AWS credentials (GitHub OIDC)"
+        uses: "aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a" # v4.3.1
+        with:
+          role-to-assume: ${{ vars.OT_LOGVIEWER_DEPLOY_ROLE }}
+          aws-region: us-east-1
+      - name: "Sync artifacts to S3"
+        run: |
+          aws s3 sync --acl=public-read to_upload/ \
+            "s3://${{ steps.target.outputs.bucket }}/${{ env._DEPLOY_FOLDER }}"
+      - name: "Invalidate CloudFront cache (builds.opentrons.com)"
+        if: steps.target.outputs.invalidate == 'true' && vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID != ''
+        run: |
+          set -euo pipefail
+          INVALIDATION_ID="$(
+            aws cloudfront create-invalidation \
+              --distribution-id '${{ vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID }}' \
+              --paths '/logviewer/*' \
+              --output text \
+              --query 'Invalidation.Id'
+          )"
+          echo "Started CloudFront invalidation: ${INVALIDATION_ID}"
