@@ -53,8 +53,8 @@
         "dmg",
         "zip"
       ],
-        "category": "public.app-category.productivity",
-        "icon": "assets/log-viewer.icon"
+      "category": "public.app-category.productivity",
+      "icon": "assets/log-viewer.icon"
     },
     "win": {
       "target": [
