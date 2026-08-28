@@ -1,0 +1,6 @@
+.file_sidebar {
+  display: flex;
+  flex: 280px 0 0;
+  flex-direction: column;
+  height: 100%;
+}
