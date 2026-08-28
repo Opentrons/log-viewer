@@ -1,9 +1,8 @@
-import type { Config, ConfigV0 } from "./types"
+import flow from "lodash/flow"
 
-// note: this is all copied from Opentrons/opentrons app-shell/config,
-// when we have to add config migrations copy it from there too
+import type { Config, ConfigV0, ConfigV1 } from "./types"
 
-const CONFIG_VERSION_LATEST = 0
+const CONFIG_VERSION_LATEST = 1
 
 export const DEFAULTS_V0: ConfigV0 = {
   version: 0,
@@ -37,35 +36,23 @@ export const DEFAULTS_V0: ConfigV0 = {
   },
 }
 
-// Uncomment this stuff and modify for the first migration we write
+const toVersion1 = (prevConfig: ConfigV0): ConfigV1 => {
+  const nextConfig = {
+    ...prevConfig,
+    version: 1 as const,
+    logFiles: { workingDirectory: null },
+  }
 
-// const toVersion1 = (prevConfig: ConfigV0): ConfigV1 => {
-//   const nextConfig = {
-//     ...prevConfig,
-//     version: 1 as const,
-//   }
+  return nextConfig
+}
 
-//   return nextConfig
-// }
-
-const MIGRATIONS: [
-  // (prevConfig: ConfigV0) => ConfigV1,
-] = [
-  // toVersion1,
-]
+const MIGRATIONS = [toVersion1] as const
 
 export const DEFAULTS: Config = migrate(DEFAULTS_V0)
 
 export function migrate(prevConfig: ConfigV0): Config {
   const prevVersion = prevConfig.version
-  let result = prevConfig
-
-  // loop through the migrations, skipping any migrations that are unnecessary
-  for (let i: number = prevVersion; i < MIGRATIONS.length; i++) {
-    const migrateVersion = MIGRATIONS[i]
-    // @ts-expect-error(sf,8/26): no migrations yet
-    result = migrateVersion(result)
-  }
+  const result = flow(MIGRATIONS.slice(prevVersion))(prevConfig)
 
   if (result.version < CONFIG_VERSION_LATEST) {
     throw new Error(
@@ -73,5 +60,5 @@ export function migrate(prevConfig: ConfigV0): Config {
     )
   }
 
-  return result as Config
+  return result
 }

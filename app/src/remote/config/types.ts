@@ -45,4 +45,11 @@ export interface ConfigV0 {
   devInternal?: FeatureFlags
 }
 
-export type Config = ConfigV0
+export interface ConfigV1 extends Omit<ConfigV0, "version"> {
+  version: 1
+  logFiles: {
+    workingDirectory: string | null
+  }
+}
+
+export type Config = ConfigV1
