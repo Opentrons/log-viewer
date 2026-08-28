@@ -18,7 +18,7 @@ export default defineConfig(async (): Promise<UserConfig> => {
       lib: {
         entry: {
           main: "src/main.ts",
-          //preload: "src/preload.ts",
+          preload: "src/preload.ts",
         },
 
         formats: ["cjs"],

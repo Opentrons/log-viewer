@@ -1,0 +1,8 @@
+import "@fontsource/open-sans"
+import "@fontsource/dejavu-sans"
+import "@fontsource/public-sans"
+import "@fontsource/public-sans/600.css"
+import "@fontsource/public-sans/700.css"
+import "@fontsource-variable/reddit-mono"
+import "./components-copy/styles/global.css"
+import "./global.module.css"

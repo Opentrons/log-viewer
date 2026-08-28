@@ -1,0 +1,12 @@
+.select_working_directory_button {
+  background-color: var(--grey-30);
+  width: fit-content;
+  border-radius: 8px;
+  padding: 7px 16px 9px 16px;
+}
+
+.select_working_directory_button_text {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semi-bold);
+  line-height: 1.25rem;
+}

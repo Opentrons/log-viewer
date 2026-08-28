@@ -1,3 +1,5 @@
+import path from "path"
+
 import react from "@vitejs/plugin-react"
 import postCssImport from "postcss-import"
 import postCssPresetEnv from "postcss-preset-env"
@@ -30,6 +32,9 @@ export default defineConfig(async (): Promise<UserConfig> => {
       postcss: {
         plugins: [postCssImport({ root: "./src/" }), postCssPresetEnv({ stage: 0 })],
       },
+    },
+    resolve: {
+      alias: { "@": path.resolve("./src/") },
     },
   }
 })
