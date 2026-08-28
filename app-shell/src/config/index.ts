@@ -1,5 +1,6 @@
 import Store from "electron-store"
 import get from "lodash/get"
+import merge from "lodash/merge"
 import mergeOptions from "merge-options"
 // app configuration and settings
 import type * as Winston from "winston"
@@ -43,6 +44,21 @@ export function getStore(): Config {
   return store().store
 }
 
+type _OverloadParametersHack<T extends (...args: any) => any> = T extends {
+  (...args: infer A): any
+  (...args: infer B): any
+}
+  ? A | B
+  : never
+
+export const setConfig = (
+  ...args: _OverloadParametersHack<Store<Config>["set"]>
+): ReturnType<Store<Config>["set"]> =>
+  store().set(
+    // @ts-expect-error(sf): it hates this
+    ...args,
+  )
+
 export function getOverrides(): Overrides
 export function getOverrides<K extends keyof Config>(key: K): Overrides[K]
 export function getOverrides<K extends keyof Config>(key?: K): Overrides | Overrides[K] {
@@ -73,4 +89,9 @@ export function handleConfigChange(
     log().info(`Config change: ${path} ${oldValue}=>${newValue}`)
     return changeHandler(newValue, oldValue)
   })
+}
+
+export function updateConfigBySlice(configSlice: Partial<Config>): Config {
+  merge(getStore(), configSlice)
+  return getConfig()
 }
