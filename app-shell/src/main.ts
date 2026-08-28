@@ -26,6 +26,10 @@ void app
     const uiConfig = getConfig("ui")
     const mainWindow = new BrowserWindow({
       show: false,
+      width: uiConfig.width,
+      minWidth: uiConfig.minWidth,
+      height: uiConfig.height,
+      minHeight: uiConfig.minHeight,
       webPreferences: {
         devTools: true,
         webSecurity: true,
