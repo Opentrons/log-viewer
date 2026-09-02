@@ -64,5 +64,6 @@ type:
 lint:
     pnpm exec oxlint
 
+[env("VITE_AUDITLOG_FIXTURES", join(justfile_directory(), "app-shell",  "__fixtures__"))]
 test target=test_target opts=test_opts:
     pnpm exec vitest {{target}} {{opts}}
