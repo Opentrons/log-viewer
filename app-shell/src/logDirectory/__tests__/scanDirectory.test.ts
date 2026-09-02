@@ -1,3 +1,5 @@
+import path from "path"
+
 import { describe, it, vi, expect, beforeEach } from "vitest"
 
 import { buildScanDirectory } from "../scanDirectory"
@@ -20,8 +22,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-21T14_55_40.417815Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-21T14_55_40.417815Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-25T17:17:11.092490Z",
@@ -38,8 +39,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-20T20_39_22.907267Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_39_22.907267Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-21T14:55:40.286623Z",
@@ -56,8 +56,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T15_18_38.176148Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T15_18_38.176148Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-24T15:57:29.966634Z",
@@ -74,8 +73,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T15_57_30.111933Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T15_57_30.111933Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-24T16:04:32.385812Z",
@@ -92,8 +90,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T16_04_32.489243Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_04_32.489243Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-24T16:11:07.590070Z",
@@ -110,8 +107,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-20T20_34_18.573005Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_34_18.573005Z.zip"),
             period: {
               associatedFiles: ["asp_disp_96_2026-08-20T20_34_58.383Z.json"],
               endDate: "2026-08-20T20:36:54.001886Z",
@@ -128,8 +124,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-20T20_36_54.051806Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_36_54.051806Z.zip"),
             period: {
               associatedFiles: ["asp_disp_96_2026-08-20T20_38_25.093Z.json"],
               endDate: "2026-08-20T20:39:22.882376Z",
@@ -146,8 +141,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T16_11_07.664478Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_11_07.664478Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB_better_usb_search_2026-08-24T16_15_22.159Z.json",
@@ -166,8 +160,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T17_29_16.469301Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_29_16.469301Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__walk_usb_drive__2026-08-24T17_35_29.930Z.json",
@@ -186,8 +179,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T16_17_12.721535Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_17_12.721535Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB_better_usb_search_2026-08-24T16_26_57.776Z.json",
@@ -206,8 +198,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T14_59_40.451528Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T14_59_40.451528Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB_with_better_errors_2026-08-24T15_16_17.505Z.json",
@@ -226,8 +217,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T16_34_33.542044Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_34_33.542044Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-24T17_27_08.316Z.json",
@@ -246,8 +236,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-21T20_31_28.456269Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-21T20_31_28.456269Z.zip"),
             period: {
               associatedFiles: ["Library_Import_Proof_of_Concept_2026-08-24T14_52_35.312Z.json"],
               endDate: "2026-08-24T14:59:40.395954Z",
@@ -264,8 +253,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T17_36_34.812649Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_36_34.812649Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-24T17_41_16.803Z.json",
@@ -284,8 +272,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T17_42_16.714601Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_42_16.714601Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-24T19:37:43.326662Z",
@@ -302,8 +289,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T19_37_43.791395Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T19_37_43.791395Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-24T19:45:56.655466Z",
@@ -320,8 +306,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T15_35_20.709482Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T15_35_20.709482Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-25T15:43:26.168888Z",
@@ -338,8 +323,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T17_17_11.194276Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T17_17_11.194276Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-25T19:00:38.187415Z",
@@ -356,8 +340,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T20_00_49.424927Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T20_00_49.424927Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-25T20:59:12.321683Z",
@@ -374,8 +357,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T19_00_38.301799Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T19_00_38.301799Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-25T20:00:48.958691Z",
@@ -392,8 +374,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-24T19_45_56.706329Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T19_45_56.706329Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-25T14:29:00.514942Z",
@@ -410,8 +391,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-26T20_31_30.960544Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_31_30.960544Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: null,
@@ -428,8 +408,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-26T20_12_26.097145Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_12_26.097145Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: "2026-08-26T20:20:26.985422Z",
@@ -446,8 +425,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T21_13_46.219267Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T21_13_46.219267Z.zip"),
             period: {
               associatedFiles: undefined,
               endDate: null,
@@ -464,8 +442,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T14_29_00.590608Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T14_29_00.590608Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-25T14_31_06.780Z.json",
@@ -484,8 +461,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T14_37_55.964002Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T14_37_55.964002Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__wheel__2026-08-25T15_33_57.353Z.json",
@@ -504,8 +480,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T15_43_26.407157Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T15_43_26.407157Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-25T18_42_23.608Z.json",
@@ -524,8 +499,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-25T20_59_12.800184Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T20_59_12.800184Z.zip"),
             period: {
               associatedFiles: ["Heat_Shock_and_Transfer_2026-08-25T21_02_29.564Z.json"],
               endDate: "2026-08-25T21:13:46.178735Z",
@@ -542,8 +516,7 @@ describe("scanDirectory", () => {
       [
         {
           payload: {
-            filePath:
-              "/Users/seth/dev/log-viewer/app-shell/__fixtures__/logperiod_2026-08-26T20_20_27.055642Z.zip",
+            filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_20_27.055642Z.zip"),
             period: {
               associatedFiles: [
                 "Install_mock_parser_from_USB__wheel__2026-08-26T20_30_15.123Z.json",
