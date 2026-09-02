@@ -15,7 +15,7 @@ describe("scanDirectory", () => {
     const state: State = {}
     const dispatch = vi.fn<LogChecker["dispatch"]>()
     const scanDirectory = buildScanDirectory(state, fixturesPath, dispatch)
-    
+
     const periodCalls = [
       [
         {
@@ -561,11 +561,11 @@ describe("scanDirectory", () => {
       ],
     ]
     await scanDirectory()
-      // this is 1 indexed, for some reason
+    // this is 1 indexed, for some reason
     expect(dispatch).toHaveBeenNthCalledWith(1, { type: "logDirectory/directoryScanStart" })
-    expect(dispatch).toHaveBeenNthCalledWith(periodCalls.length + 2, 
-      { type: "logDirectory/directoryScanDone" },
-    )
+    expect(dispatch).toHaveBeenNthCalledWith(periodCalls.length + 2, {
+      type: "logDirectory/directoryScanDone",
+    })
     periodCalls.forEach((call) => {
       expect(dispatch).toHaveBeenCalledWith(...call)
     })
