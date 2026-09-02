@@ -10,9 +10,11 @@ import {
 } from "electron-extension-installer"
 
 import { initializeAPI } from "./api"
-import { getConfig, updateConfigBySlice, setConfig } from "./config"
+import { getConfig, updateConfigBySlice, setConfig, handleConfigChange } from "./config"
 import type { Config } from "./config/types"
 import { createLogger } from "./log"
+import { initialize as initializeLogChecker, refresh as refreshLogChecker } from "./logDirectory"
+import type { LogChecker } from "./logDirectory/types"
 
 const log = createLogger("main")
 app.once("window-all-closed", () => {
@@ -40,6 +42,7 @@ void app
       },
     })
     mainWindow.once("ready-to-show", () => mainWindow.show())
+    let logChecker: LogChecker | null = null
     const dispatch = initializeAPI(
       mainWindow,
       {
@@ -101,9 +104,35 @@ void app
           }),
       },
       (_args: unknown) => {
-        dispatch({ type: "config/load", payload: getConfig() })
+        const loadedConfig = getConfig()
+        dispatch({ type: "config/load", payload: loadedConfig })
+        dispatch({
+          type: "logDirectory/setPath",
+          payload: { directoryPath: loadedConfig.logFiles.workingDirectory },
+        })
+        if (logChecker == null && loadedConfig.logFiles.workingDirectory != null) {
+          logChecker = initializeLogChecker(dispatch, loadedConfig.logFiles.workingDirectory)
+        }
+        return logChecker != null && logChecker?.scanDirectory()
       },
     )
+
+    handleConfigChange("logFiles.workingDirectory", (newValue: any, _oldValue: any) => {
+      dispatch({ type: "logDirectory/setPath", payload: { directoryPath: newValue } })
+      if (newValue == null && logChecker != null) {
+        return logChecker.teardown().finally(() => {
+          logChecker = null
+        })
+      } else if (newValue != null && logChecker != null) {
+        return refreshLogChecker(dispatch, newValue, logChecker).then((newChecker) => {
+          logChecker = newChecker
+          return logChecker.scanDirectory()
+        })
+      } else if (newValue != null && logChecker == null) {
+        logChecker = initializeLogChecker(dispatch, newValue)
+        return logChecker.scanDirectory()
+      }
+    })
 
     const uiPath =
       uiConfig.url.protocol === "file:"
