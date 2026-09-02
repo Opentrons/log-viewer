@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { TreeItem } from "@/atoms/TreeItem"
 import { SelectWorkingDirectory } from "@/molecules/SelectWorkingDirectory"
 import { DirectoryList } from "@/organisms/DirectoryList"
 
@@ -13,14 +14,16 @@ export function WorkingDirectory(props: WorkingDirectoryProps): React.ReactNode 
     <div className={style.container}>
       <div className={style.header_box}>
         <p className={style.directory_name_label}>Working Directory</p>
-        <p className={style.directory_name}>
-          {props.workingDirectory == null ? "No directory found" : props.workingDirectory}
-        </p>
+        {props.workingDirectory == null ? (
+          <p className={style.directory_name}>'No directory found'</p>
+        ) : (
+          <TreeItem type="folder" text={props.workingDirectory} />
+        )}
       </div>
       {props.workingDirectory == null ? (
         <SelectWorkingDirectory changeWorkingDirectory={props.changeWorkingDirectory} />
       ) : (
-        <DirectoryList workingDirectory={props.workingDirectory} />
+        <DirectoryList />
       )}
     </div>
   )

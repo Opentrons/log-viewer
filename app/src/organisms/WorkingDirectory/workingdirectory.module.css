@@ -3,8 +3,9 @@
   display: flex;
   flex-direction: column;
   padding: 12px;
-  height: 100%;
+  flex: 1;
   gap: 16px;
+  min-height: 0;
 }
 
 .header_box {
