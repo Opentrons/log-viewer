@@ -3,10 +3,12 @@ import { configureStore } from "@reduxjs/toolkit"
 import { useDispatch, useSelector } from "react-redux"
 
 import { configSlice } from "./config/configSlice"
+import { logDirectorySlice } from "./logDirectory/logDirectorySlice"
 
 export const store = configureStore({
   reducer: {
     config: configSlice.reducer,
+    logDirectory: logDirectorySlice.reducer,
   },
 })
 export type Store = typeof store
