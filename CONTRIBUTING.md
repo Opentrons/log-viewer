@@ -1,6 +1,6 @@
 # Contributing guide
 
-Thanks for your interest in contributing to the Flex CRS Log Viewer! This Contributing Guide is intended to ensure best practices for both internal Opentrons contributors as well as any external contributors. We want to make sure you’re set up to contribute effectively, no matter if you’re helping us out with bug reports, code, documentation, feature suggestions, or anything else. This guide covers:
+Thanks for your interest in contributing to the Flex CRS Log Verifier! This Contributing Guide is intended to ensure best practices for both internal Opentrons contributors as well as any external contributors. We want to make sure you’re set up to contribute effectively, no matter if you’re helping us out with bug reports, code, documentation, feature suggestions, or anything else. This guide covers:
 
 - [Opening Issues](#opening-issues)
 - [Opening Pull Requests](#opening-pull-requests)
@@ -25,9 +25,9 @@ Please note that the issues tab on this repo is disabled. This doesn't mean we d
 
 ## Opening pull requests
 
-If you’d like to contribute code to the Flex CRS Log Viewer platform, pull requests (PRs) are the way to do it. Any code contributions are greatly appreciated! If you’re an external contributor, we’re going to assume you are familiar with the fork and pull request flow. If not, this [blog post by Scott Lowe][fork-and-pull] is a good introduction.
+If you’d like to contribute code to the Flex CRS Log Verifier platform, pull requests (PRs) are the way to do it. Any code contributions are greatly appreciated! If you’re an external contributor, we’re going to assume you are familiar with the fork and pull request flow. If not, this [blog post by Scott Lowe][fork-and-pull] is a good introduction.
 
-Please note that by contributing to the Flex CRS Log Viewer, you agree to share those contributions under the terms of the [Apache 2.0 license](./LICENSE).
+Please note that by contributing to the Flex CRS Log Verifier, you agree to share those contributions under the terms of the [Apache 2.0 license](./LICENSE).
 
 Before opening any PR, please run through the following questions:
 
@@ -136,7 +136,7 @@ Maintainers of the repo follow the same rules, and will never ask you to respond
 
 ## Project and repository structure
 
-The Flex CRS Log Viewer is an Electron application composed of several different libraries, each of which lives in its own subdirectory. Since these libraries are all built into a single application, having them in one repository (also known as a monorepo) is convenient for keeping various inter-project dependencies in sync, but does require workflow considerations to keep everything organized and trackable.
+The Flex CRS Log Verifier is an Electron application composed of several different libraries, each of which lives in its own subdirectory. Since these libraries are all built into a single application, having them in one repository (also known as a monorepo) is convenient for keeping various inter-project dependencies in sync, but does require workflow considerations to keep everything organized and trackable.
 
 Generally, the directory / file structure of our monorepo looks something like this:
 
@@ -158,7 +158,7 @@ Individual projects may have additional instructions, so be sure to check out th
 
 ### System and repository setup
 
-You will need the following tools installed to develop the Log Viewer:
+You will need the following tools installed to develop the Log Verifier:
 
 - [just](https://github.com/casey/just)
 - git

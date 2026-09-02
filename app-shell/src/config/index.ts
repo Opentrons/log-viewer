@@ -14,7 +14,7 @@ import type { Config, ConfigV0, Overrides } from "./types"
 const argv = process.argv0.endsWith("defaultApp") ? process.argv.slice(2) : process.argv.slice(1)
 
 const PARSE_ARGS_OPTS = {
-  envPrefix: "LOG_VIEWER",
+  envPrefix: "LOG_VERIFIER",
   configuration: {
     "negation-prefix": "disable_",
   },

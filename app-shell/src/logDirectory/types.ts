@@ -1,6 +1,6 @@
 import type { KeyObject } from "crypto"
 
-import type { Dispatch } from "@log-viewer/app/src/redux/store"
+import type { Dispatch } from "@log-verifier/app/src/redux/store"
 
 import type { SignedMessage } from "./filetypes"
 

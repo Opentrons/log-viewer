@@ -1,6 +1,6 @@
-import type { Dispatch } from "@log-viewer/app/src/redux/store"
-import type { RemoteAPI } from "@log-viewer/app/src/remote/api"
-import type { Config } from "@log-viewer/app/src/remote/config/types"
+import type { Dispatch } from "@log-verifier/app/src/redux/store"
+import type { RemoteAPI } from "@log-verifier/app/src/remote/api"
+import type { Config } from "@log-verifier/app/src/remote/config/types"
 import { contextBridge, ipcRenderer } from "electron"
 
 // Everything here should have a registered handler in api.ts
