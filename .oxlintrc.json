@@ -19,7 +19,7 @@
     "typeAware": true,
     "typeCheck": true
   },
-  "rules": {},
+  "rules": { "react/only-export-components": "error" },
   "env": {
     "builtin": true
   }

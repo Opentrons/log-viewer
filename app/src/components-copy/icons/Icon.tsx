@@ -37,6 +37,7 @@ export interface IconProps extends SVGProps<SVGSVGElement> {
  * import type { IconName } from '@opentrons/components'
  * ```
  */
+// oxlint-disable-next-line only-export-components i dont want to change icon
 function IconComponent(props: IconProps): ReactNode {
   const {
     name,
