@@ -10,7 +10,6 @@ vi.mock("../../log.js", () => ({
   createLogger: vi.fn<(...args: any) => unknown>(),
 }))
 
-// @ts-expect-error: this is in fact real but only in test
 const fixturesPath: string = import.meta.env.VITE_AUDITLOG_FIXTURES
 
 describe("parsePeriod happy path", () => {

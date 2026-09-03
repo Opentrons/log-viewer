@@ -5,7 +5,8 @@
     "rootDir": "src",
     "outDir": "lib/shell",
     "target": "esnext",
-    "module": "ESNext"
+    "module": "ESNext",
+    "types": ["vite/client"]
   },
   "include": ["typings", "src"]
 }
