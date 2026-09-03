@@ -15,6 +15,12 @@ dist-shell:
     rm -rf lib
     pnpm exec vite build
 
+[working-directory: './app-shell']
+[env('NODE_ENV', "development")]
+dist-shell-dev:
+    rm -rf lib
+    pnpm exec vite build
+
 [working-directory: './app']
 dist-app:
     rm -rf lib
@@ -30,7 +36,7 @@ build-only:
     pnpm electron-builder
 
 [working-directory: './app-shell']
-dev-shell port=default_port: dist-shell
+dev-shell port=default_port: dist-shell-dev
     pnpm electron . \
     --devtools \
     --log.level.console="debug" \
@@ -38,16 +44,18 @@ dev-shell port=default_port: dist-shell
     --ui.url.path="localhost:{{port}}" \
 
 [working-directory: './app-shell']
-dev-shell-dist:
+dev-shell-dist: dist-shell
     pnpm electron . \
     --devtools \
     --log.level.console="debug" \
     --ui.url.protocol="file:" \
-    --ui.url.path="./app/dist/index.html" \
+    --ui.url.path="../app/lib/index.html" \
 
 [working-directory: './app']
 dev-app port=default_port:
     pnpm vite . --strictPort --port {{port}}
+
+dev-dist: dist-app dev-shell-dist
 
 [parallel]
 dev port=default_port: (dev-app port) (dev-shell port)
@@ -65,5 +73,6 @@ lint:
     pnpm exec oxlint
 
 [env("VITE_AUDITLOG_FIXTURES", join(justfile_directory(), "app-shell",  "__fixtures__"))]
+[env('NODE_ENV', "development")]
 test target=test_target opts=test_opts:
     pnpm exec vitest {{target}} {{opts}}

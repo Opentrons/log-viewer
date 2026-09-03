@@ -2,7 +2,7 @@ import { stat, mkdir } from "fs/promises"
 import path from "path"
 import { setInterval } from "timers/promises"
 
-import { app, BrowserWindow, dialog } from "electron"
+import { app, BrowserWindow, dialog, session } from "electron"
 import {
   installExtension,
   REACT_DEVELOPER_TOOLS,
@@ -22,9 +22,22 @@ app.once("window-all-closed", () => {
   app.quit()
 })
 
+console.log(`Environment is prod: ${import.meta.env.PROD}`)
+
 void app
   .whenReady()
   .then(async () => {
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+      // oxlint-disable-next-line no-callback-in-promise (this is the api, not me)
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          "Content-Security-Policy": [
+            `default-src 'self'; style-src 'self' 'unsafe-inline'${import.meta.env.PROD !== true ? "; script-src 'unsafe-inline' 'self'" : ""}`,
+          ],
+        },
+      })
+    })
     const uiConfig = getConfig("ui")
     const mainWindow = new BrowserWindow({
       show: false,
