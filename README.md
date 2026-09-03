@@ -1,8 +1,8 @@
-# Opentrons Flex CRS Log Viewer
+# Opentrons Flex CRS Log Verifier
 
 ## Overview
 
-This is the source repository for the Opentrons Flex CRS Mode Log Viewer. It verifies log signatures and provides human-friendly viewing for the CRS audit logs.
+This is the source repository for the Opentrons Flex CRS Mode Log Verifier. It verifies log signatures and provides human-friendly viewing for the CRS audit logs.
 
 ## Contributing
 

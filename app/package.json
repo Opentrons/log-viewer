@@ -1,7 +1,7 @@
 {
-  "name": "@log-viewer/app",
+  "name": "@log-verifier/app",
   "version": "0.0.1",
-  "description": "Log viewer frontend application",
+  "description": "Log verifier frontend application",
   "main": "app/main.js",
   "scripts": {},
   "dependencies": {

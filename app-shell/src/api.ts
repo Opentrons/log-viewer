@@ -1,5 +1,5 @@
-import type { Dispatch } from "@log-viewer/app/src/redux/store"
-import type { RemoteAPI } from "@log-viewer/app/src/remote/api"
+import type { Dispatch } from "@log-verifier/app/src/redux/store"
+import type { RemoteAPI } from "@log-verifier/app/src/remote/api"
 import { ipcMain } from "electron"
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron"
 

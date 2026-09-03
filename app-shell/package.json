@@ -1,7 +1,7 @@
 {
-  "name": "@log-viewer/app-shell",
+  "name": "@log-verifier/app-shell",
   "version": "0.0.1",
-  "description": "Log viewer electron shell application",
+  "description": "Log verifier electron shell application",
   "license": "Apache-2.0",
   "author": {
     "name": "Opentrons Labworks",
@@ -10,7 +10,7 @@
   "main": "lib/shell/main.js",
   "types": "lib/shell/main.d.ts",
   "dependencies": {
-    "@log-viewer/app": "workspace:*",
+    "@log-verifier/app": "workspace:*",
     "dateformat": "5.0.3",
     "electron-extension-installer": "2.0.3",
     "electron-store": "11.0.2",
@@ -36,7 +36,7 @@
     "winston-transport": "4.9.0"
   },
   "build": {
-    "appId": "com.opentrons.log-viewer",
+    "appId": "com.opentrons.log-verifier",
     "electronVersion": "43.3.0",
     "files": [
       "package.json",
@@ -57,13 +57,13 @@
         "zip"
       ],
       "category": "public.app-category.productivity",
-      "icon": "assets/log-viewer.icon"
+      "icon": "assets/log-verifier.icon"
     },
     "win": {
       "target": [
         "msi"
       ],
-      "icon": "assets/logviewer.ico",
+      "icon": "assets/logverifier.ico",
       "azureSignOptions": {
         "publisherName": "OPENTRONS LABWORKS INC.",
         "codeSigningAccountName": "desktop-app-signing",
@@ -75,10 +75,10 @@
       "target": [
         "AppImage"
       ],
-      "executableName": "log-viewer",
+      "executableName": "log-verifier",
       "category": "Science"
     },
     "generateUpdatesFilesForAllChannels": true
   },
-  "productName": "Log Viewer"
+  "productName": "Log Verifier"
 }
