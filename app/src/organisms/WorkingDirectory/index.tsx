@@ -15,7 +15,7 @@ export function WorkingDirectory(props: WorkingDirectoryProps): React.ReactNode 
       <div className={style.header_box}>
         <p className={style.directory_name_label}>Working Directory</p>
         {props.workingDirectory == null ? (
-          <p className={style.directory_name}>'No directory found'</p>
+          <p className={style.directory_name}>No directory found</p>
         ) : (
           <TreeItem type="folder" text={props.workingDirectory} />
         )}
