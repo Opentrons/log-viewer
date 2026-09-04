@@ -2,6 +2,7 @@ import { clsx } from "clsx"
 import * as React from "react"
 
 import { TreeItem } from "@/atoms/TreeItem"
+import { I18nContext } from "@/i18n"
 import {
   useLogPeriodsForRobot,
   useSelectedLogPeriod,
@@ -34,11 +35,11 @@ function LogPeriodPath(props: LogPeriodPathProps): React.ReactNode {
 
 interface RobotContainerProps {
   robotName: string
-  dateFormatter: Intl.DateTimeFormat
 }
 function RobotContainer(props: RobotContainerProps): React.ReactNode {
   const periodsForRobot = useLogPeriodsForRobot(props.robotName)
   const [displayed, setDisplayed] = React.useState<boolean>(false)
+  const { dateFormatter } = React.useContext(I18nContext)
   return (
     <div className={style.robot_container}>
       <TreeItem
@@ -56,7 +57,7 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
           return (
             <LogPeriodPath
               path={filePath}
-              dateString={props.dateFormatter.format(new Date(period.endDate))}
+              dateString={dateFormatter.format(new Date(period.endDate))}
               key={`${props.robotName}-${filePath}`}
             />
           )
@@ -69,17 +70,6 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
 export function DirectoryList(): React.ReactNode {
   const knownRobots = useKnownRobots()
   const [deviceExpanded, setDeviceExpanded] = React.useState<boolean>(false)
-  const dateFormatter = new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    timeZone: "UTC",
-    timeZoneName: "short",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-  })
-
   return (
     <div className={style.overall_container}>
       <TreeItem
@@ -88,9 +78,7 @@ export function DirectoryList(): React.ReactNode {
         onClick={() => setDeviceExpanded(!deviceExpanded)}
       />
       {deviceExpanded
-        ? knownRobots.map((robotName) => (
-            <RobotContainer robotName={robotName} key={robotName} dateFormatter={dateFormatter} />
-          ))
+        ? knownRobots.map((robotName) => <RobotContainer robotName={robotName} key={robotName} />)
         : null}
     </div>
   )

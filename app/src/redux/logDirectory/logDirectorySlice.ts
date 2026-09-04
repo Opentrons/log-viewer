@@ -1,18 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
+export type ConsistencyStatus = "unverified" | "consistent" | "inconsistent"
+
 export interface RobotId {
   name: string
-  softwareVersion: string
-  publicKey: string
+  publicKeyHash: string
+  serial: string
+  internalConsistency: ConsistencyStatus
 }
 export interface LogPeriod {
   scanStatus: "done" | "not-started" | "ongoing"
-  verificationStatus: "unscanned" | "consistent-unidentified" | "ok" | "inconsistent"
+  internalConsistency: ConsistencyStatus
+  attestationConsistency: ConsistencyStatus
   endDate: string
   startDate: string
   associatedFiles: string[]
-  protocolName: string | null
+  protocolNames: string[]
+  softwareVersions: string[]
   logCount: number
   robotId: RobotId
 }
@@ -56,21 +61,20 @@ export const logDirectorySlice = createSlice({
     addTrackedLogPeriod: (
       state: LogDirectoryState,
       action: PayloadAction<{
-        robotName: string
         filePath: string
         period: LogPeriod
       }>,
     ) => {
-      if (!Object.hasOwn(state.contentsByRobot, action.payload.robotName)) {
-        state.contentsByRobot[action.payload.robotName] = {
+      const robotName = action.payload.period.robotId.name
+      if (!Object.hasOwn(state.contentsByRobot, robotName)) {
+        state.contentsByRobot[robotName] = {
           blessedIdentityFiles: [],
           periods: {
             [action.payload.filePath]: action.payload.period,
           },
         }
       } else {
-        state.contentsByRobot[action.payload.robotName].periods[action.payload.filePath] =
-          action.payload.period
+        state.contentsByRobot[robotName].periods[action.payload.filePath] = action.payload.period
       }
     },
     removeTrackedLogPeriod: (

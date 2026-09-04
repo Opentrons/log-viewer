@@ -31,15 +31,23 @@ export function buildScanDirectory(
             dispatch({
               type: "logDirectory/addTrackedLogPeriod",
               payload: {
-                robotName: maybeFile.robotId.parsed.robot_name,
                 filePath: maybeFile.periodZip,
                 period: {
                   scanStatus: "not-started",
-                  verificationStatus: "unscanned",
+                  internalConsistency: "unverified",
+                  attestationConsistency: "unverified",
                   endDate: maybeFile.endDate,
                   startDate: maybeFile.startDate,
                   associatedFiles: maybeFile.associatedFiles,
-                  protocolName: null,
+                  protocolNames: maybeFile.associatedProtocols,
+                  softwareVersions: maybeFile.softwareVersions,
+                  robotId: {
+                    name: maybeFile.robotId.parsed.robot_name,
+                    serial: maybeFile.robotId.parsed.robot_serial,
+                    publicKeyHash: maybeFile.robotId.parsed.public_hash,
+                    internalConsistency: "unverified",
+                  },
+                  logCount: maybeFile.logCount,
                 },
               },
             })

@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   padding: 12px;
-  border: 1px solid var(--grey-30);
+  border-bottom: 1px solid var(--grey-30);
 }
 
 .select_working_directory_button {
