@@ -57,7 +57,7 @@ describe("parseRobotId rejections", () => {
       { robot_name: {}, robot_serial: "th", public_hash: "er" },
     ] as const
   ).map((test) =>
-    it(`should reject {JSON.stringify(test)}`, () => {
+    it(`should reject ${JSON.stringify(test)}`, () => {
       expect(() => parseRobotId(test)).toThrow(/Cannot parse robot ID:.*/)
     }),
   )

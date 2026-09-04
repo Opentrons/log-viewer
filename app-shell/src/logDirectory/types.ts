@@ -23,7 +23,6 @@ export interface RobotIdParsed {
   robot_name: string
   robot_serial: string
   public_hash: string
-  status: "consistent" | "inconsistent" | "unverified"
 }
 
 export interface RobotId {
@@ -33,11 +32,14 @@ export interface RobotId {
 
 export interface LogPeriodFile {
   periodZip: string
+  associatedProtocols: string[]
+  softwareVersions: string[]
   associatedFiles: string[]
   robotId: RobotId
   publicKey: KeyObject
   startDate: string
   endDate: string
+  logCount: number
 }
 
 interface BlessedRobotId extends RobotId {

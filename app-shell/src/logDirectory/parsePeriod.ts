@@ -6,7 +6,7 @@ import omit from "lodash/omit"
 import * as Unzipper from "unzipper"
 
 import { createLogger } from "../log"
-import { parseSignedMessage, parseRobotId } from "./parsers"
+import { parseSignedMessage, parseRobotId, parseLogOverview } from "./parsers"
 import type { LogPeriodFile } from "./types"
 
 const _log = createLogger("logDirectory.parsePeriod")
@@ -37,19 +37,25 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
   }
   const zipPath = path.join(entry.parentPath, entry.name)
   const zip = await Unzipper.Open.file(zipPath)
-  const periodZip: Partial<LogPeriodFile> = { periodZip: zipPath }
+  const periodZip: Partial<LogPeriodFile> & { periodZip: string; associatedFiles: string[] } = {
+    periodZip: zipPath,
+    associatedFiles: [],
+  }
   let lookingFor = ["log_period.json", "robot_identity.json", "signing_key.pem"] as const
   for (const file of zip.files) {
     if (file.type === "Directory") {
       log.warning(`Ignoring directory ${file.path} in zip`)
       continue
-    }
-    if (file.path == "log_period.json") {
+    } else if (file.path == "log_period.json") {
       const fileBuffer = await file.buffer()
       try {
         const document = JSON.parse(fileBuffer.toString("utf-8"))
         periodZip.startDate = document.startedAt
         periodZip.endDate = document.endedAt
+        periodZip.logCount = document.userLogEntries.length
+        const { softwareVersions, associatedProtocols } = parseLogOverview(document.userLogEntries)
+        periodZip.associatedProtocols = associatedProtocols
+        periodZip.softwareVersions = softwareVersions
         lookingFor = omit(lookingFor, "log_period.json")
       } catch (err: any) {
         log.error(`error parsing log period: ${err}`)
@@ -62,7 +68,7 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
         const idRaw = parseSignedMessage(identityFileParsed)
         const payload = parseRobotId(JSON.parse(idRaw.message))
 
-        periodZip.robotId = { parsed: { ...payload, status: "unverified" }, raw: idRaw }
+        periodZip.robotId = { parsed: { ...payload }, raw: idRaw }
         lookingFor = omit(lookingFor, "robot_identity.json")
       } catch (err: any) {
         log.error(`Failed to parse robot id: ${err}`)
@@ -71,11 +77,7 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
       periodZip.publicKey = crypto.createPublicKey(await file.buffer())
       lookingFor = omit(lookingFor, "signing_key.pem")
     } else {
-      if (periodZip?.associatedFiles == null) {
-        periodZip.associatedFiles = [file.path]
-      } else {
-        periodZip.associatedFiles.push(file.path)
-      }
+      periodZip.associatedFiles.push(file.path)
     }
   }
   if (lookingFor.length > 0) {
