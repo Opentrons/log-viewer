@@ -13,7 +13,7 @@ export const store = configureStore({
 })
 export type Store = typeof store
 export type State = ReturnType<Store["getState"]>
-export type Dispatch = Store["dispatch"]
+export type Dispatch = typeof store.dispatch
 export type Thunk<T = void> = ThunkAction<T, State, unknown, Action>
 export const useAppDispatch = useDispatch.withTypes<Dispatch>()
 export const useAppSelector = useSelector.withTypes<State>()
