@@ -4,3 +4,26 @@
   width: 100%;
   flex-direction: column;
 }
+
+.overflow_button_container {
+  float: right;
+  right: -4px;
+  top: 16px;
+  position: relative;
+}
+
+.overflow_menu_container {
+  float: right;
+  right: -4px;
+  top: 16px;
+  position: absolute;
+}
+
+.overflow_button_clipper {
+  float: right;
+  right: 0px;
+  top: 0px;
+  position: absolute;
+  overflow-x: clip;
+  size: min-content;
+}

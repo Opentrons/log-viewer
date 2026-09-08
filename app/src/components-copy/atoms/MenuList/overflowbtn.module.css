@@ -1,0 +1,38 @@
+.btn_extra_css {
+  background-color: var(--transparent);
+  border-radius: var(--border-radius-4);
+  max-height: var(--spacing-32);
+
+  &:hover {
+    background-color: var(--grey-30);
+  }
+
+  &:hover circle {
+    fill: var(--grey-55);
+  }
+  &:active,
+  &:focus {
+    background-color: var(--grey-35);
+  }
+
+  &:active circle,
+  &:focus circle {
+    fill: var(--grey-60);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--yellow-50);
+    background-color: var(--transparent);
+  }
+
+  &:focus-visible circle {
+    fill: var(--grey-60);
+  }
+
+  &:disabled circle {
+    fill: var(--grey-40);
+  }
+  &:disabled {
+    background-color: var(--transparent);
+  }
+}
