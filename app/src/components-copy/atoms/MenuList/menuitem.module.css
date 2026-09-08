@@ -1,0 +1,19 @@
+.container {
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--font-size-p);
+  background-color: var(--transparent);
+  color: var(--black-90);
+  padding: var(--spacing-8) var(--spacing-12) var(--spacing-8) var(--spacing-12);
+  border: inherit;
+  border-radius: inherit;
+
+  &:hover {
+    background-color: var(--blue-10);
+  }
+
+  &:disabled {
+    background-color: var(--transparent);
+    color: var(--grey-40);
+  }
+}
