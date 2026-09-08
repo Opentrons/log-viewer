@@ -14,5 +14,5 @@
   font-size: var(--font-size-helix-product-body-large);
   font-style: normal;
   font-weight: var(--font-weight-semi-bold);
-  line-height: 1.5rem;
+  line-height: var(--line-height-helix-product-body-large);
 }
