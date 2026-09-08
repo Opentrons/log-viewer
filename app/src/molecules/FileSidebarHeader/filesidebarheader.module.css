@@ -11,7 +11,7 @@
 }
 
 .app_name_text {
-  font-size: 1rem;
+  font-size: var(--font-size-helix-product-body-large);
   font-style: normal;
   font-weight: var(--font-weight-semi-bold);
   line-height: 1.5rem;
