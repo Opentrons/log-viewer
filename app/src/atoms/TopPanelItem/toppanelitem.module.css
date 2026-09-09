@@ -14,7 +14,7 @@
 }
 
 .title_text {
-  font-size: var(--font-size-h3);
-  line-height: var(--line-height-20);
+  font-size: var(--font-size-helix-product-body-default);
+  line-height: var(--line-height-helix-product-body-default);
   font-weight: var(--font-weight-light);
 }

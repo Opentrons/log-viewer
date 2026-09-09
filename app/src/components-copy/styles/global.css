@@ -157,6 +157,15 @@
   --font-size-label: 0.6875rem; /* Label 11px */
   --font-size-caption: 0.625rem; /* Caption 10px */
 
+  --font-size-helix-product-display: 2.4375rem; /* 39px */
+  --font-size-helix-product-heading-large: 1.625rem; /* 26px */
+  --font-size-helix-product-heading-medium: 1.75rem; /* 28px */
+  --font-size-helix-product-heading-small: 1.125rem; /* 18px */
+  --font-size-helix-product-body-large: 1rem; /* 16px */
+  --font-size-helix-product-body-default: 0.875rem; /* 14px */
+  --font-size-helix-product-caption: 0.8125rem; /* 13px */
+  --font-size-helix-product-code: 0.8125rem; /* 13px */
+
   /* line-height */
   --line-height-96: 6rem; /* 96px */
   --line-height-48: 3rem; /* 48px */
@@ -168,6 +177,15 @@
   --line-height-18: 1.125rem; /* 18px */
   --line-height-16: 1rem; /* 16px */
   --line-height-12: 0.75rem; /* 12px */
+
+  --line-height-helix-product-display: 3rem; /* 48px */
+  --line-height-helix-product-heading-large: 2rem; /* 32px */
+  --line-height-helix-product-heading-medium: 1.75rem; /* 28px */
+  --line-height-helix-product-heading-small: 1.5rem; /* 24px */
+  --line-height-helix-product-body-large: 1.5rem; /* 24px */
+  --line-height-helix-product-body-default: 1.25rem; /* 20px */
+  --line-height-helix-product-caption: 1rem; /* 16px */
+  --line-height-helix-product-code: 1.25rem; /* 20px */
 
   /* font-weight */
 

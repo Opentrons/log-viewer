@@ -22,13 +22,13 @@
 }
 
 .headertext {
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-helix-product-body-default);
   font-weight: var(--font-weight-semi-bold);
-  line-height: var(--line-height-20);
+  line-height: var(--line-height-helix-product-body-default);
 }
 
 .subtext {
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-helix-product-body-default);
   font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-20);
+  line-height: var(--line-height-helix-product-body-default);
 }
