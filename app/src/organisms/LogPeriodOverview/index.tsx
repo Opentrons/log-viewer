@@ -5,6 +5,7 @@ import { MenuItem } from "@/components-copy/atoms/MenuList/MenuItem"
 import { OverflowBtn } from "@/components-copy/atoms/MenuList/OverflowBtn"
 import { useOnClickOutside } from "@/components-copy/interaction-enhancers"
 import { LogPeriodTopPanel } from "@/molecules/LogPeriodTopPanel"
+import { LogEntries } from "@/organisms/LogEntries"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
 
 import style from "./logperiodoverview.module.css"
@@ -48,7 +49,7 @@ export function LogPeriodOverview(props: LogPeriodOverviewProps): React.ReactNod
         </div>
       )}
       <LogPeriodTopPanel logPeriod={props.logPeriod} />
-      <p>Log period content yay</p>
+      <LogEntries logPeriod={props.logPeriod} />
     </div>
   )
 }
