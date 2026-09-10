@@ -8,7 +8,7 @@ import {
   useSelectedLogPeriod,
   useKnownRobots,
 } from "@/redux/logDirectory/hooks"
-import { setSelectedLogPeriod } from "@/redux/logDirectory/logDirectorySlice"
+import { setSelectedLogPeriod, loadLogs } from "@/redux/logDirectory/logDirectorySlice"
 import { useAppDispatch } from "@/redux/store"
 
 import style from "./directorylist.module.css"
@@ -26,6 +26,7 @@ function LogPeriodPath(props: LogPeriodPathProps): React.ReactNode {
       type="file"
       onClick={() => {
         dispatch(setSelectedLogPeriod({ selectedPath: isSelected ? null : props.path }))
+        return isSelected ? Promise.resolve() : dispatch(loadLogs({ zipPath: props.path }))
       }}
       active={isSelected}
       text={props.dateString}
