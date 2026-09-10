@@ -1,8 +1,8 @@
 import { clsx } from "clsx"
 import * as React from "react"
 
-import { type IconName, Icon } from "../../components-copy/icons/Icon"
-import { StyleProps } from "../../components-copy/primitives/types"
+import { type IconName, Icon } from "../../icons/Icon"
+import { StyleProps } from "../../primitives/types"
 /**
  * Note: this is a copy of the Chip component from the monorepo components
  *library. It has been modified to move from styled-components to cssmodules.
@@ -136,7 +136,7 @@ const ICON_STYLE = (chipSize: ChipSize, chipName: string): string =>
       ? style.chip_icon_small_circle
       : chipName === "connection-status"
         ? style.chip_icon_small_connection_status
-        : style.chip_icon_small_defaults
+        : style.chip_icon_small_default
     : style.chip_icon_medium
 
 const SIZE_STYLE = (size: string, background?: boolean): string =>

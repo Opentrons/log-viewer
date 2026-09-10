@@ -5,6 +5,7 @@
   height: max-content;
   border-radius: 200px;
   gap: var(--spacing-4);
+  width: max-content;
 }
 
 .chip_container_background_error {
@@ -40,7 +41,7 @@
 }
 
 .chip_container_small_background {
-  padding: var(--spacing-4) var(--spacing-16);
+  padding: var(--spacing-4) var(--spacing-6);
 }
 
 .chip_container_small_foreground {
