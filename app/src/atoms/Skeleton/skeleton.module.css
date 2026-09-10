@@ -1,0 +1,24 @@
+.skeleton {
+  display: box;
+  border-radius: var(--border-radius);
+  animation: shimmer 2s infinite linear;
+  background-image: linear-gradient(to right, var(--grey-30) 1%, #e3e3e366 25%, var(--grey-30) 40%);
+
+  @keyframes shimmer {
+    0% {
+      background-position: -var(--background-size) 0;
+    }
+    100% {
+      background-position: var(--background-size) 0;
+    }
+  }
+  @keyframes fullView {
+    100% {
+      width: 100%;
+    }
+  }
+}
+
+.skeleton_fixed_background {
+  background-attachment: fixed;
+}
