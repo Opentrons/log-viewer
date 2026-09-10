@@ -17,6 +17,7 @@ export interface LogChecker {
   dispatch: (action: Parameters<Dispatch>[0]) => void
   scanDirectory: () => Promise<void>
   teardown: () => Promise<void>
+  parseLines: (logPath: string) => Promise<LogLine[]>
 }
 
 export interface RobotIdParsed {
@@ -44,4 +45,16 @@ export interface LogPeriodFile {
 
 interface BlessedRobotId extends RobotId {
   filePath: string
+}
+
+export interface LogLine {
+  envelope: SignedMessage
+  payload: {
+    action: string
+    userName: string
+    legalName: string
+    message: string
+    userNote: string
+  }
+  id: number
 }

@@ -16,3 +16,12 @@ export interface RobotIdPayload {
   public_hash: string
 }
 export type RobotIdJson = SignedMessage
+
+export interface LogMessage {
+  action: string
+  accountName: string
+  legalName: string
+  message: string
+  reason: string
+  loggedAt: string
+}

@@ -1,6 +1,6 @@
 import path from "path"
 
-import type { SignedMessage, RobotIdPayload } from "./filetypes"
+import type { SignedMessage, RobotIdPayload, LogMessage } from "./filetypes"
 export function parseSignedMessage(document: any): SignedMessage {
   if (typeof document?.message !== "string") {
     throw new Error("Cannot parse signed message: message is not present")
@@ -95,5 +95,73 @@ function* logParseGenerator(
         yield { type: "runlog", value: path.basename(runlogName, ".json") }
       }
     }
+  }
+}
+
+export function* parseUserLog(document: any): Generator<SignedMessage> {
+  if (typeof document !== "object") {
+    throw new Error("Incorrect shape of JSON document")
+  }
+  const lines = document?.userLogEntries
+  if (!Array.isArray(lines)) {
+    throw new Error("Incorrect shape of user log entries")
+  }
+  let index = 0
+  for (const line of lines) {
+    if (typeof line !== "object") {
+      throw new Error(`Incorrect shape of log line ${index}`)
+    }
+    const message = line.message
+    const messageHash = line.message_hash
+    const messageSignature = line.message_sig
+    const signatureVersion = line.sig_version
+    if (typeof message !== "string") {
+      throw new Error(`Incorrect type of log message at ${index}: ${typeof message}`)
+    }
+    if (typeof messageHash !== "string") {
+      throw new Error(`Incorrect type of log message hash at ${index}: ${typeof messageHash}`)
+    }
+    if (typeof messageSignature !== "string") {
+      throw new Error(
+        `Incorrect type of log message signature at ${index}: ${typeof messageSignature}`,
+      )
+    }
+    if (typeof signatureVersion !== "string") {
+      throw new Error(
+        `Incorrect type of log message signature version at ${index}: ${typeof signatureVersion}`,
+      )
+    }
+    const result = {
+      message,
+      messageHash,
+      messageSignature,
+      signatureVersion,
+    }
+    yield result
+    index++
+  }
+}
+
+const parseOrStringify = <T>(val: any, pred: (val: any) => val is T): T | string =>
+  pred(val) ? val : JSON.stringify(val)
+
+export function parseLogLine(inputMessage: SignedMessage): LogMessage {
+  const parsedMessage = JSON.parse(inputMessage.message)
+  if (typeof parsedMessage !== "object") {
+    throw new Error(
+      `Incorrect type of log message: ${typeof parsedMessage} (${JSON.stringify(parsedMessage)} from ${JSON.stringify(inputMessage)})`,
+    )
+  }
+  const { action, accountName, legalName, message, reason, loggedAt } = parsedMessage
+  return {
+    action: parseOrStringify(action, (maybeAction) => typeof maybeAction === "string"),
+    accountName: parseOrStringify(
+      accountName,
+      (maybeAccountName) => typeof maybeAccountName === "string",
+    ),
+    legalName: parseOrStringify(legalName, (maybeLegalName) => typeof maybeLegalName === "string"),
+    message: parseOrStringify(message, (maybeMessage) => typeof maybeMessage === "string"),
+    reason: parseOrStringify(reason, (maybeReason) => typeof maybeReason === "string"),
+    loggedAt: parseOrStringify(loggedAt, (maybeLoggedAt) => typeof maybeLoggedAt === "string"),
   }
 }
