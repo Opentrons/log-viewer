@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 48px;
+  align-items: center;
+  gap: 12px;
+  border-radius: var(--border-radius-4);
+  padding: 12px;
+}
+
+.container_unselected {
+  background-color: var(--grey-20);
+  &:hover {
+    background-color: var(--grey-30);
+  }
+  &:active {
+    background-color: var(--grey-40);
+  }
+  &:focus-visible {
+    border: 2px solid var(--blue-50);
+    background-color: var(--grey-30);
+  }
+}
+
+.container_selected {
+  background-color: var(--grey-35);
+  &:focus-visible {
+    border: 2px solid var(--blue-50);
+  }
+}
+
+.log_field {
+  flex: 20% 1 1;
+}
+.text_field {
+  text-align: start;
+  font-size: var(--font-size-helix-product-body-default);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-helix-product-body-default);
+  color: var(--black-90);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
