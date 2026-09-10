@@ -73,6 +73,22 @@ export const logDirectorySlice = createSlice({
         }
       }
     },
+    setLogFilter: (
+      state: LogDirectoryState,
+      action: PayloadAction<{ filterText: string | null }>,
+    ) => {
+      const filterText = action.payload.filterText
+      if (state.logLines.status != "loaded") {
+        return
+      }
+      if (filterText == null) {
+        state.logLines.filteredLines = state.logLines.lines
+        return
+      }
+      state.logLines.filteredLines = state.logLines.lines.filter((line) =>
+        line.envelope.message.includes(filterText),
+      )
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadLogs.fulfilled, (state, action) => {
@@ -99,5 +115,10 @@ export const logDirectorySlice = createSlice({
 
 export const loadLogs = createAsyncThunk("logDirectory/loadLogs", api.loadLogsForPeriod)
 
-export const { setPath, directoryScanDone, directoryScanStart, setSelectedLogPeriod } =
-  logDirectorySlice.actions
+export const {
+  setLogFilter,
+  setPath,
+  directoryScanDone,
+  directoryScanStart,
+  setSelectedLogPeriod,
+} = logDirectorySlice.actions
