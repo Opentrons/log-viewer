@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.title {
+  font-size: var(--font-size-helix-product-body-default);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-helix-product-body-default);
+  color: var(--grey-60);
+}
+
+.content {
+  font-size: var(--font-size-helix-product-body-default);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-helix-product-body-default);
+  overflow-wrap: break-word;
+}

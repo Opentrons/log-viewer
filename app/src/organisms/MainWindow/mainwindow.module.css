@@ -9,4 +9,8 @@
   position: relative;
 }
 
+.container_hide_if_needed {
+  @media (max-width: 1279px) {
+    display: none;
+  }
 }
