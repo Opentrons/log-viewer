@@ -18,7 +18,7 @@ export function FileSidebarHeader({
         onClick={changeWorkingDirectory}
         aria-label="Select working directory"
       >
-        <Icon name="plus" size="100%" backgroundColor="white" />
+        <Icon name="plus" size="20px" backgroundColor="white" />
       </button>
     </div>
   )
