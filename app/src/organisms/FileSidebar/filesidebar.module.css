@@ -1,6 +1,6 @@
 .file_sidebar {
   display: flex;
-  flex: 300px 0 0;
+  flex: 0 0 300px;
   flex-direction: column;
   height: 100%;
 }

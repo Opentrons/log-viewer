@@ -4,6 +4,7 @@ import { Provider } from "react-redux"
 import { I18nContext, I18N_DATETIME_SPEC, buildFormatter } from "@/i18n"
 import { AppContainer } from "@/molecules/AppContainer"
 import { FileSidebar } from "@/organisms/FileSidebar"
+import { LogDetailSidebar } from "@/organisms/LogDetailSidebar"
 import { MainWindow } from "@/organisms/MainWindow"
 import { store } from "@/redux/store"
 import { api } from "@/remote/api"
@@ -23,6 +24,7 @@ export function App(): React.ReactNode {
         >
           <FileSidebar />
           <MainWindow />
+          <LogDetailSidebar />
         </I18nContext>
       </AppContainer>
     </Provider>

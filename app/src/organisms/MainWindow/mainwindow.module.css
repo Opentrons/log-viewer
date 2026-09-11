@@ -5,4 +5,12 @@
   align-items: center;
   justify-content: space-around;
   border-left: 1px solid var(--grey-30);
+  /* to provide a positioned-ancestor the position: fixed overflow menu */
+  position: relative;
+}
+
+.container_hide_if_needed {
+  @media (max-width: 1279px) {
+    display: none;
+  }
 }

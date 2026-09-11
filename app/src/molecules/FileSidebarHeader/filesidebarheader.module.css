@@ -4,10 +4,16 @@
   justify-content: space-between;
   padding: 12px;
   border-bottom: 1px solid var(--grey-30);
+  align-items: center;
 }
 
 .select_working_directory_button {
-  height: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  background-color: var(--transparent);
 }
 
 .app_name_text {

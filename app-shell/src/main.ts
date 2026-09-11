@@ -91,6 +91,7 @@ void app
                 log.info(`dialog done, result ${JSON.stringify(result)}`)
                 if (result.canceled) {
                   resolve(getConfig())
+                  return
                 }
                 const selected = result.filePaths[0]
                 if (selected == null) {

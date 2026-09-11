@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import { useAppSelector } from "../store"
-import type { LogPeriod, LogDirectoryState } from "./types"
+import type { LogPeriod, LogDirectoryState, LogLine } from "./types"
 
 export interface KnownLogPeriods {
   [robotName: string]: { [filePath: string]: LogPeriod }
@@ -47,4 +47,12 @@ export function useSelectedLogPeriod(): SelectedLogPeriod | null {
 
 export function useFilteredLogs(): LogDirectoryState["logLines"] {
   return useAppSelector((state) => state.logDirectory.logLines)
+}
+
+export function useSelectedLog(): LogLine | null {
+  return useAppSelector((state) =>
+    state.logDirectory.logLines.status === "loaded" && state.logDirectory.logLines.selected != null
+      ? state.logDirectory.logLines.lines?.[state.logDirectory.logLines.selected]
+      : null,
+  )
 }

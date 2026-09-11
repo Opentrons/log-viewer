@@ -1,0 +1,21 @@
+.log_detail_header_container {
+  display: flex;
+  flex-direction: row;
+  padding: 12px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--grey-30);
+}
+
+.log_detail_header_title {
+  font-size: var(--font-size-helix-product-body-large);
+  font-weight: var(--font-weight-semi-bold);
+  line-height: var(--line-height-helix-product-body-large);
+}
+
+.log_detail_header_close_button {
+  flex: 0 0 36px;
+  height: 36px;
+  background-color: var(--transparent);
+}

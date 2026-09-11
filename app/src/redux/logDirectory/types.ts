@@ -54,6 +54,7 @@ export interface LogDirectoryState {
         status: "loaded"
         lines: LogLine[]
         filteredLines: LogLine[]
+        selected: number | null
       }
     | {
         status: "loading"
