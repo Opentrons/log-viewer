@@ -1,22 +1,24 @@
+import { parseLines } from "./parseLines"
 import { buildScanDirectory } from "./scanDirectory"
 import type { State, LogChecker } from "./types"
 
 export async function refresh(
   dispatch: LogChecker["dispatch"],
-  path: string,
+  basePath: string,
   checker: LogChecker,
 ): Promise<LogChecker> {
   await checker.teardown()
-  return initialize(dispatch, path)
+  return initialize(dispatch, basePath)
 }
 
-export function initialize(dispatch: LogChecker["dispatch"], path: string): LogChecker {
+export function initialize(dispatch: LogChecker["dispatch"], basePath: string): LogChecker {
   const state: State = {}
   return {
-    basePath: path,
+    basePath,
     state,
     dispatch,
-    scanDirectory: buildScanDirectory(state, path, dispatch),
+    scanDirectory: buildScanDirectory(state, basePath, dispatch),
     teardown: () => Promise.resolve(),
+    parseLines: (logPath: string) => parseLines(logPath),
   }
 }

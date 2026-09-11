@@ -1,3 +1,4 @@
+import type { LogLine } from "@log-verifier/app/src/redux/logDirectory/types"
 import type { Dispatch } from "@log-verifier/app/src/redux/store"
 import type { RemoteAPI } from "@log-verifier/app/src/remote/api"
 import type { Config } from "@log-verifier/app/src/remote/config/types"
@@ -22,5 +23,8 @@ contextBridge.exposeInMainWorld("shell", {
     ipcRenderer.invoke("updateConfigBy", payload),
   setUiStatus: (status: "ready") => {
     ipcRenderer.send("setUiStatus", { status })
+  },
+  loadLogsForPeriod: (payload: { zipPath: string }): Promise<LogLine[]> => {
+    return ipcRenderer.invoke("loadLogsForPeriod", { zipPath: payload.zipPath })
   },
 } as RemoteAPI)

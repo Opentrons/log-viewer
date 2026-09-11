@@ -67,6 +67,11 @@ void app
           new Promise<Config>((resolve) => {
             resolve(updateConfigBySlice(configSlice))
           }),
+        loadLogsForPeriod: (_event: unknown, payload: { zipPath: string }) =>
+          logChecker?.parseLines(payload.zipPath).then((result) => {
+            return result
+          }) ?? Promise.reject("No base directory selected"),
+
         updateConfigBy: (
           _event: unknown,
           payload: { configPath: string; method: "directoryPicker" },

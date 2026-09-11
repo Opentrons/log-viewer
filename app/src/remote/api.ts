@@ -1,3 +1,4 @@
+import type { LogLine } from "@/redux/logDirectory/types"
 import type { Dispatch } from "@/redux/store"
 
 import type { Config } from "./config/types"
@@ -7,6 +8,7 @@ export interface RemoteAPI {
   setConfig: (newSlice: Partial<Config>) => Promise<Config>
   updateConfigBy: (payload: { configPath: string; method: "directoryPicker" }) => Promise<Config>
   setUiStatus: (status: "ready") => void
+  loadLogsForPeriod: (payload: { zipPath: string }) => Promise<LogLine[]>
 }
 
 // @ts-expect-error(sf): this is injected by preload

@@ -1,46 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
-export type ConsistencyStatus = "unverified" | "consistent" | "inconsistent"
+import { api } from "@/remote/api"
 
-export interface RobotId {
-  name: string
-  publicKeyHash: string
-  serial: string
-  internalConsistency: ConsistencyStatus
-}
-export interface LogPeriod {
-  scanStatus: "done" | "not-started" | "ongoing"
-  internalConsistency: ConsistencyStatus
-  attestationConsistency: ConsistencyStatus
-  endDate: string
-  startDate: string
-  associatedFiles: string[]
-  protocolNames: string[]
-  softwareVersions: string[]
-  logCount: number
-  robotId: RobotId
-}
-
-export interface LogDirectoryState {
-  directoryPath: string | null
-  scanStatus: "done" | "not-started" | "ongoing"
-  selectedLogPeriod: { fileName: string; robotName: string } | null
-  contentsByRobot: {
-    [robotName: string]: {
-      blessedIdentityFiles: { filePath: string; robotId: RobotId }[]
-      periods: {
-        [filePath: string]: LogPeriod
-      }
-    }
-  }
-}
+import type { LogPeriod, LogDirectoryState } from "./types"
 
 const initialState: LogDirectoryState = {
   directoryPath: null,
   scanStatus: "not-started",
   selectedLogPeriod: null,
   contentsByRobot: {},
+  logLines: { status: "empty" },
 }
 
 export const logDirectorySlice = createSlice({
@@ -103,8 +73,52 @@ export const logDirectorySlice = createSlice({
         }
       }
     },
+    setLogFilter: (
+      state: LogDirectoryState,
+      action: PayloadAction<{ filterText: string | null }>,
+    ) => {
+      const filterText = action.payload.filterText
+      if (state.logLines.status != "loaded") {
+        return
+      }
+      if (filterText == null) {
+        state.logLines.filteredLines = state.logLines.lines
+        return
+      }
+      state.logLines.filteredLines = state.logLines.lines.filter((line) =>
+        line.envelope.message.includes(filterText),
+      )
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(loadLogs.fulfilled, (state, action) => {
+      state.logLines = {
+        status: "loaded",
+        lines: action.payload,
+        filteredLines: action.payload,
+      }
+    })
+    builder.addCase(loadLogs.pending, (state) => {
+      state.logLines = {
+        status: "loading",
+      }
+    })
+    builder.addCase(loadLogs.rejected, (state, action) => {
+      console.log("Failed to load logs", action.error)
+      state.logLines = {
+        status: "error",
+        error: `${action.error?.name ?? "unknown"}: ${action.error?.message ?? "no message"}`,
+      }
+    })
   },
 })
 
-export const { setPath, directoryScanDone, directoryScanStart, setSelectedLogPeriod } =
-  logDirectorySlice.actions
+export const loadLogs = createAsyncThunk("logDirectory/loadLogs", api.loadLogsForPeriod)
+
+export const {
+  setLogFilter,
+  setPath,
+  directoryScanDone,
+  directoryScanStart,
+  setSelectedLogPeriod,
+} = logDirectorySlice.actions

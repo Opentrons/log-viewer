@@ -1,8 +1,8 @@
 import { clsx } from "clsx"
 import * as React from "react"
 
-import { Chip } from "@/atoms/Chip"
 import { TopPanelItem } from "@/atoms/TopPanelItem"
+import { Chip } from "@/components-copy/atoms/Chip"
 import { Icon } from "@/components-copy/icons/Icon"
 import { I18nContext } from "@/i18n"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
