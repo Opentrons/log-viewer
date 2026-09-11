@@ -3,7 +3,9 @@ import * as React from "react"
 
 import { LogLine } from "@/atoms/LogLine"
 import { Skeleton } from "@/atoms/Skeleton"
-import { useFilteredLogs } from "@/redux/logDirectory/hooks"
+import { useFilteredLogs, useSelectedLog } from "@/redux/logDirectory/hooks"
+import { setSelectedLogLine } from "@/redux/logDirectory/logDirectorySlice"
+import { useAppDispatch } from "@/redux/store"
 
 import style from "./loglines.module.css"
 
@@ -14,7 +16,8 @@ export interface LogLinesProps {}
 export function LogLines(_props: LogLinesProps): React.ReactNode {
   const logs = useFilteredLogs()
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const [selectedItem, setSelectedItem] = React.useState<number | null>(null)
+  const selectedLogLine = useSelectedLog()
+  const dispatch = useAppDispatch()
   const [itemCount, setItemCount] = React.useState(0)
   React.useEffect(() => {
     const calculateCapacity = () => {
@@ -60,8 +63,14 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
             <LogLine
               log={logLine.payload}
               key={logLine.id}
-              selected={selectedItem === logLine.id}
-              onClick={() => setSelectedItem(logLine.id === selectedItem ? null : logLine.id)}
+              selected={selectedLogLine?.id === logLine.id}
+              onClick={() =>
+                dispatch(
+                  setSelectedLogLine({
+                    selectedLog: logLine.id === selectedLogLine?.id ? null : logLine.id,
+                  }),
+                )
+              }
             />
           ))}
       </div>

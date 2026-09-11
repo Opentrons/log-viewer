@@ -21,6 +21,7 @@ export const logDirectorySlice = createSlice({
       state.directoryPath = action.payload.directoryPath
       state.scanStatus = "not-started"
       state.contentsByRobot = {}
+      state.logLines = { status: "empty" }
     },
     directoryScanDone: (state: LogDirectoryState) => {
       state.scanStatus = "done"
@@ -73,6 +74,15 @@ export const logDirectorySlice = createSlice({
         }
       }
     },
+    setSelectedLogLine: (
+      state: LogDirectoryState,
+      action: PayloadAction<{ selectedLog: number | null }>,
+    ) => {
+      if (state.logLines.status != "loaded") {
+        return
+      }
+      state.logLines.selected = action.payload.selectedLog
+    },
     setLogFilter: (
       state: LogDirectoryState,
       action: PayloadAction<{ filterText: string | null }>,
@@ -96,6 +106,7 @@ export const logDirectorySlice = createSlice({
         status: "loaded",
         lines: action.payload,
         filteredLines: action.payload,
+        selected: null,
       }
     })
     builder.addCase(loadLogs.pending, (state) => {
@@ -121,4 +132,5 @@ export const {
   directoryScanDone,
   directoryScanStart,
   setSelectedLogPeriod,
+  setSelectedLogLine,
 } = logDirectorySlice.actions
