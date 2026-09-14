@@ -2,9 +2,9 @@ import * as React from "react"
 
 import { Chip } from "@/components-copy/atoms/Chip"
 import type { StyleProps } from "@/components-copy/primitives/types"
-import type { ConsistencyStatus } from "@/redux/logDirectory/types"
+import type { Consistency } from "@/redux/logDirectory/types"
 export interface LogStatusProps extends StyleProps {
-  status: ConsistencyStatus
+  status: Consistency<void>["status"]
 }
 
 const STATUS_TO_TYPE = {
