@@ -19,6 +19,7 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
   const selectedLogLine = useSelectedLog()
   const dispatch = useAppDispatch()
   const [itemCount, setItemCount] = React.useState(0)
+  const [shimmerWidth, setShimmerWidth] = React.useState(0)
   React.useEffect(() => {
     const calculateCapacity = () => {
       if (!containerRef.current) {
@@ -30,6 +31,8 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
       const fitsCount = Math.floor(containerHeight / totalItemSpace)
 
       setItemCount(Math.max(1, fitsCount))
+      const containerWidth = containerRef.current?.clientWidth ?? 0
+      setShimmerWidth(containerWidth * 2)
     }
 
     // Calculate on mount
@@ -54,7 +57,7 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
             <Skeleton
               width="100%"
               height={`${SKELETON_HEIGHT_PX}px`}
-              backgroundSize={`${SKELETON_HEIGHT_PX}px`}
+              backgroundSize={`${shimmerWidth}px`}
               key={index}
             />
           ))}
