@@ -25,6 +25,7 @@ describe("parsePeriod happy path", () => {
       softwareVersions: [],
       associatedProtocols: [],
       robotId: {
+        consistencyFailures: [],
         parsed: {
           public_hash: "sha256:Ze1WMVbkhBYhILfGAne5G7ir63kJUbtDPcf4CaHnGUw=",
           robot_name: "BornAgainArtinold",
@@ -57,6 +58,7 @@ describe("parsePeriod happy path", () => {
       softwareVersions: ["10.0.0-alpha.7"],
       associatedProtocols: [],
       robotId: {
+        consistencyFailures: [],
         parsed: {
           public_hash: "sha256:Xdp3lMOj_dLyafc7QQTB4ir8-N9g8aozPEPV-xQ7x_o=",
           robot_name: "FourBot",
@@ -90,6 +92,7 @@ describe("parsePeriod happy path", () => {
       softwareVersions: ["10.0.0-alpha.7"],
       associatedProtocols: ["whatever"],
       robotId: {
+        consistencyFailures: [],
         parsed: {
           public_hash: "sha256:Xdp3lMOj_dLyafc7QQTB4ir8-N9g8aozPEPV-xQ7x_o=",
           robot_name: "FourBot",
