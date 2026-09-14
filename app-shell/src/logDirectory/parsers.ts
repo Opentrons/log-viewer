@@ -165,3 +165,13 @@ export function parseLogLine(inputMessage: SignedMessage): LogMessage {
     loggedAt: parseOrStringify(loggedAt, (maybeLoggedAt) => typeof maybeLoggedAt === "string"),
   }
 }
+
+export function parseCryptoIdentifier(line: string): [string, string] {
+  const parts = line.split(":")
+  if (parts.length < 2) {
+    throw new Error(
+      `Incorrect formatting of crypto specification: must be with cryptoName:value but is ${line}`,
+    )
+  }
+  return [parts[0], parts.slice(1).join(":")]
+}
