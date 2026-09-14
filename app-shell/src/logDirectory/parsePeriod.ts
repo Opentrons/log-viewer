@@ -68,7 +68,7 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
         const idRaw = parseSignedMessage(identityFileParsed)
         const payload = parseRobotId(JSON.parse(idRaw.message))
 
-        periodZip.robotId = { parsed: { ...payload }, raw: idRaw }
+        periodZip.robotId = { parsed: { ...payload }, raw: idRaw, consistencyFailures: [] }
         lookingFor = omit(lookingFor, "robot_identity.json")
       } catch (err: any) {
         log.error(`Failed to parse robot id: ${err}`)

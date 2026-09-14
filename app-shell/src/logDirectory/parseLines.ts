@@ -27,6 +27,7 @@ export async function parseLines(path: string): Promise<LogLine[]> {
             loggedAt: messagePayload.loggedAt,
           },
           id: index,
+          consistencyFailures: [],
         }
       } catch (err: any) {
         throw new Error(`Error parsing log line ${index}: ${err.message}`)

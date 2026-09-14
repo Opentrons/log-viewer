@@ -2,7 +2,7 @@ export interface SignedMessage {
   message: string
   messageHash: string
   messageSignature: string
-  signatureVersion: string
+  signatureVersion: string | number
 }
 
 export interface LogPeriodJson {
