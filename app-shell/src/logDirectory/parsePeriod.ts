@@ -7,11 +7,15 @@ import * as Unzipper from "unzipper"
 
 import { createLogger } from "../log"
 import { parseSignedMessage, parseRobotId, parseLogOverview } from "./parsers"
-import type { LogPeriodFile } from "./types"
+import type { LogPeriodFile, BlessedRobotId } from "./types"
+import { verifyPeriodIdentity } from "./verifiers"
 
 const _log = createLogger("logDirectory.parsePeriod")
 
-export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> {
+export async function parsePeriod(
+  entry: Dirent,
+  knownIdentities: BlessedRobotId[],
+): Promise<LogPeriodFile | null> {
   const _msg = (message: string): string =>
     `parsing ${path.join(entry.parentPath, entry.name)}: ${message}`
   const log = {
@@ -46,7 +50,7 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
     if (file.type === "Directory") {
       log.warning(`Ignoring directory ${file.path} in zip`)
       continue
-    } else if (file.path == "log_period.json") {
+    } else if (file.path === "log_period.json") {
       const fileBuffer = await file.buffer()
       try {
         const document = JSON.parse(fileBuffer.toString("utf-8"))
@@ -61,7 +65,7 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
         log.error(`error parsing log period: ${err}`)
         throw err
       }
-    } else if (file.path == "robot_identity.json") {
+    } else if (file.path === "robot_identity.json") {
       try {
         const identityFile = await file.buffer()
         const identityFileParsed = JSON.parse(identityFile.toString("utf-8"))
@@ -73,7 +77,7 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
       } catch (err: any) {
         log.error(`Failed to parse robot id: ${err}`)
       }
-    } else if (file.path == "signing_key.pem") {
+    } else if (file.path === "signing_key.pem") {
       periodZip.publicKey = crypto.createPublicKey(await file.buffer())
       lookingFor = omit(lookingFor, "signing_key.pem")
     } else {
@@ -83,5 +87,15 @@ export async function parsePeriod(entry: Dirent): Promise<LogPeriodFile | null> 
   if (lookingFor.length > 0) {
     throw new Error(`Missing from ${zipPath}: ${lookingFor.join(", ")}`)
   }
-  return periodZip as LogPeriodFile
+  const validatedPeriod = periodZip as LogPeriodFile
+  const { robotId, identityConsistency } = verifyPeriodIdentity(
+    validatedPeriod.robotId,
+    validatedPeriod.publicKey,
+    knownIdentities,
+  )
+  return {
+    ...validatedPeriod,
+    identityConsistency,
+    robotId,
+  }
 }

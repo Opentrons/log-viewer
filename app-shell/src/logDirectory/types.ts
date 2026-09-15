@@ -71,10 +71,11 @@ export interface LogPeriodFile {
         status: "consistent"
         validatedIdentityPath: string
       }
-    | { status: "inconsistent"; validatedIdentityPath: string | null }
+    | { status: "inconsistent"; reason: "inconsistent-id" }
+    | { status: "inconsistent"; reason: "no-matched-id" }
 }
 
-interface BlessedRobotId extends RobotId {
+export interface BlessedRobotId extends RobotIdParsed {
   filePath: string
 }
 
