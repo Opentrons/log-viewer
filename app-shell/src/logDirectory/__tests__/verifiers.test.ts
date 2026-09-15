@@ -3,16 +3,16 @@ import { promisify } from "util"
 
 import { describe, it, expect } from "vitest"
 
-import { verifyMessage } from "../verifiers"
+import { verifyMessage, verifyPeriodIdentity } from "../verifiers"
 
 const promisifiedGenerate = promisify(generateKeyPair)
 const promisifiedSign = promisify(sign)
 
-describe("verifyMessage", () => {
+describe("verifyMessage", async () => {
+  const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
+    modulusLength: 256,
+  })
   it("should verify a valid message non-sequentially", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const message = "how do you do, fellow kids"
     const messageHash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(null, messageHash, privateKey)
@@ -29,9 +29,6 @@ describe("verifyMessage", () => {
     ).toEqual({ ok: true })
   })
   it("should verify a valid sequential message", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const previousMessage = "here is a previous message"
     const previousHash = hash("sha256", previousMessage, "buffer")
     const message = "how do you do, fellow kids"
@@ -52,9 +49,6 @@ describe("verifyMessage", () => {
     ).toEqual({ ok: true })
   })
   it("should forward crypto parse errors", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const message = "how do you do, fellow kids"
     const messageHash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(null, messageHash, privateKey)
@@ -76,9 +70,6 @@ describe("verifyMessage", () => {
     })
   })
   it("should fail a message if it has an invalid hash", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const message = "how do you do, fellow kids"
     const messageHash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(null, messageHash, privateKey)
@@ -124,9 +115,6 @@ describe("verifyMessage", () => {
   })
 
   it("should fail a message if it has an invalid signature", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const message = "how do you do, fellow kids"
     const messageHash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(null, messageHash, privateKey)
@@ -147,9 +135,6 @@ describe("verifyMessage", () => {
   })
 
   it("should fail a message if it has a bad signature", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const message = "how do you do, fellow kids"
     const messageHash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(
@@ -170,9 +155,6 @@ describe("verifyMessage", () => {
     ).toEqual({ ok: false, reason: "signature-mismatch" })
   })
   it("should fail a message if it has a bad sequential signature", async () => {
-    const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
-      modulusLength: 256,
-    })
     const previousMessage = "this one was first"
     const previousHash = hash("sha256", previousMessage, "buffer")
     const message = "how do you do, fellow kids"
@@ -194,5 +176,89 @@ describe("verifyMessage", () => {
         previousHash,
       ),
     ).toEqual({ ok: false, reason: "signature-mismatch" })
+  })
+})
+
+describe("verifyPeriodIdentity", async () => {
+  const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
+    modulusLength: 256,
+  })
+  const pubkeyHash = hash("sha256", publicKey.export({ format: "pem", type: "spki" }), "buffer")
+  it("should verify a valid robot file with a known identity", async () => {
+    const robotId = {
+      robot_name: "steve",
+      robot_serial: "1234567",
+      public_hash: `sha256:${pubkeyHash.toString("base64url")}`,
+    }
+    const blessedRobotId = {
+      robot_name: "steve",
+      robot_serial: "1234567",
+      public_hash: `sha256:${pubkeyHash.toString("base64url")}`,
+    }
+    const robotIdHash = hash("sha256", JSON.stringify(robotId), "buffer")
+    const robotIdSig = await promisifiedSign(null, robotIdHash, privateKey)
+    const signedId = {
+      message: JSON.stringify(robotId),
+      messageHash: `sha256:${robotIdHash.toString("base64url")}`,
+      messageSignature: `ed25519:${robotIdSig.toString("base64url")}`,
+      signatureVersion: 1,
+    }
+    expect(
+      verifyPeriodIdentity({ parsed: robotId, raw: signedId, consistencyFailures: [] }, publicKey, [
+        { ...blessedRobotId, filePath: "/my/path.json" },
+      ]),
+    ).toEqual({
+      robotId: { parsed: robotId, raw: signedId, consistencyFailures: [] },
+      identityConsistency: { status: "consistent", validatedIdentityPath: "/my/path.json" },
+    })
+  })
+  it("should identify a valid robot file with an unknown identity", async () => {
+    const robotId = {
+      robot_name: "steve",
+      robot_serial: "1234567",
+      public_hash: `sha256:${pubkeyHash.toString("base64url")}`,
+    }
+    const blessedRobotId = {
+      robot_name: "steve0",
+      robot_serial: "123456788",
+      public_hash: `sha256:${pubkeyHash.toString("base64url")}`,
+    }
+    const robotIdHash = hash("sha256", JSON.stringify(robotId), "buffer")
+    const robotIdSig = await promisifiedSign(null, robotIdHash, privateKey)
+    const signedId = {
+      message: JSON.stringify(robotId),
+      messageHash: `sha256:${robotIdHash.toString("base64url")}`,
+      messageSignature: `ed25519:${robotIdSig.toString("base64url")}`,
+      signatureVersion: 1,
+    }
+    expect(
+      verifyPeriodIdentity({ parsed: robotId, raw: signedId, consistencyFailures: [] }, publicKey, [
+        { ...blessedRobotId, filePath: "/my/path.json" },
+      ]),
+    ).toEqual({
+      robotId: { parsed: robotId, raw: signedId, consistencyFailures: [] },
+      identityConsistency: { status: "inconsistent", reason: "no-matched-id" },
+    })
+  })
+  it("should identify a period with an invalid id", async () => {
+    const robotId = {
+      robot_name: "steve",
+      robot_serial: "1234567",
+      public_hash: `sha256:i want this stable thanks`,
+    }
+    const robotIdHash = hash("sha256", "wait this isnt what im supposed to be hashing", "buffer")
+    const robotIdSig = await promisifiedSign(null, robotIdHash, privateKey)
+    const signedId = {
+      message: JSON.stringify(robotId),
+      messageHash: `sha256:${robotIdHash.toString("base64url")}`,
+      messageSignature: `ed25519:${robotIdSig.toString("base64url")}`,
+      signatureVersion: 1,
+    }
+    expect(
+      verifyPeriodIdentity({ parsed: robotId, raw: signedId, consistencyFailures: [] }, publicKey, []),
+    ).toEqual({
+      robotId: { parsed: robotId, raw: signedId, consistencyFailures: [{reason: 'hash-mismatch', "actualHash": "OBdfoDbwCvOn41-6ab4GDZI9nUkrKmNisWped23GaOc",}] },
+      identityConsistency: { status: "inconsistent", reason: "inconsistent-id" },
+    })
   })
 })

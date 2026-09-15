@@ -1,9 +1,11 @@
 import type { KeyObject } from "crypto"
 import { hash, verify } from "crypto"
 
+import { omit } from "lodash"
+
 import type { SignedMessage } from "./filetypes"
 import { parseCryptoIdentifier } from "./parsers"
-import type { MessageConsistencyFailure } from "./types"
+import type { MessageConsistencyFailure, LogPeriodFile, BlessedRobotId, RobotId } from "./types"
 
 export function verifyMessage(
   message: SignedMessage,
@@ -57,6 +59,47 @@ function checkCryptoId<CryptoId extends string>(
       ok: false,
       reason: "bad-crypto-id",
       failure: `Crypto id for ${line} could not be parsed: ${err.message}`,
+    }
+  }
+}
+
+export function verifyPeriodIdentity(
+  robotId: RobotId,
+  key: KeyObject,
+  knownRobots: BlessedRobotId[],
+): {
+  robotId: RobotId
+  identityConsistency: LogPeriodFile["identityConsistency"]
+} {
+  const idResult = verifyMessage(robotId.raw, key)
+  if (idResult.ok) {
+    const matchingIdentity = knownRobots.find(
+      (blessedId) =>
+        blessedId.robot_name === robotId.parsed.robot_name &&
+        blessedId.public_hash === robotId.parsed.public_hash,
+    )
+    if (matchingIdentity == null) {
+      return {
+        robotId: {
+          ...robotId,
+          consistencyFailures: [],
+        },
+        identityConsistency: { status: "inconsistent", reason: "no-matched-id" },
+      }
+    } else {
+      return {
+        robotId: { ...robotId, consistencyFailures: [] },
+        identityConsistency: {
+          status: "consistent",
+          validatedIdentityPath: matchingIdentity.filePath,
+        },
+      }
+    }
+  } else {
+    return {
+      // @ts-expect-error something is erasing the object union here
+      robotId: { ...robotId, consistencyFailures: [{ ...omit(idResult, "ok") }] },
+      identityConsistency: { status: "inconsistent", reason: "inconsistent-id" },
     }
   }
 }

@@ -15,7 +15,7 @@ export function buildScanDirectory(
     dispatch({ type: "logDirectory/directoryScanStart" })
     for await (const entry of walk(path)) {
       parses.push(
-        parsePeriod(entry)
+        parsePeriod(entry, [])
           .then((maybeFile) => {
             if (maybeFile == null) {
               return

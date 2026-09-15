@@ -41,9 +41,32 @@ export interface LogPeriodFile {
   startDate: string
   endDate: string
   logCount: number
+  internalConsistency:
+    | { status: "consistent" }
+    | {
+        status: "inconsistent"
+        cause: "bad-robot-id"
+      }
+    | {
+        status: "inconsistent"
+        cause: "bad-log-line"
+      }
+  sequentialConsistency:
+    | {
+        status: "consistent"
+        previousPeriodPath: string
+      }
+    | { status: "inconsistent"; datePreviousPeriodPath: string | null }
+  identityConsistency:
+    | {
+        status: "consistent"
+        validatedIdentityPath: string
+      }
+    | { status: "inconsistent"; reason: "inconsistent-id" }
+    | { status: "inconsistent"; reason: "no-matched-id" }
 }
 
-interface BlessedRobotId extends RobotId {
+export interface BlessedRobotId extends RobotIdParsed {
   filePath: string
 }
 
