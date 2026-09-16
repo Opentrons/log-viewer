@@ -71,8 +71,11 @@ export async function parsePeriod(
         const identityFileParsed = JSON.parse(identityFile.toString("utf-8"))
         const idRaw = parseSignedMessage(identityFileParsed)
         const payload = parseRobotId(JSON.parse(idRaw.message))
-
-        periodZip.robotId = { parsed: { ...payload }, raw: idRaw }
+        periodZip.robotId = {
+          parsed: { ...payload },
+          raw: idRaw,
+          internalConsistency: { status: "unverified" },
+        }
         lookingFor = omit(lookingFor, "robot_identity.json")
       } catch (err: any) {
         log.error(`Failed to parse robot id: ${err}`)
@@ -96,6 +99,8 @@ export async function parsePeriod(
   return {
     ...validatedPeriod,
     identityConsistency,
+    sequentialConsistency: { status: "unverified" },
+    internalConsistency: { status: "unverified" },
     robotId,
   }
 }

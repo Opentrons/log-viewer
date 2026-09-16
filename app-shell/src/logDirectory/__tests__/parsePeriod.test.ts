@@ -25,11 +25,11 @@ describe("parsePeriod happy path", () => {
       softwareVersions: [],
       associatedProtocols: [],
       identityConsistency: {
-        reason: "no-matched-id",
+        type: "no-target",
         status: "inconsistent",
       },
       robotId: {
-        consistencyFailures: [],
+        internalConsistency: { status: "consistent" },
         parsed: {
           public_hash: "sha256:Ze1WMVbkhBYhILfGAne5G7ir63kJUbtDPcf4CaHnGUw=",
           robot_name: "BornAgainArtinold",
@@ -44,6 +44,8 @@ describe("parsePeriod happy path", () => {
           signatureVersion: 1,
         },
       },
+      sequentialConsistency: { status: "unverified" },
+      internalConsistency: { status: "unverified" },
       publicKey: expect.any(KeyObject),
       startDate: "2026-08-20T20:34:18.573005Z",
       endDate: "2026-08-20T20:36:54.001886Z",
@@ -62,11 +64,11 @@ describe("parsePeriod happy path", () => {
       softwareVersions: ["10.0.0-alpha.7"],
       associatedProtocols: [],
       identityConsistency: {
-        reason: "no-matched-id",
+        type: "no-target",
         status: "inconsistent",
       },
       robotId: {
-        consistencyFailures: [],
+        internalConsistency: { status: "consistent" },
         parsed: {
           public_hash: "sha256:Xdp3lMOj_dLyafc7QQTB4ir8-N9g8aozPEPV-xQ7x_o=",
           robot_name: "FourBot",
@@ -81,6 +83,8 @@ describe("parsePeriod happy path", () => {
           signatureVersion: 1,
         },
       },
+      sequentialConsistency: { status: "unverified" },
+      internalConsistency: { status: "unverified" },
       publicKey: expect.any(KeyObject),
       startDate: "2026-09-04T14:59:29.775386Z",
       endDate: "2026-09-04T15:23:41.789874Z",
@@ -96,7 +100,7 @@ describe("parsePeriod happy path", () => {
     expect(found).not.toBeUndefined()
     expect(await parsePeriod(found, [])).toStrictEqual({
       identityConsistency: {
-        reason: "no-matched-id",
+        type: "no-target",
         status: "inconsistent",
       },
       periodZip: path.join(found.parentPath, found.name),
@@ -104,7 +108,7 @@ describe("parsePeriod happy path", () => {
       softwareVersions: ["10.0.0-alpha.7"],
       associatedProtocols: ["whatever"],
       robotId: {
-        consistencyFailures: [],
+        internalConsistency: { status: "consistent" },
         parsed: {
           public_hash: "sha256:Xdp3lMOj_dLyafc7QQTB4ir8-N9g8aozPEPV-xQ7x_o=",
           robot_name: "FourBot",
@@ -119,6 +123,8 @@ describe("parsePeriod happy path", () => {
           signatureVersion: 1,
         },
       },
+      sequentialConsistency: { status: "unverified" },
+      internalConsistency: { status: "unverified" },
       publicKey: expect.any(KeyObject),
       startDate: "2026-09-04T17:51:28.055775Z",
       endDate: "2026-09-04T17:53:21.584842Z",
@@ -143,11 +149,11 @@ describe("parsePeriod happy path", () => {
       softwareVersions: [],
       associatedProtocols: [],
       identityConsistency: {
-        validatedIdentityPath: path.join(fixturesPath, "ComplianceReady.json"),
+        attestedIdentityPath: path.join(fixturesPath, "ComplianceReady.json"),
         status: "consistent",
       },
       robotId: {
-        consistencyFailures: [],
+        internalConsistency: { status: "consistent" },
         parsed: {
           public_hash: "sha256:Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=",
           robot_name: "ComplianceReady",
@@ -162,6 +168,8 @@ describe("parsePeriod happy path", () => {
           signatureVersion: 1,
         },
       },
+      sequentialConsistency: { status: "unverified" },
+      internalConsistency: { status: "unverified" },
       publicKey: expect.any(KeyObject),
       startDate: "2026-08-24T19:37:43.791395Z",
       endDate: "2026-08-24T19:45:56.655466Z",

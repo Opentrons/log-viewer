@@ -34,8 +34,9 @@ export function buildScanDirectory(
                 filePath: maybeFile.periodZip,
                 period: {
                   scanStatus: "not-started",
-                  internalConsistency: "unverified",
-                  attestationConsistency: "unverified",
+                  internalConsistency: maybeFile.internalConsistency,
+                  attestationConsistency: maybeFile.identityConsistency,
+                  sequentialConsistency: maybeFile.sequentialConsistency,
                   endDate: maybeFile.endDate,
                   startDate: maybeFile.startDate,
                   associatedFiles: maybeFile.associatedFiles,

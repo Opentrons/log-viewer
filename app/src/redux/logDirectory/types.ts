@@ -1,35 +1,43 @@
 export type InternalConsistencyError =
   | { type: "hash-mismatch"; contentHash: string }
-  | { type: "signature-mismatch" }
-  | { type: "unknown-signature-version" }
+  | { type: "signature-mismatch"; failure: string }
+  | { type: "unknown-signature-version"; failure: string }
+  | { type: "invalid-hash"; failure: string }
+  | { type: "bad-crypto-id"; failure: string }
+  | { type: "invalid-signature"; failure: string }
 export type AttestationConsistencyError =
   | {
       type: "mismatch"
     }
   | { type: "no-target" }
+  | { type: "internally-inconsistent" }
 
-export type Consistency<TErrors, TValid = void> =
+export type Consistency<TErrors, TValid = {}> =
   | { status: "unverified" }
   | ({ status: "consistent" } & TValid)
   | ({ status: "inconsistent" } & TErrors)
+
+export type InternalConsistency = Consistency<InternalConsistencyError>
+export type AttestationConsistency = Consistency<
+  AttestationConsistencyError,
+  { attestedIdentityPath: string }
+>
+export type SequentialConsistency = Consistency<
+  InternalConsistencyError,
+  { previousPeriod: string }
+>
 
 export interface RobotId {
   name: string
   publicKeyHash: string
   serial: string
-  internalConsistency: Consistency<{ errors: InternalConsistencyError[] }>
+  internalConsistency: InternalConsistency
 }
 export interface LogPeriod {
   scanStatus: "done" | "not-started" | "ongoing"
-  internalConsistency: Consistency<{ failingLines: number[] }>
-  attestationConsistency: Consistency<
-    { errors: AttestationConsistencyError[] },
-    { attestedIdentityPath: string }
-  >
-  sequentialConsistency: Consistency<
-    { errors: InternalConsistencyError[] },
-    { previousPeriod: string }
-  >
+  internalConsistency: InternalConsistency
+  attestationConsistency: AttestationConsistency
+  sequentialConsistency: SequentialConsistency
   endDate: string
   startDate: string
   associatedFiles: string[]
@@ -54,7 +62,7 @@ export interface LogLine {
     message: string
     userNote: string
   }
-  consistency: Consistency<{ errors: InternalConsistencyError[] }>
+  internalConsistency: InternalConsistency
   id: number
 }
 

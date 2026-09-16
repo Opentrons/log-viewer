@@ -9,7 +9,7 @@ export async function parseLines(path: string): Promise<LogLine[]> {
   if (logPeriod == null) {
     throw new Error("Failed to find log_period.json in log zip")
   }
-  const periodBuffer = await logPeriod.buffer()
+  const periodBuffer = await logPeriod.buffer()y
   const document = JSON.parse(periodBuffer.toString("utf-8"))
   return [
     // oxlint-disable-next-line no-useless-spread this reifies an iterator to an array
@@ -27,6 +27,7 @@ export async function parseLines(path: string): Promise<LogLine[]> {
             loggedAt: messagePayload.loggedAt,
           },
           id: index,
+          internalConsistency: { status: "unverified" } as const,
         }
       } catch (err: any) {
         throw new Error(`Error parsing log line ${index}: ${err.message}`)

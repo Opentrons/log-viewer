@@ -1,6 +1,19 @@
 import type { KeyObject } from "crypto"
 
+import type {
+  InternalConsistency,
+  AttestationConsistency,
+  SequentialConsistency,
+} from "@log-verifier/app/src/redux/logDirectory/types"
 import type { Dispatch } from "@log-verifier/app/src/redux/store"
+
+export type {
+  InternalConsistency,
+  AttestationConsistency,
+  SequentialConsistency,
+  AttestationConsistencyError,
+  InternalConsistencyError,
+} from "@log-verifier/app/src/redux/logDirectory/types"
 
 import type { SignedMessage } from "./filetypes"
 
@@ -29,6 +42,7 @@ export interface RobotIdParsed {
 export interface RobotId {
   parsed: RobotIdParsed
   raw: SignedMessage
+  internalConsistency: InternalConsistency
 }
 
 export interface LogPeriodFile {
@@ -41,29 +55,9 @@ export interface LogPeriodFile {
   startDate: string
   endDate: string
   logCount: number
-  internalConsistency:
-    | { status: "consistent" }
-    | {
-        status: "inconsistent"
-        cause: "bad-robot-id"
-      }
-    | {
-        status: "inconsistent"
-        cause: "bad-log-line"
-      }
-  sequentialConsistency:
-    | {
-        status: "consistent"
-        previousPeriodPath: string
-      }
-    | { status: "inconsistent"; datePreviousPeriodPath: string | null }
-  identityConsistency:
-    | {
-        status: "consistent"
-        validatedIdentityPath: string
-      }
-    | { status: "inconsistent"; reason: "inconsistent-id" }
-    | { status: "inconsistent"; reason: "no-matched-id" }
+  internalConsistency: InternalConsistency
+  sequentialConsistency: SequentialConsistency
+  identityConsistency: AttestationConsistency
 }
 
 export interface BlessedRobotId extends RobotIdParsed {
@@ -78,6 +72,8 @@ export interface LogLine {
     legalName: string
     message: string
     userNote: string
+    loggedAt: string
   }
   id: number
+  internalConsistency: InternalConsistency
 }

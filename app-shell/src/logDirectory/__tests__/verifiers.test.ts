@@ -26,7 +26,7 @@ describe("verifyMessage", async () => {
         },
         publicKey,
       ),
-    ).toEqual({ ok: true })
+    ).toEqual({ status: "consistent" })
   })
   it("should verify a valid sequential message", async () => {
     const previousMessage = "here is a previous message"
@@ -46,7 +46,7 @@ describe("verifyMessage", async () => {
         publicKey,
         previousHash,
       ),
-    ).toEqual({ ok: true })
+    ).toEqual({ status: "consistent" })
   })
   it("should forward crypto parse errors", async () => {
     const message = "how do you do, fellow kids"
@@ -63,8 +63,8 @@ describe("verifyMessage", async () => {
         publicKey,
       ),
     ).toEqual({
-      ok: false,
-      reason: "invalid-hash",
+      status: "inconsistent",
+      type: "invalid-hash",
       failure:
         "Crypto id for khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls could not be parsed: Incorrect formatting of crypto specification: must be with cryptoName:value but is khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls",
     })
@@ -84,8 +84,8 @@ describe("verifyMessage", async () => {
         publicKey,
       ),
     ).toEqual({
-      ok: false,
-      reason: "invalid-hash",
+      status: "inconsistent",
+      type: "invalid-hash",
       failure:
         "Crypto id for sha1:khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls must be sha256 but is sha1",
     })
@@ -108,9 +108,9 @@ describe("verifyMessage", async () => {
         publicKey,
       ),
     ).toEqual({
-      ok: false,
-      reason: "hash-mismatch",
-      actualHash: "YD5aBUE3B3NrXeSl60yUOCld9hBVJXQbQqLutUpx888",
+      status: "inconsistent",
+      type: "hash-mismatch",
+      contentHash: "YD5aBUE3B3NrXeSl60yUOCld9hBVJXQbQqLutUpx888",
     })
   })
 
@@ -128,8 +128,8 @@ describe("verifyMessage", async () => {
       publicKey,
     )
     expect(verifyResult).toEqual({
-      ok: false,
-      reason: "invalid-signature",
+      status: "inconsistent",
+      type: "invalid-signature",
       failure: expect.stringMatching(/Crypto id for rsa:.* must be ed25519 but is rsa/),
     })
   })
@@ -152,7 +152,11 @@ describe("verifyMessage", async () => {
         },
         publicKey,
       ),
-    ).toEqual({ ok: false, reason: "signature-mismatch" })
+    ).toEqual({
+      status: "inconsistent",
+      type: "signature-mismatch",
+      failure: "The message was not properly signed by the associated key.",
+    })
   })
   it("should fail a message if it has a bad sequential signature", async () => {
     const previousMessage = "this one was first"
@@ -175,7 +179,11 @@ describe("verifyMessage", async () => {
         publicKey,
         previousHash,
       ),
-    ).toEqual({ ok: false, reason: "signature-mismatch" })
+    ).toEqual({
+      status: "inconsistent",
+      type: "signature-mismatch",
+      failure: "The message was not properly signed by the associated key.",
+    })
   })
 })
 
@@ -204,12 +212,14 @@ describe("verifyPeriodIdentity", async () => {
       signatureVersion: 1,
     }
     expect(
-      verifyPeriodIdentity({ parsed: robotId, raw: signedId, consistencyFailures: [] }, publicKey, [
-        { ...blessedRobotId, filePath: "/my/path.json" },
-      ]),
+      verifyPeriodIdentity(
+        { parsed: robotId, raw: signedId, internalConsistency: { status: "unverified" } },
+        publicKey,
+        [{ ...blessedRobotId, filePath: "/my/path.json" }],
+      ),
     ).toEqual({
-      robotId: { parsed: robotId, raw: signedId, consistencyFailures: [] },
-      identityConsistency: { status: "consistent", validatedIdentityPath: "/my/path.json" },
+      robotId: { parsed: robotId, raw: signedId, internalConsistency: { status: "consistent" } },
+      identityConsistency: { status: "consistent", attestedIdentityPath: "/my/path.json" },
     })
   })
   it("should identify a valid robot file with an unknown identity", async () => {
@@ -232,12 +242,14 @@ describe("verifyPeriodIdentity", async () => {
       signatureVersion: 1,
     }
     expect(
-      verifyPeriodIdentity({ parsed: robotId, raw: signedId, consistencyFailures: [] }, publicKey, [
-        { ...blessedRobotId, filePath: "/my/path.json" },
-      ]),
+      verifyPeriodIdentity(
+        { parsed: robotId, raw: signedId, internalConsistency: { status: "unverified" } },
+        publicKey,
+        [{ ...blessedRobotId, filePath: "/my/path.json" }],
+      ),
     ).toEqual({
-      robotId: { parsed: robotId, raw: signedId, consistencyFailures: [] },
-      identityConsistency: { status: "inconsistent", reason: "no-matched-id" },
+      robotId: { parsed: robotId, raw: signedId, internalConsistency: { status: "consistent" } },
+      identityConsistency: { status: "inconsistent", type: "no-target" },
     })
   })
   it("should identify a period with an invalid id", async () => {
@@ -255,10 +267,22 @@ describe("verifyPeriodIdentity", async () => {
       signatureVersion: 1,
     }
     expect(
-      verifyPeriodIdentity({ parsed: robotId, raw: signedId, consistencyFailures: [] }, publicKey, []),
+      verifyPeriodIdentity(
+        { parsed: robotId, raw: signedId, internalConsistency: { status: "unverified" } },
+        publicKey,
+        [],
+      ),
     ).toEqual({
-      robotId: { parsed: robotId, raw: signedId, consistencyFailures: [{reason: 'hash-mismatch', "actualHash": "OBdfoDbwCvOn41-6ab4GDZI9nUkrKmNisWped23GaOc",}] },
-      identityConsistency: { status: "inconsistent", reason: "inconsistent-id" },
+      robotId: {
+        parsed: robotId,
+        raw: signedId,
+        internalConsistency: {
+          status: "inconsistent",
+          type: "hash-mismatch",
+          contentHash: "OBdfoDbwCvOn41-6ab4GDZI9nUkrKmNisWped23GaOc",
+        },
+      },
+      identityConsistency: { status: "inconsistent", type: "internally-inconsistent" },
     })
   })
 })

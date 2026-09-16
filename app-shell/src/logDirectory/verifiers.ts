@@ -1,32 +1,38 @@
 import type { KeyObject } from "crypto"
 import { hash, verify } from "crypto"
 
-import { omit } from "lodash"
-
 import type { SignedMessage } from "./filetypes"
 import { parseCryptoIdentifier } from "./parsers"
-import type { MessageConsistencyFailure, LogPeriodFile, BlessedRobotId, RobotId } from "./types"
+import type { InternalConsistency, AttestationConsistency, BlessedRobotId, RobotId } from "./types"
 
 export function verifyMessage(
   message: SignedMessage,
   key: KeyObject,
   previousHash?: Buffer,
-): ({ ok: false } & MessageConsistencyFailure) | { ok: true } {
+): InternalConsistency {
   const hashDetails = checkCryptoId(message.messageHash, "sha256")
   if (!hashDetails.ok) {
-    return { ok: false, reason: "invalid-hash", failure: hashDetails.failure }
+    return { status: "inconsistent", type: "invalid-hash", failure: hashDetails.failure }
   }
   const hashBytes = Buffer.from(hashDetails.content, "base64url")
   const actualHash = hash(hashDetails.cryptoId, message.message, "buffer")
   if (!actualHash.equals(hashBytes)) {
-    return { ok: false, reason: "hash-mismatch", actualHash: actualHash.toString("base64url") }
+    return {
+      status: "inconsistent",
+      type: "hash-mismatch",
+      contentHash: actualHash.toString("base64url"),
+    }
   }
   const sigDetails = checkCryptoId(message.messageSignature, "ed25519")
   if (!sigDetails.ok) {
-    return { ok: false, reason: "invalid-signature", failure: sigDetails.failure }
+    return { status: "inconsistent", type: "invalid-signature", failure: sigDetails.failure }
   }
   if (message.signatureVersion !== 1) {
-    return { ok: false, reason: "bad-signature-version" }
+    return {
+      status: "inconsistent",
+      type: "unknown-signature-version",
+      failure: `Log Verifier cannot handle logs signed with signature version ${message.signatureVersion}`,
+    }
   }
   const sigBuffer = Buffer.from(sigDetails.content, "base64url")
   const verifyResult = verify(
@@ -35,7 +41,13 @@ export function verifyMessage(
     key,
     sigBuffer,
   )
-  return verifyResult ? { ok: true } : { ok: false, reason: "signature-mismatch" }
+  return verifyResult
+    ? { status: "consistent" }
+    : {
+        status: "inconsistent",
+        type: "signature-mismatch",
+        failure: "The message was not properly signed by the associated key.",
+      }
 }
 
 function checkCryptoId<CryptoId extends string>(
@@ -69,10 +81,10 @@ export function verifyPeriodIdentity(
   knownRobots: BlessedRobotId[],
 ): {
   robotId: RobotId
-  identityConsistency: LogPeriodFile["identityConsistency"]
+  identityConsistency: AttestationConsistency
 } {
   const idResult = verifyMessage(robotId.raw, key)
-  if (idResult.ok) {
+  if (idResult.status === "consistent") {
     const matchingIdentity = knownRobots.find(
       (blessedId) =>
         blessedId.robot_name === robotId.parsed.robot_name &&
@@ -82,24 +94,23 @@ export function verifyPeriodIdentity(
       return {
         robotId: {
           ...robotId,
-          consistencyFailures: [],
+          internalConsistency: idResult,
         },
-        identityConsistency: { status: "inconsistent", reason: "no-matched-id" },
+        identityConsistency: { status: "inconsistent", type: "no-target" },
       }
     } else {
       return {
-        robotId: { ...robotId, consistencyFailures: [] },
+        robotId: { ...robotId, internalConsistency: idResult },
         identityConsistency: {
           status: "consistent",
-          validatedIdentityPath: matchingIdentity.filePath,
+          attestedIdentityPath: matchingIdentity.filePath,
         },
       }
     }
   } else {
     return {
-      // @ts-expect-error something is erasing the object union here
-      robotId: { ...robotId, consistencyFailures: [{ ...omit(idResult, "ok") }] },
-      identityConsistency: { status: "inconsistent", reason: "inconsistent-id" },
+      robotId: { ...robotId, internalConsistency: idResult },
+      identityConsistency: { status: "inconsistent", type: "internally-inconsistent" },
     }
   }
 }

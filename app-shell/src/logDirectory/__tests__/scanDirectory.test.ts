@@ -24,7 +24,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_34_18.573005Z.zip"),
             period: {
               associatedFiles: ["asp_disp_96_2026-08-20T20_34_58.383Z.json"],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-20T20:36:54.001886Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -50,7 +50,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-21T14_55_40.417815Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T17:17:11.092490Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -76,7 +76,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-24T15_57_30.111933Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T16:04:32.385812Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -102,7 +102,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-24T15_18_38.176148Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T15:57:29.966634Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -128,7 +128,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_39_22.907267Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-21T14:55:40.286623Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -154,7 +154,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-24T19_37_43.791395Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T19:45:56.655466Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -180,7 +180,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_42_16.714601Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T19:37:43.326662Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -206,7 +206,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-25T20_00_49.424927Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T20:59:12.321683Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -232,7 +232,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-25T17_17_11.194276Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T19:00:38.187415Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -258,7 +258,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-25T15_35_20.709482Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T15:43:26.168888Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -284,7 +284,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_31_30.960544Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: null,
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -310,7 +310,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-24T19_45_56.706329Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T14:29:00.514942Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -336,7 +336,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-25T19_00_38.301799Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T20:00:48.958691Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -362,7 +362,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-25T21_13_46.219267Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: null,
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -388,7 +388,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_12_26.097145Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-26T20:20:26.985422Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -414,7 +414,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_04_32.489243Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T16:11:07.590070Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -440,7 +440,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_36_54.051806Z.zip"),
             period: {
               associatedFiles: ["asp_disp_96_2026-08-20T20_38_25.093Z.json"],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-20T20:39:22.882376Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -468,7 +468,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB_with_better_errors_2026-08-24T15_16_17.505Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T15:18:38.104546Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -496,7 +496,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__walk_usb_drive__2026-08-24T17_35_29.930Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T17:36:34.777712Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -524,7 +524,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-24T17_27_08.316Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T17:29:16.433677Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -552,7 +552,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB_better_usb_search_2026-08-24T16_26_57.776Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T16:34:33.503007Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -580,7 +580,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB_better_usb_search_2026-08-24T16_15_22.159Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T16:17:12.692342Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -608,7 +608,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-25T14_31_06.780Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T14:37:55.910697Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -636,7 +636,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-24T17_41_16.803Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T17:42:16.633604Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -662,7 +662,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-25T20_59_12.800184Z.zip"),
             period: {
               associatedFiles: ["Heat_Shock_and_Transfer_2026-08-25T21_02_29.564Z.json"],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T21:13:46.178735Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -690,7 +690,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__simple__2026-08-25T18_42_23.608Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-26T20:12:26.049483Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -718,7 +718,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__wheel__2026-08-25T15_33_57.353Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-25T15:35:20.675291Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -744,7 +744,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-09-04T17_51_28.055775Z.zip"),
             period: {
               associatedFiles: ["whatever_2026-09-04T17_52_32.663Z.json"],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-09-04T17:53:21.584842Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -770,7 +770,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-09-04T14_59_29.775386Z.zip"),
             period: {
               associatedFiles: [],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-09-04T15:23:41.789874Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -796,7 +796,7 @@ describe("scanDirectory", () => {
             filePath: path.join(fixturesPath, "logperiod_2026-08-21T20_31_28.456269Z.zip"),
             period: {
               associatedFiles: ["Library_Import_Proof_of_Concept_2026-08-24T14_52_35.312Z.json"],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-24T14:59:40.395954Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
@@ -824,7 +824,7 @@ describe("scanDirectory", () => {
               associatedFiles: [
                 "Install_mock_parser_from_USB__wheel__2026-08-26T20_30_15.123Z.json",
               ],
-              attestationConsistency: { status: "unverified" },
+              attestationConsistency: { status: "inconsistent", type: "no-target" },
               endDate: "2026-08-26T20:31:30.918793Z",
               internalConsistency: { status: "unverified" },
               sequentialConsistency: { status: "unverified" },
