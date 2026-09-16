@@ -1,15 +1,35 @@
-export type ConsistencyStatus = "unverified" | "consistent" | "inconsistent"
+export type InternalConsistencyError =
+  | { type: "hash-mismatch"; contentHash: string }
+  | { type: "signature-mismatch" }
+  | { type: "unknown-signature-version" }
+export type AttestationConsistencyError =
+  | {
+      type: "mismatch"
+    }
+  | { type: "no-target" }
+
+export type Consistency<TErrors, TValid = void> =
+  | { status: "unverified" }
+  | ({ status: "consistent" } & TValid)
+  | ({ status: "inconsistent" } & TErrors)
 
 export interface RobotId {
   name: string
   publicKeyHash: string
   serial: string
-  internalConsistency: ConsistencyStatus
+  internalConsistency: Consistency<{ errors: InternalConsistencyError[] }>
 }
 export interface LogPeriod {
   scanStatus: "done" | "not-started" | "ongoing"
-  internalConsistency: ConsistencyStatus
-  attestationConsistency: ConsistencyStatus
+  internalConsistency: Consistency<{ failingLines: number[] }>
+  attestationConsistency: Consistency<
+    { errors: AttestationConsistencyError[] },
+    { attestedIdentityPath: string }
+  >
+  sequentialConsistency: Consistency<
+    { errors: InternalConsistencyError[] },
+    { previousPeriod: string }
+  >
   endDate: string
   startDate: string
   associatedFiles: string[]
@@ -34,6 +54,7 @@ export interface LogLine {
     message: string
     userNote: string
   }
+  consistency: Consistency<{ errors: InternalConsistencyError[] }>
   id: number
 }
 
