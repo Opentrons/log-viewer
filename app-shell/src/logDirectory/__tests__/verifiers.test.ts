@@ -3,21 +3,21 @@ import { promisify } from "util"
 
 import { describe, it, expect } from "vitest"
 
-import { verifyMessage, verifyPeriodIdentity } from "../verifiers"
+import { verifyMessage, verifyPeriodIdentity, verifyRobotIdInternalConsistency } from "../verifiers"
 
 const promisifiedGenerate = promisify(generateKeyPair)
 const promisifiedSign = promisify(sign)
 
-describe("verifyMessage", async () => {
+describe("verifyRobotIdInternalConsistency", async () => {
   const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
     modulusLength: 256,
   })
-  it("should verify a valid message non-sequentially", async () => {
-    const message = "how do you do, fellow kids"
+  it("should pass the robot id properly formatted to verifyMessage", async () => {
+    const message = "asdasdasd"
     const messageHash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(null, messageHash, privateKey)
     expect(
-      verifyMessage(
+      verifyRobotIdInternalConsistency(
         {
           message,
           messageHash: `sha256:${messageHash.toString("base64url")}`,

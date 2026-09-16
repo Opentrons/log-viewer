@@ -15,7 +15,7 @@ export type {
   InternalConsistencyError,
 } from "@log-verifier/app/src/redux/logDirectory/types"
 
-import type { SignedMessage } from "./filetypes"
+import type { SignedMessage, RobotIdJson } from "./filetypes"
 
 export interface State {
   [robotName: string]: {
@@ -41,7 +41,7 @@ export interface RobotIdParsed {
 
 export interface RobotId {
   parsed: RobotIdParsed
-  raw: SignedMessage
+  raw: RobotIdJson
   internalConsistency: InternalConsistency
 }
 

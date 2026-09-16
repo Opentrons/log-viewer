@@ -1,9 +1,24 @@
 import type { KeyObject } from "crypto"
 import { hash, verify } from "crypto"
 
-import type { SignedMessage } from "./filetypes"
+import type { SignedMessage, RobotIdJson } from "./filetypes"
 import { parseCryptoIdentifier } from "./parsers"
 import type { InternalConsistency, AttestationConsistency, BlessedRobotId, RobotId } from "./types"
+
+export function verifyRobotIdInternalConsistency(
+  message: RobotIdJson,
+  key: KeyObject,
+): InternalConsistency {
+  return verifyMessage(
+    {
+      message: message.message,
+      message_hash: message.messageHash,
+      message_sig: message.messageSignature,
+      sig_version: message.signatureVersion,
+    },
+    key,
+  ).consistency
+}
 
 export function verifyMessage(
   message: SignedMessage,
@@ -83,7 +98,7 @@ export function verifyPeriodIdentity(
   robotId: RobotId
   identityConsistency: AttestationConsistency
 } {
-  const idResult = verifyMessage(robotId.raw, key)
+  const idResult = verifyRobotIdInternalConsistency(robotId.raw, key)
   if (idResult.status === "consistent") {
     const matchingIdentity = knownRobots.find(
       (blessedId) =>

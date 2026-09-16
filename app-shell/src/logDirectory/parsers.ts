@@ -1,21 +1,64 @@
 import path from "path"
 
-import type { SignedMessage, RobotIdPayload, LogMessage } from "./filetypes"
+import type {
+  SignedMessage,
+  RobotIdPayload,
+  LogMessage,
+  LogPeriodJson,
+  RobotIdJson,
+} from "./filetypes"
 export function parseSignedMessage(document: any): SignedMessage {
   if (typeof document?.message !== "string") {
-    throw new Error("Cannot parse signed message: message is not present")
+    throw new Error(
+      `Cannot parse signed message: message is not present in log line ${JSON.stringify(document)}`,
+    )
+  }
+  if (typeof document?.message_hash !== "string") {
+    throw new Error(
+      `Cannot parse signed message: hash is not present in log line ${JSON.stringify(document)}`,
+    )
+  }
+  if (typeof document?.message_sig !== "string") {
+    throw new Error(
+      `Cannot parse signed message: signature is not present in log line ${JSON.stringify(document)}`,
+    )
+  }
+  if (typeof document?.sig_version !== "string" && typeof document?.sig_version != "number") {
+    throw new Error(
+      `Cannot parse signed message: signature version is not present in log line ${JSON.stringify(document)}`,
+    )
+  }
+  return {
+    message: document.message,
+    message_hash: document.message_hash,
+    message_sig: document.message_sig,
+    sig_version: document.sig_version,
+  }
+}
+
+export function parseSignedRobotId(document: any): RobotIdJson {
+  if (typeof document?.message !== "string") {
+    throw new Error(
+      `Cannot parse signed message: message is not present in log line ${JSON.stringify(document)}`,
+    )
   }
   if (typeof document?.messageHash !== "string") {
-    throw new Error("Cannot parse signed message: hash is not present")
+    throw new Error(
+      `Cannot parse signed message: hash is not present in log line ${JSON.stringify(document)}`,
+    )
   }
   if (typeof document?.messageSignature !== "string") {
-    throw new Error("Cannot parse signed message: signature is not present")
+    throw new Error(
+      `Cannot parse signed message: signature is not present in log line ${JSON.stringify(document)}`,
+    )
   }
   if (
     typeof document?.signatureVersion !== "string" &&
     typeof document?.signatureVersion != "number"
   ) {
-    throw new Error("Cannot parse signed message: signature version is not present")
+    throw new Error(
+      `Cannot parse signed message: signature version is not present in log line ${JSON.stringify(document)}`,
+    )
   }
   return {
     message: document.message,
@@ -27,13 +70,19 @@ export function parseSignedMessage(document: any): SignedMessage {
 
 export function parseRobotId(document: any): RobotIdPayload {
   if (typeof document?.robot_name !== "string") {
-    throw new Error("Cannot parse robot ID: robot name is not present or misformatted")
+    throw new Error(
+      `Cannot parse robot ID: robot name is not present or misformatted in robot ID ${JSON.stringify(document)}`,
+    )
   }
   if (typeof document?.robot_serial !== "string") {
-    throw new Error("Cannot parse robot ID: robot serial is not present or misformatted")
+    throw new Error(
+      `Cannot parse robot ID: robot serial is not present or misformatted in robot ID ${JSON.stringify(document)}`,
+    )
   }
   if (typeof document?.public_hash !== "string") {
-    throw new Error("Cannot parse robot ID: public key hash is not present or misformatted")
+    throw new Error(
+      `Cannot parse robot ID: public key hash is not present or misformatted in robot ID ${JSON.stringify(document)}`,
+    )
   }
   return {
     robot_name: document.robot_name,
@@ -56,6 +105,29 @@ export function parseLogOverview(logLines: SignedMessage[]): {
     }
   }
   return { softwareVersions, associatedProtocols }
+}
+
+export function parseLogPeriodFile(document: any): LogPeriodJson {
+  if (typeof document?.startedAt !== "string") {
+    throw new Error("Cannot parse log start date: startedAt is not present or misformatted")
+  }
+  if (typeof document?.endedAt !== "string" && document?.endedAt !== null) {
+    throw new Error("Cannot parse log end date: endedAt is not present or misformatted")
+  }
+  if (!Array.isArray(document?.userLogEntries)) {
+    throw new Error("Cannot parse log entries: userLogEntries is not present or misformatted")
+  }
+  return {
+    startedAt: document.startedAt,
+    endedAt: document.endedAt,
+    userLogEntries: document.userLogEntries.map((line: any, index: number) => {
+      try {
+        return parseSignedMessage(line)
+      } catch (err: any) {
+        throw new Error(`Error in parsing line ${index}: ${err.message}`)
+      }
+    }),
+  }
 }
 
 function* logParseGenerator(
@@ -111,31 +183,29 @@ export function* parseUserLog(document: any): Generator<SignedMessage> {
     if (typeof line !== "object") {
       throw new Error(`Incorrect shape of log line ${index}`)
     }
-    const message = line.message
-    const messageHash = line.message_hash
-    const messageSignature = line.message_sig
-    const signatureVersion = line.sig_version
+    const message = line?.message
+    const message_hash = line?.message_hash
+    const message_sig = line?.message_sig
+    const sig_version = line?.sig_version
     if (typeof message !== "string") {
       throw new Error(`Incorrect type of log message at ${index}: ${typeof message}`)
     }
-    if (typeof messageHash !== "string") {
-      throw new Error(`Incorrect type of log message hash at ${index}: ${typeof messageHash}`)
+    if (typeof message_hash !== "string") {
+      throw new Error(`Incorrect type of log message hash at ${index}: ${typeof message_hash}`)
     }
-    if (typeof messageSignature !== "string") {
-      throw new Error(
-        `Incorrect type of log message signature at ${index}: ${typeof messageSignature}`,
-      )
+    if (typeof message_sig !== "string") {
+      throw new Error(`Incorrect type of log message signature at ${index}: ${typeof message_sig}`)
     }
-    if (typeof signatureVersion !== "string") {
+    if (typeof sig_version !== "string") {
       throw new Error(
-        `Incorrect type of log message signature version at ${index}: ${typeof signatureVersion}`,
+        `Incorrect type of log message signature version at ${index}: ${typeof sig_version}`,
       )
     }
     const result = {
       message,
-      messageHash,
-      messageSignature,
-      signatureVersion,
+      message_hash,
+      message_sig,
+      sig_version,
     }
     yield result
     index++
