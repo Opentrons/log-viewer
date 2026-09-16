@@ -24,44 +24,70 @@ export function verifyMessage(
   message: SignedMessage,
   key: KeyObject,
   previousHash?: Buffer,
-): InternalConsistency {
-  const hashDetails = checkCryptoId(message.messageHash, "sha256")
+): { consistency: InternalConsistency; actualHash: Buffer } {
+  const hashDetails = checkCryptoId(message.message_hash, "sha256")
+  const actualHash = hash(
+    hashDetails.ok ? hashDetails.cryptoId : "sha256",
+    message.message,
+    "buffer",
+  )
   if (!hashDetails.ok) {
-    return { status: "inconsistent", type: "invalid-hash", failure: hashDetails.failure }
-  }
-  const hashBytes = Buffer.from(hashDetails.content, "base64url")
-  const actualHash = hash(hashDetails.cryptoId, message.message, "buffer")
-  if (!actualHash.equals(hashBytes)) {
     return {
-      status: "inconsistent",
-      type: "hash-mismatch",
-      contentHash: actualHash.toString("base64url"),
+      consistency: {
+        status: "inconsistent",
+        type: "invalid-hash",
+        failure: hashDetails.failure,
+      },
+      actualHash,
     }
   }
-  const sigDetails = checkCryptoId(message.messageSignature, "ed25519")
+
+  if (!actualHash.equals(hashDetails.content)) {
+    return {
+      consistency: {
+        status: "inconsistent",
+        type: "hash-mismatch",
+        contentHash: actualHash.toString("base64url"),
+      },
+      actualHash,
+    }
+  }
+  const sigDetails = checkCryptoId(message.message_sig, "ed25519")
   if (!sigDetails.ok) {
-    return { status: "inconsistent", type: "invalid-signature", failure: sigDetails.failure }
-  }
-  if (message.signatureVersion !== 1) {
     return {
-      status: "inconsistent",
-      type: "unknown-signature-version",
-      failure: `Log Verifier cannot handle logs signed with signature version ${message.signatureVersion}`,
+      consistency: {
+        status: "inconsistent",
+        type: "invalid-signature",
+        failure: sigDetails.failure,
+      },
+      actualHash,
     }
   }
-  const sigBuffer = Buffer.from(sigDetails.content, "base64url")
+  if (message.sig_version !== 1) {
+    return {
+      consistency: {
+        status: "inconsistent",
+        type: "unknown-signature-version",
+        failure: `Log Verifier cannot handle logs signed with signature version ${message.sig_version}`,
+      },
+      actualHash,
+    }
+  }
   const verifyResult = verify(
     null,
-    previousHash != null ? Buffer.concat([previousHash, hashBytes]) : actualHash,
+    previousHash != null ? Buffer.concat([previousHash, hashDetails.content]) : actualHash,
     key,
-    sigBuffer,
+    sigDetails.content,
   )
   return verifyResult
-    ? { status: "consistent" }
+    ? { consistency: { status: "consistent" }, actualHash }
     : {
-        status: "inconsistent",
-        type: "signature-mismatch",
-        failure: "The message was not properly signed by the associated key.",
+        consistency: {
+          status: "inconsistent",
+          type: "signature-mismatch",
+          failure: "The message was not properly signed by the associated key.",
+        },
+        actualHash,
       }
 }
 
@@ -69,7 +95,7 @@ function checkCryptoId<CryptoId extends string>(
   line: string,
   id: CryptoId,
 ):
-  | { ok: true; cryptoId: CryptoId; content: string }
+  | { ok: true; cryptoId: CryptoId; content: Buffer }
   | { ok: false; reason: "bad-crypto-id"; failure: string } {
   try {
     const [cryptoId, content] = parseCryptoIdentifier(line)
@@ -80,7 +106,7 @@ function checkCryptoId<CryptoId extends string>(
         failure: `Crypto id for ${line} must be ${id} but is ${cryptoId}`,
       }
     }
-    return { ok: true, cryptoId: id, content }
+    return { ok: true, cryptoId: id, content: Buffer.from(content, "base64url") }
   } catch (err: any) {
     return {
       ok: false,
@@ -127,5 +153,39 @@ export function verifyPeriodIdentity(
       robotId: { ...robotId, internalConsistency: idResult },
       identityConsistency: { status: "inconsistent", type: "internally-inconsistent" },
     }
+  }
+}
+
+export async function verifyMessages(
+  messages: SignedMessage[],
+  key: KeyObject,
+  initialHash?: Buffer,
+): Promise<{ consistency: InternalConsistency; finalHash: Buffer }> {
+  let consistency: InternalConsistency = { status: "unverified" }
+  let previousHash = initialHash
+  for (const message of messages) {
+    const { consistency: status, actualHash } = verifyMessage(message, key, previousHash)
+    if (status.status === "inconsistent") {
+      if (status.type === "signature-mismatch" && previousHash == null) {
+        // this indicates this is a first pass through a period that has no
+        // previous period identified, and only internal consistency should be
+        // checked. since the first log line is signed based on its hash and the
+        // hash of the last line of the previous log, which we don't know, we
+        // skip it.
+      } else {
+        consistency = status
+      }
+    }
+    // this should never happen
+    if (status.status === "unverified") {
+      throw new Error("Failed to check message")
+    }
+    previousHash = actualHash
+  }
+  // if we never updated the status because a log failed verification,
+  // we're consistent
+  return {
+    consistency: consistency.status === "unverified" ? { status: "consistent" } : consistency,
+    finalHash: previousHash!,
   }
 }

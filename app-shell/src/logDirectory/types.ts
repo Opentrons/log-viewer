@@ -58,6 +58,7 @@ export interface LogPeriodFile {
   internalConsistency: InternalConsistency
   sequentialConsistency: SequentialConsistency
   identityConsistency: AttestationConsistency
+  trailingLogHash: Buffer
 }
 
 export interface BlessedRobotId extends RobotIdParsed {

@@ -2,15 +2,27 @@ import crypto from "crypto"
 import type { Dirent } from "fs"
 import path from "path"
 
-import omit from "lodash/omit"
 import * as Unzipper from "unzipper"
 
 import { createLogger } from "../log"
-import { parseSignedMessage, parseRobotId, parseLogOverview } from "./parsers"
+import { parseSignedRobotId, parseRobotId, parseLogOverview, parseLogPeriodFile } from "./parsers"
 import type { LogPeriodFile, BlessedRobotId } from "./types"
-import { verifyPeriodIdentity } from "./verifiers"
+import { verifyPeriodIdentity, verifyMessages } from "./verifiers"
 
 const _log = createLogger("logDirectory.parsePeriod")
+
+async function operateOnFile<T>(
+  zipFile: Unzipper.CentralDirectory,
+  fileName: string,
+  fn: (file: Unzipper.File) => Promise<T>,
+): Promise<T> {
+  for (const file of zipFile.files) {
+    if (file.path === fileName) {
+      return await fn(file)
+    }
+  }
+  throw new Error(`Could not find ${fileName}`)
+}
 
 export async function parsePeriod(
   entry: Dirent,
@@ -41,66 +53,59 @@ export async function parsePeriod(
   }
   const zipPath = path.join(entry.parentPath, entry.name)
   const zip = await Unzipper.Open.file(zipPath)
-  const periodZip: Partial<LogPeriodFile> & { periodZip: string; associatedFiles: string[] } = {
-    periodZip: zipPath,
-    associatedFiles: [],
-  }
-  let lookingFor = ["log_period.json", "robot_identity.json", "signing_key.pem"] as const
+
+  const publicKey = await operateOnFile(zip, "signing_key.pem", async (file) =>
+    crypto.createPublicKey(await file.buffer()),
+  )
+
+  const robotId = await operateOnFile(zip, "robot_identity.json", async (file) => {
+    const identityFile = await file.buffer()
+    const identityFileParsed = JSON.parse(identityFile.toString("utf-8"))
+    const idRaw = parseSignedRobotId(identityFileParsed)
+    const payload = parseRobotId(JSON.parse(idRaw.message))
+
+    return {
+      parsed: { ...payload },
+      raw: idRaw,
+      internalConsistency: { status: "unverified" } as const,
+    }
+  })
+  const logFileDetails = await operateOnFile(zip, "log_period.json", async (file) => {
+    const fileBuffer = await file.buffer()
+    const document = parseLogPeriodFile(JSON.parse(fileBuffer.toString("utf-8")))
+    const { softwareVersions, associatedProtocols } = parseLogOverview(document.userLogEntries)
+    const { consistency, finalHash } = await verifyMessages(document.userLogEntries, publicKey)
+    return {
+      startDate: document.startedAt,
+      endDate: document.endedAt,
+      logCount: document.userLogEntries.length,
+      associatedProtocols,
+      softwareVersions,
+      internalConsistency: consistency,
+      trailingLogHash: finalHash,
+    }
+  })
+  const associatedFiles: string[] = []
   for (const file of zip.files) {
-    if (file.type === "Directory") {
-      log.warning(`Ignoring directory ${file.path} in zip`)
-      continue
-    } else if (file.path === "log_period.json") {
-      const fileBuffer = await file.buffer()
-      try {
-        const document = JSON.parse(fileBuffer.toString("utf-8"))
-        periodZip.startDate = document.startedAt
-        periodZip.endDate = document.endedAt
-        periodZip.logCount = document.userLogEntries.length
-        const { softwareVersions, associatedProtocols } = parseLogOverview(document.userLogEntries)
-        periodZip.associatedProtocols = associatedProtocols
-        periodZip.softwareVersions = softwareVersions
-        lookingFor = omit(lookingFor, "log_period.json")
-      } catch (err: any) {
-        log.error(`error parsing log period: ${err}`)
-        throw err
-      }
-    } else if (file.path === "robot_identity.json") {
-      try {
-        const identityFile = await file.buffer()
-        const identityFileParsed = JSON.parse(identityFile.toString("utf-8"))
-        const idRaw = parseSignedMessage(identityFileParsed)
-        const payload = parseRobotId(JSON.parse(idRaw.message))
-        periodZip.robotId = {
-          parsed: { ...payload },
-          raw: idRaw,
-          internalConsistency: { status: "unverified" },
-        }
-        lookingFor = omit(lookingFor, "robot_identity.json")
-      } catch (err: any) {
-        log.error(`Failed to parse robot id: ${err}`)
-      }
-    } else if (file.path === "signing_key.pem") {
-      periodZip.publicKey = crypto.createPublicKey(await file.buffer())
-      lookingFor = omit(lookingFor, "signing_key.pem")
-    } else {
-      periodZip.associatedFiles.push(file.path)
+    if (
+      !["log_period.json", "robot_identity.json", "signing_key.pem"].includes(file.path) &&
+      file.type !== "Directory"
+    ) {
+      associatedFiles.push(file.path)
     }
   }
-  if (lookingFor.length > 0) {
-    throw new Error(`Missing from ${zipPath}: ${lookingFor.join(", ")}`)
-  }
-  const validatedPeriod = periodZip as LogPeriodFile
-  const { robotId, identityConsistency } = verifyPeriodIdentity(
-    validatedPeriod.robotId,
-    validatedPeriod.publicKey,
+  const { robotId: validatedRobotId, identityConsistency } = verifyPeriodIdentity(
+    robotId,
+    publicKey,
     knownIdentities,
   )
   return {
-    ...validatedPeriod,
+    ...logFileDetails,
     identityConsistency,
     sequentialConsistency: { status: "unverified" },
-    internalConsistency: { status: "unverified" },
-    robotId,
+    robotId: validatedRobotId,
+    publicKey,
+    associatedFiles,
+    periodZip: zipPath,
   }
 }
