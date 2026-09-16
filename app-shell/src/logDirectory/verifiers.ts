@@ -63,7 +63,7 @@ export function verifyMessage(
       actualHash,
     }
   }
-  if (message.sig_version !== 1) {
+  if (message.sig_version !== 1 && message.sig_version !== '1') {
     return {
       consistency: {
         status: "inconsistent",
