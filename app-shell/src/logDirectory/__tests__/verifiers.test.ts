@@ -28,66 +28,100 @@ describe("verifyRobotIdInternalConsistency", async () => {
       ),
     ).toEqual({ status: "consistent" })
   })
+})
+
+describe("verifyMessage", async () => {
+  const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
+    modulusLength: 256,
+  })
+  it("should verify a valid message non-sequentially", async () => {
+    const message = "how do you do, fellow kids"
+    const message_hash = hash("sha256", message, "buffer")
+    const messageSig = await promisifiedSign(null, message_hash, privateKey)
+    expect(
+      verifyMessage(
+        {
+          message,
+          message_hash: `sha256:${message_hash.toString("base64url")}`,
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
+        },
+        publicKey,
+      ),
+    ).toEqual({
+      consistency: { status: "consistent" },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
+    })
+  })
   it("should verify a valid sequential message", async () => {
     const previousMessage = "here is a previous message"
     const previousHash = hash("sha256", previousMessage, "buffer")
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
-    const hashes = Buffer.concat([previousHash, messageHash])
+    const message_hash = hash("sha256", message, "buffer")
+    const hashes = Buffer.concat([previousHash, message_hash])
     const messageSig = await promisifiedSign(null, hashes, privateKey)
     expect(
       verifyMessage(
         {
           message,
-          messageHash: `sha256:${messageHash.toString("base64url")}`,
-          messageSignature: `ed25519:${messageSig.toString("base64url")}`,
-          signatureVersion: 1,
+          message_hash: `sha256:${message_hash.toString("base64url")}`,
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
         },
         publicKey,
         previousHash,
       ),
-    ).toEqual({ status: "consistent" })
+    ).toEqual({
+      consistency: { status: "consistent" },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
+    })
   })
   it("should forward crypto parse errors", async () => {
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
-    const messageSig = await promisifiedSign(null, messageHash, privateKey)
+    const message_hash = hash("sha256", message, "buffer")
+    const messageSig = await promisifiedSign(null, message_hash, privateKey)
     expect(
       verifyMessage(
         {
           message,
-          messageHash: messageHash.toString("base64url"),
-          messageSignature: `ed25519:${messageSig.toString("base64url")}`,
-          signatureVersion: 1,
+          message_hash: message_hash.toString("base64url"),
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
         },
         publicKey,
       ),
     ).toEqual({
-      status: "inconsistent",
-      type: "invalid-hash",
-      failure:
-        "Crypto id for khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls could not be parsed: Incorrect formatting of crypto specification: must be with cryptoName:value but is khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls",
+      consistency: {
+        status: "inconsistent",
+        type: "invalid-hash",
+        failure:
+          "Crypto id for khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls could not be parsed: Incorrect formatting of crypto specification: must be with cryptoName:value but is khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls",
+      },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })
   })
   it("should fail a message if it has an invalid hash", async () => {
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
-    const messageSig = await promisifiedSign(null, messageHash, privateKey)
+    const message_hash = hash("sha256", message, "buffer")
+    const messageSig = await promisifiedSign(null, message_hash, privateKey)
     expect(
       verifyMessage(
         {
           message,
-          messageHash: `sha1:${messageHash.toString("base64url")}`,
-          messageSignature: `ed25519:${messageSig.toString("base64url")}`,
-          signatureVersion: 1,
+          message_hash: `sha1:${message_hash.toString("base64url")}`,
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
         },
         publicKey,
       ),
     ).toEqual({
-      status: "inconsistent",
-      type: "invalid-hash",
-      failure:
-        "Crypto id for sha1:khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls must be sha256 but is sha1",
+      consistency: {
+        status: "inconsistent",
+        type: "invalid-hash",
+        failure:
+          "Crypto id for sha1:khfH2jlC6MS6cwpgtJqgGwvMUaSG9dbk5A5bMcpu5ls must be sha256 but is sha1",
+      },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })
   })
   it("should fail a message if it has a hash mismatch", async () => {
@@ -95,48 +129,56 @@ describe("verifyRobotIdInternalConsistency", async () => {
       modulusLength: 256,
     })
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
-    const messageSig = await promisifiedSign(null, messageHash, privateKey)
+    const message_hash = hash("sha256", message, "buffer")
+    const messageSig = await promisifiedSign(null, message_hash, privateKey)
+    const actualMessage = "how don't you do, fellow kids"
+    const actualMessageHash = hash("sha256", actualMessage, "buffer")
     expect(
       verifyMessage(
         {
-          message: "how don't you do, fellow kids",
-          messageHash: `sha256:${messageHash.toString("base64url")}`,
-          messageSignature: `ed25519:${messageSig.toString("base64url")}`,
-          signatureVersion: 1,
+          message: actualMessage,
+          message_hash: `sha256:${message_hash.toString("base64url")}`,
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
         },
         publicKey,
       ),
     ).toEqual({
-      status: "inconsistent",
-      type: "hash-mismatch",
-      contentHash: "YD5aBUE3B3NrXeSl60yUOCld9hBVJXQbQqLutUpx888",
+      consistency: {
+        status: "inconsistent",
+        type: "hash-mismatch",
+        contentHash: "YD5aBUE3B3NrXeSl60yUOCld9hBVJXQbQqLutUpx888",
+      },
+      actualHash: expect.toSatisfy((val) => actualMessageHash.equals(val)),
     })
   })
 
   it("should fail a message if it has an invalid signature", async () => {
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
-    const messageSig = await promisifiedSign(null, messageHash, privateKey)
+    const message_hash = hash("sha256", message, "buffer")
+    const messageSig = await promisifiedSign(null, message_hash, privateKey)
     const verifyResult = verifyMessage(
       {
         message,
-        messageHash: `sha256:${messageHash.toString("base64url")}`,
-        messageSignature: `rsa:${messageSig.toString("base64url")}`,
-        signatureVersion: 1,
+        message_hash: `sha256:${message_hash.toString("base64url")}`,
+        message_sig: `rsa:${messageSig.toString("base64url")}`,
+        sig_version: 1,
       },
       publicKey,
     )
     expect(verifyResult).toEqual({
-      status: "inconsistent",
-      type: "invalid-signature",
-      failure: expect.stringMatching(/Crypto id for rsa:.* must be ed25519 but is rsa/),
+      consistency: {
+        status: "inconsistent",
+        type: "invalid-signature",
+        failure: expect.stringMatching(/Crypto id for rsa:.* must be ed25519 but is rsa/),
+      },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })
   })
 
   it("should fail a message if it has a bad signature", async () => {
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
+    const message_hash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(
       null,
       hash("sha256", "how dont you do fellow kids", "buffer"),
@@ -146,43 +188,49 @@ describe("verifyRobotIdInternalConsistency", async () => {
       verifyMessage(
         {
           message,
-          messageHash: `sha256:${messageHash.toString("base64url")}`,
-          messageSignature: `ed25519:${messageSig.toString("base64url")}`,
-          signatureVersion: 1,
+          message_hash: `sha256:${message_hash.toString("base64url")}`,
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
         },
         publicKey,
       ),
     ).toEqual({
-      status: "inconsistent",
-      type: "signature-mismatch",
-      failure: "The message was not properly signed by the associated key.",
+      consistency: {
+        status: "inconsistent",
+        type: "signature-mismatch",
+        failure: "The message was not properly signed by the associated key.",
+      },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })
   })
   it("should fail a message if it has a bad sequential signature", async () => {
     const previousMessage = "this one was first"
     const previousHash = hash("sha256", previousMessage, "buffer")
     const message = "how do you do, fellow kids"
-    const messageHash = hash("sha256", message, "buffer")
+    const message_hash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(
       null,
-      Buffer.concat([messageHash, previousHash]),
+      Buffer.concat([message_hash, previousHash]),
       privateKey,
     )
     expect(
       verifyMessage(
         {
           message,
-          messageHash: `sha256:${messageHash.toString("base64url")}`,
-          messageSignature: `ed25519:${messageSig.toString("base64url")}`,
-          signatureVersion: 1,
+          message_hash: `sha256:${message_hash.toString("base64url")}`,
+          message_sig: `ed25519:${messageSig.toString("base64url")}`,
+          sig_version: 1,
         },
         publicKey,
         previousHash,
       ),
     ).toEqual({
-      status: "inconsistent",
-      type: "signature-mismatch",
-      failure: "The message was not properly signed by the associated key.",
+      consistency: {
+        status: "inconsistent",
+        type: "signature-mismatch",
+        failure: "The message was not properly signed by the associated key.",
+      },
+      actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })
   })
 })
