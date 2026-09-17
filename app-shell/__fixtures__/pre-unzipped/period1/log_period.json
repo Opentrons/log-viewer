@@ -1,0 +1,72 @@
+{
+  "userLogEntries": [
+    {
+      "message": "{\"action\":\"log-period-begin\",\"accountName\":\"system\",\"legalName\":\"\",\"message\":\"Log period begun\",\"reason\":\"\",\"loggedAt\":\"2026-08-26T20:20:27.031332Z\"}",
+      "message_hash": "sha256:V2srbmTS0HLO4X3g-ePs08aJ63f75UjQ_yPLYadPpwg=",
+      "message_sig": "ed25519:QF0hQSJt9YI9x9tmInbh9HeHI4gDs6JcXEPeRgd6QZDhsy2StFairtvwDVjuycMCdrxCJhJ1qrnGwGWE06mQBA==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"unsigned-runs-warning\",\"accountName\":\"system\",\"legalName\":\"\",\"message\":\"6 unsigned runs found in run history: run for Universal lab demo_May2025 with Plate Reader.py (a44ab98a52bb52d5e3ec12fdff794b4a) created at 2026-02-08 21:26:46.909113+00:00; run for Universal lab demo_May2025 with Plate Reader.py (a44ab98a52bb52d5e3ec12fdff794b4a) created at 2026-02-09 12:44:59.922741+00:00; run for Universal lab demo_May2025 with Plate Reader.py (a44ab98a52bb52d5e3ec12fdff794b4a) created at 2026-02-09 21:46:27.896979+00:00; run for install BD library test protocol 2.py (f1ce729f8083654c244a3378d10a81ed) created at 2026-08-21 19:51:08.083924+00:00; run for install BD library test protocol better errors.py (2c58776996bb0ae9697b689fe373fc64) created at 2026-08-24 20:38:38.391000+00:00; run for install BD library test protocol from wheel.py (7141f8c7c596e0984e87f644913b18fc) created at 2026-08-25 15:40:26.352960+00:00;\",\"reason\":null,\"loggedAt\":\"2026-08-26T20:22:38.478191Z\"}",
+      "message_hash": "sha256:uWhmOLfdFG3qyHNy9SIZquR-ZemBAXhAlLrgPyVTEW0=",
+      "message_sig": "ed25519:2Z09envNbzJiWVB1J18z1ctzVhcd2BqRwxna1ELU126BZdowwDv8FxpRjUcW3IBaGY2by2cJY5395OTAbMSIDA==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"login succeeded\",\"accountName\":\"system\",\"legalName\":\"authentication subsystem\",\"message\":\"login for testadmin succeeded\",\"reason\":null,\"loggedAt\":\"2026-08-26T20:30:07.431197Z\"}",
+      "message_hash": "sha256:YqlQgyFzf0rW_jBWLGIz53Y_Dh3gH79cFBUViHWlc08=",
+      "message_sig": "ed25519:N_s2mqJ008WLz9kWAJjuXWWMnOi_OzoO2hRY2ZwIn324AxjY8l6n56S6a_Lbd7HY-G7CJoZPda7Aa_mSPKHWAg==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"protocol upload\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"uploaded file names: install BD library test protocol from wheel.py, Millipore Vacuum Manifold Base.json, Millipore Vacuum Manifold Collar (Standard).json, Millipore Vacuum Manifold Collar (Tall).json, Millipore Vacuum Manifold Holder.json, regres_1_reservoir_195000ul.json, axygen_96_wellplate_2000ul.json, Invitroven Filter Plate (1).json, nest_96_pcr_vacuum_collection_plate.json, waters_96_wellplate_700ul.json, sep_pak_c18_elution_plate.json; key: bf4affea-717d-4620-8408-0907381eb8b0; protocol kind: standard; run time parameter values: {}; run time parameter files {}; POST to /protocols via http; Query parameters: none; Headers: host=localhost, connection=close, content-length=74651, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer wOuafb4CGOqDruPjmb9HRzSCiR4dgU, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=multipart/form-data; boundary=----WebKitFormBoundaryZedAgCiFXTC28c8K, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Response code: 201; Response headers: content-length=1160, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:30:14.206068Z\"}",
+      "message_hash": "sha256:4H-aNVE13AdO8cY9qVyJfMIm76SlxIoh2RtXYzSAECc=",
+      "message_sig": "ed25519:eXPshLX51R-ouO521tlc_ex8CCjDQUPn3dkwHkJ4eHZpk9KtSTCG5fLbuiTEdMEhrj5h3U2PWy-Rj304b3nsDg==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"create protocol run\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"POST to /runs via http; Query parameters: none; Headers: connection=close, host=localhost, content-length=137, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer wOuafb4CGOqDruPjmb9HRzSCiR4dgU, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=application/json, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Request body: {\\\"data\\\":{\\\"protocolId\\\":\\\"3cd75c55-0192-476d-942c-55962775a7a5\\\",\\\"labwareOffsets\\\":[],\\\"runTimeParameterValues\\\":{},\\\"runTimeParameterFiles\\\":{}}}; Response code: 201; Response headers: content-length=403, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:30:19.012319Z\"}",
+      "message_hash": "sha256:bu7CU3ZVz6_FlWFViwfGhgtUEgbcvmfOHiXPnjpb-Dw=",
+      "message_sig": "ed25519:lnkTOxHkqwRUJcLDm6cWyCowf6azchFaJ1minl2nbMiE92kuzG-gzRvk48Er3piI2rxAdVklqiUemRdrXFERAg==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"change run camera settings\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"POST to /runs/1fd0a257-8130-4d1b-8140-c2deb9ccd069/camera/settings via http; Query parameters: none; Headers: connection=close, host=localhost, content-length=92, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer hoGDslBmmeQhIR6bpfsTSpizMaei68, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=application/json, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Request body: {\\\"data\\\":{\\\"liveStreamEnabled\\\":false,\\\"cameraEnabled\\\":true,\\\"errorRecoveryCameraEnabled\\\":false}}; Response code: 201; Response headers: content-length=92, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:30:39.549580Z\"}",
+      "message_hash": "sha256:IOlapwZi4YU8c-NBgztYM_ITx9H0S_Wt-cVLKJgTjT0=",
+      "message_sig": "ed25519:iNSbeoqloMMtEs-Ux7wF0iegRLQp_MXac-47MLuZlW6orBsIEgIjxGncR_nlJU9WIrhdWpcnQSP6wkYSbOmMBg==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"create run\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"POST to /runs/1fd0a257-8130-4d1b-8140-c2deb9ccd069/actions via http; Query parameters: none; Headers: connection=close, host=localhost, content-length=30, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer F9hV5tXebLDt7j5nc3WBkGwYAmQX7Y, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=application/json, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Request body: {\\\"data\\\":{\\\"actionType\\\":\\\"play\\\"}}; Response code: 201; Response headers: content-length=116, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:30:43.328141Z\"}",
+      "message_hash": "sha256:UXM5vE0YFOFtHi1WKn7Neosua5zrrm-Nd9Zgf3pEDiY=",
+      "message_sig": "ed25519:xWzlPNONkMaopaAqFBlToR3wVyeWTyAzFNxEIxRdAcnjJo5tSgOOS_tf_f-bgBeh3vwAJEjq6t9O0Bbo2bhaBA==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"create run\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"POST to /runs/1fd0a257-8130-4d1b-8140-c2deb9ccd069/actions via http; Query parameters: none; Headers: connection=close, host=localhost, content-length=30, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer B2nF2TFfvbFshrhKXkamt6QTzVIgud, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=application/json, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Request body: {\\\"data\\\":{\\\"actionType\\\":\\\"play\\\"}}; Response code: 201; Response headers: content-length=116, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:31:08.204941Z\"}",
+      "message_hash": "sha256:uCqxWWDQO7f-ReTQHvKWBmZ3OG-6ZKxQObEIL47JjN8=",
+      "message_sig": "ed25519:hKE2kEXQEIGPciG7R5L36CYt29hAbnP3Y4FSKM-7DWW5JJubcCD2xwyKavGZxyfaNfZc-VNNWFcOtrf1kdrVAw==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"create run\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"POST to /runs/1fd0a257-8130-4d1b-8140-c2deb9ccd069/actions via http; Query parameters: none; Headers: connection=close, host=localhost, content-length=30, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer jRv6iHa0ZjVCWmtLOout28x3bYLGXb, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=application/json, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Request body: {\\\"data\\\":{\\\"actionType\\\":\\\"play\\\"}}; Response code: 409; Response headers: opentrons-min-version=2, opentrons-version=4, content-length=364, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:31:18.784619Z\"}",
+      "message_hash": "sha256:SumnWf726KzPKbel7k_Uz8vq-GwIjkwQMz-BNiwyQ70=",
+      "message_sig": "ed25519:y7drBXFBhuwiN99Eb5j-W9bs8rTptxU1OFtii3exe26f17YY2BzBj0NBjly0MDJ9sADP1G1yT8siDq6cQJnsDA==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"update protocol run\",\"accountName\":\"testadmin\",\"legalName\":\"Test Admin\",\"message\":\"PATCH to /runs/1fd0a257-8130-4d1b-8140-c2deb9ccd069 via http; Query parameters: none; Headers: connection=close, host=localhost, content-length=34, sec-ch-ua-platform=\\\"Windows\\\", authorization=Bearer MEuRFN6ZFaGN5uyF4bKEX7UoKZHpJr, sec-ch-ua=\\\"Not_A Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"142\\\", sec-ch-ua-mobile=?0, opentrons-user-notes=t, user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Opentrons/10.0.0-alpha.7 Chrome/142.0.7444.134 Electron/39.1.2 Safari/537.36, accept=application/json, text/plain, */*, content-type=application/json, opentrons-version=3, sec-fetch-site=cross-site, sec-fetch-mode=cors, sec-fetch-dest=empty, accept-encoding=gzip, deflate, br, zstd, accept-language=en-US; Request body: {\\\"data\\\":{\\\"signedBy\\\":\\\"Test Admin\\\"}}; Response code: 200; Response headers: content-length=834, content-type=application/json; Response body: <streaming>\",\"reason\":\"t\",\"loggedAt\":\"2026-08-26T20:31:27.630961Z\"}",
+      "message_hash": "sha256:RkDIDWHqZnI5iXBlZGcgtGg7XWJouCZZ9qvbucsC9c4=",
+      "message_sig": "ed25519:Vk3uGh61JETLvgiiCdWrlEdV5zsJpeuFFbiIp6FVLcSDHMvkl2rZr-geAYNqzrmlWxxH0xol0CwEopalustHDg==",
+      "sig_version": "1"
+    },
+    {
+      "message": "{\"action\":\"log-period-end\",\"accountName\":\"system\",\"legalName\":\"\",\"message\":\"Log period ended\",\"reason\":\"\",\"loggedAt\":\"2026-08-26T20:31:30.894200Z\"}",
+      "message_hash": "sha256:1uYMMkc8iUEvM7wAOeNMvWyHidKLrhjjG22ylaYQEAQ=",
+      "message_sig": "ed25519:fMMfA3AxIgbD1mmlR-BRdbkRdfYtETSdPl_mVemxU6G7FHkkQaCIBgKQc9C1igxJsPpynv49W2OeLzLgb43jDg==",
+      "sig_version": "1"
+    }
+  ],
+  "startedAt": "2026-08-26T20:20:27.055642Z",
+  "endedAt": "2026-08-26T20:31:30.918793Z"
+}

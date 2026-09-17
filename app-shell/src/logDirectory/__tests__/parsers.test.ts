@@ -14,7 +14,7 @@ describe("parseSignedMessage", () => {
       { message: "hi", message_hash: "lo", sig_version: "er" },
       { message: "hi", message_sig: "th", sig_version: "er" },
       { message_hash: "lo", message_sig: "th", sig_version: "er" },
-      { message: "hi", message_hash: "lo", message_sig: "th", sig_version: 3 },
+      { message: "hi", message_hash: "lo", message_sig: "th", sig_version: {hello: "there"} },
       { message: "hi", message_hash: "lo", message_sig: true, sig_version: "er" },
       { message: "hi", message_hash: {}, message_sig: "th", sig_version: "er" },
       { message: [], message_hash: "lo", message_sig: "th", sig_version: "er" },
@@ -28,15 +28,15 @@ describe("parseSignedMessage", () => {
     expect(
       parseSignedMessage({
         message: "hi",
-        messageHash: "lo",
-        messageSignature: "th",
-        signatureVersion: "er",
+        message_hash: "lo",
+        message_sig: "th",
+        sig_version: "er",
       }),
     ).toStrictEqual({
       message: "hi",
-      messageHash: "lo",
-      messageSignature: "th",
-      signatureVersion: "er",
+      message_hash: "lo",
+      message_sig: "th",
+      sig_version: "er",
     })
   })
 })

@@ -1,12 +1,22 @@
-import { generateKeyPair, hash, sign } from "crypto"
+import { generateKeyPair, hash, sign, createPublicKey } from "crypto"
+import { readFile } from "fs/promises"
+import path from "path"
 import { promisify } from "util"
 
 import { describe, it, expect } from "vitest"
 
-import { verifyMessage, verifyPeriodIdentity, verifyRobotIdInternalConsistency } from "../verifiers"
+import type { SignedMessage } from "../filetypes"
+import {
+  verifyMessages,
+  verifyMessage,
+  verifyPeriodIdentity,
+  verifyRobotIdInternalConsistency,
+} from "../verifiers"
 
 const promisifiedGenerate = promisify(generateKeyPair)
 const promisifiedSign = promisify(sign)
+
+const fixturesPath: string = import.meta.env.VITE_AUDITLOG_FIXTURES
 
 describe("verifyRobotIdInternalConsistency", async () => {
   const { publicKey, privateKey } = await promisifiedGenerate("ed25519", {
@@ -58,7 +68,7 @@ describe("verifyMessage", async () => {
     const previousHash = hash("sha256", previousMessage, "buffer")
     const message = "how do you do, fellow kids"
     const message_hash = hash("sha256", message, "buffer")
-    const hashes = Buffer.concat([previousHash, message_hash])
+    const hashes = Buffer.concat([message_hash, previousHash])
     const messageSig = await promisifiedSign(null, hashes, privateKey)
     expect(
       verifyMessage(
@@ -74,6 +84,26 @@ describe("verifyMessage", async () => {
     ).toEqual({
       consistency: { status: "consistent" },
       actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
+    })
+  })
+  it("should verify a real sequential message", async () => {
+    const logFile = await readFile(
+      path.join(fixturesPath, "pre-unzipped", "period1", "log_period.json"),
+      { encoding: "utf-8" },
+    )
+    const logs = JSON.parse(logFile).userLogEntries
+    const keyFile = await readFile(
+      path.join(fixturesPath, "pre-unzipped", "period1", "signing_key.pem"),
+    )
+    const key = createPublicKey(keyFile)
+    const firstMessage = logs[0]
+    const secondMessage = logs[1]
+    // we're not providing a previous hash so this message is guaranteed to fail
+    // validation
+    const { actualHash } = verifyMessage(firstMessage, key)
+    expect(verifyMessage(secondMessage, key, actualHash)).toEqual({
+      consistency: { status: "consistent" },
+      actualHash: expect.any(Buffer),
     })
   })
   it("should forward crypto parse errors", async () => {
@@ -210,7 +240,7 @@ describe("verifyMessage", async () => {
     const message_hash = hash("sha256", message, "buffer")
     const messageSig = await promisifiedSign(
       null,
-      Buffer.concat([message_hash, previousHash]),
+      Buffer.concat([previousHash, message_hash]),
       privateKey,
     )
     expect(
@@ -331,6 +361,47 @@ describe("verifyPeriodIdentity", async () => {
         },
       },
       identityConsistency: { status: "inconsistent", type: "internally-inconsistent" },
+    })
+  })
+})
+
+describe("verifyMessages", async () => {
+  const period1File = await readFile(
+    path.join(fixturesPath, "pre-unzipped", "period1", "log_period.json"),
+    { encoding: "utf-8" },
+  )
+  const period2File = await readFile(
+    path.join(fixturesPath, "pre-unzipped", "period2", "log_period.json"),
+    { encoding: "utf-8" },
+  )
+  const keyFile = await readFile(
+    path.join(fixturesPath, "pre-unzipped", "period2", "signing_key.pem"),
+  )
+  const key = createPublicKey(keyFile)
+  const messages1 = JSON.parse(period1File).userLogEntries as SignedMessage[]
+  const messages2 = JSON.parse(period2File).userLogEntries as SignedMessage[]
+  it("should provide internal consistency when not given a trailing hash", async () => {
+    expect(await verifyMessages(messages1, key)).toEqual({
+      consistency: { status: "consistent" },
+      finalHash: expect.any(Buffer),
+    })
+  })
+  it("should provide sequential consistency when given a trailing hash", async () => {
+    const { finalHash } = await verifyMessages(messages1, key)
+    expect(await verifyMessages(messages2, key, finalHash)).toEqual({
+      consistency: { status: "consistent" },
+      finalHash: expect.any(Buffer),
+    })
+  })
+  it("should fail sequential consistency when given a non-matching trailing hash", async () => {
+    const finalHash = Buffer.from("gabbagool", "base64url")
+    expect(await verifyMessages(messages2, key, finalHash)).toEqual({
+      consistency: {
+        status: "inconsistent",
+        type: "signature-mismatch",
+        failure: "The message was not properly signed by the associated key.",
+      },
+      finalHash: expect.any(Buffer),
     })
   })
 })

@@ -46,7 +46,7 @@ export function buildScanDirectory(
                     name: maybeFile.robotId.parsed.robot_name,
                     serial: maybeFile.robotId.parsed.robot_serial,
                     publicKeyHash: maybeFile.robotId.parsed.public_hash,
-                    internalConsistency: "unverified",
+                    internalConsistency: maybeFile.robotId.internalConsistency,
                   },
                   logCount: maybeFile.logCount,
                 },

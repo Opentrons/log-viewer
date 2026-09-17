@@ -63,7 +63,7 @@ export function verifyMessage(
       actualHash,
     }
   }
-  if (message.sig_version !== 1 && message.sig_version !== '1') {
+  if (message.sig_version !== 1 && message.sig_version !== "1") {
     return {
       consistency: {
         status: "inconsistent",
@@ -75,7 +75,7 @@ export function verifyMessage(
   }
   const verifyResult = verify(
     null,
-    previousHash != null ? Buffer.concat([previousHash, hashDetails.content]) : actualHash,
+    previousHash != null ? Buffer.concat([hashDetails.content, previousHash]) : actualHash,
     key,
     sigDetails.content,
   )
