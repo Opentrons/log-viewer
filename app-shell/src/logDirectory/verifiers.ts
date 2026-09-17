@@ -1,9 +1,17 @@
 import type { KeyObject } from "crypto"
 import { hash, verify } from "crypto"
 
+import omit from "lodash/omit"
+
 import type { SignedMessage, RobotIdJson } from "./filetypes"
 import { parseCryptoIdentifier } from "./parsers"
-import type { InternalConsistency, AttestationConsistency, BlessedRobotId, RobotId } from "./types"
+import type {
+  SequentialConsistency,
+  InternalConsistency,
+  AttestationConsistency,
+  BlessedRobotId,
+  RobotId,
+} from "./types"
 
 export function verifyRobotIdInternalConsistency(
   message: RobotIdJson,
@@ -23,8 +31,19 @@ export function verifyRobotIdInternalConsistency(
 export function verifyMessage(
   message: SignedMessage,
   key: KeyObject,
-  previousHash?: Buffer,
-): { consistency: InternalConsistency; actualHash: Buffer } {
+  previousDetails: { hash: Buffer; id: number },
+): { consistency: SequentialConsistency<number>; actualHash: Buffer }
+export function verifyMessage(
+  message: SignedMessage,
+  key: KeyObject,
+): { consistency: InternalConsistency; actualHash: Buffer }
+export function verifyMessage(
+  message: SignedMessage,
+  key: KeyObject,
+  previousDetails?: { hash: Buffer; id: number },
+):
+  | { consistency: InternalConsistency; actualHash: Buffer }
+  | { consistency: SequentialConsistency<number>; actualHash: Buffer } {
   const hashDetails = checkCryptoId(message.message_hash, "sha256")
   const actualHash = hash(
     hashDetails.ok ? hashDetails.cryptoId : "sha256",
@@ -75,12 +94,20 @@ export function verifyMessage(
   }
   const verifyResult = verify(
     null,
-    previousHash != null ? Buffer.concat([hashDetails.content, previousHash]) : actualHash,
+    previousDetails != null
+      ? Buffer.concat([hashDetails.content, previousDetails.hash])
+      : actualHash,
     key,
     sigDetails.content,
   )
   return verifyResult
-    ? { consistency: { status: "consistent" }, actualHash }
+    ? {
+        consistency: {
+          status: "consistent",
+          ...(previousDetails != null ? { previousId: previousDetails.id } : {}),
+        },
+        actualHash,
+      }
     : {
         consistency: {
           status: "inconsistent",
@@ -156,31 +183,65 @@ export function verifyPeriodIdentity(
   }
 }
 
+function verifyFirstMessage(
+  message: SignedMessage,
+  key: KeyObject,
+  initialHash?: Buffer,
+): { consistency: InternalConsistency; actualHash: Buffer } {
+  const { consistency, actualHash } =
+    initialHash == null
+      ? verifyMessage(message, key)
+      : verifyMessage(message, key, { hash: initialHash, id: -1 })
+  if (initialHash != null) {
+    return { consistency: omit(consistency, "previousId") as InternalConsistency, actualHash }
+  } else {
+    if (
+      consistency.status === "inconsistent" &&
+      consistency.type === "signature-mismatch" &&
+      initialHash == null
+    ) {
+      return { consistency: { status: "unverified" } as const, actualHash }
+    }
+    return { consistency: omit(consistency, "previousId") as InternalConsistency, actualHash }
+  }
+}
+
 export async function verifyMessages(
   messages: SignedMessage[],
   key: KeyObject,
   initialHash?: Buffer,
-): Promise<{ consistency: InternalConsistency; finalHash: Buffer }> {
+): Promise<{ consistency: InternalConsistency; finalHash?: Buffer }> {
   let consistency: InternalConsistency = { status: "unverified" }
-  let previousHash = initialHash
-  for (const message of messages) {
-    const { consistency: status, actualHash } = verifyMessage(message, key, previousHash)
-    if (status.status === "inconsistent") {
-      if (status.type === "signature-mismatch" && previousHash == null) {
-        // this indicates this is a first pass through a period that has no
-        // previous period identified, and only internal consistency should be
-        // checked. since the first log line is signed based on its hash and the
-        // hash of the last line of the previous log, which we don't know, we
-        // skip it.
-      } else {
-        consistency = status
-      }
-    }
+
+  if (messages.length === 0) {
+    return { consistency, finalHash: undefined }
+  }
+  const { consistency: firstConsistency, actualHash: firstHash } = verifyFirstMessage(
+    messages[0],
+    key,
+    initialHash,
+  )
+  if (messages.length === 1) {
+    return { consistency: firstConsistency, finalHash: firstHash }
+  }
+  let previousHash = firstHash
+  let previousIndex = 0
+  consistency = firstConsistency
+  for (const message of messages.slice(1)) {
+    const { consistency: status, actualHash } = verifyMessage(message, key, {
+      hash: previousHash,
+      id: previousIndex,
+    })
     // this should never happen
     if (status.status === "unverified") {
       throw new Error("Failed to check message")
     }
+    if (status.status === "inconsistent") {
+      consistency = status
+    }
+
     previousHash = actualHash
+    previousIndex += 1
   }
   // if we never updated the status because a log failed verification,
   // we're consistent

@@ -56,9 +56,9 @@ export interface LogPeriodFile {
   endDate: string
   logCount: number
   internalConsistency: InternalConsistency
-  sequentialConsistency: SequentialConsistency
+  sequentialConsistency: SequentialConsistency<string>
   identityConsistency: AttestationConsistency
-  trailingLogHash: Buffer
+  trailingLogHash?: Buffer
 }
 
 export interface BlessedRobotId extends RobotIdParsed {
@@ -76,5 +76,5 @@ export interface LogLine {
     loggedAt: string
   }
   id: number
-  internalConsistency: InternalConsistency
+  sequentialConsistency: SequentialConsistency<number>
 }

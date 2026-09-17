@@ -22,10 +22,7 @@ export type AttestationConsistency = Consistency<
   AttestationConsistencyError,
   { attestedIdentityPath: string }
 >
-export type SequentialConsistency = Consistency<
-  InternalConsistencyError,
-  { previousPeriod: string }
->
+export type SequentialConsistency<Tid> = Consistency<InternalConsistencyError, { previousId: Tid }>
 
 export interface RobotId {
   name: string
@@ -37,7 +34,7 @@ export interface LogPeriod {
   scanStatus: "done" | "not-started" | "ongoing"
   internalConsistency: InternalConsistency
   attestationConsistency: AttestationConsistency
-  sequentialConsistency: SequentialConsistency
+  sequentialConsistency: SequentialConsistency<string>
   endDate: string
   startDate: string
   associatedFiles: string[]

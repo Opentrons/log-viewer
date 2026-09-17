@@ -79,10 +79,10 @@ describe("verifyMessage", async () => {
           sig_version: 1,
         },
         publicKey,
-        previousHash,
+        { hash: previousHash, id: -1 },
       ),
     ).toEqual({
-      consistency: { status: "consistent" },
+      consistency: { status: "consistent", previousId: -1 },
       actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })
   })
@@ -101,8 +101,8 @@ describe("verifyMessage", async () => {
     // we're not providing a previous hash so this message is guaranteed to fail
     // validation
     const { actualHash } = verifyMessage(firstMessage, key)
-    expect(verifyMessage(secondMessage, key, actualHash)).toEqual({
-      consistency: { status: "consistent" },
+    expect(verifyMessage(secondMessage, key, { hash: actualHash, id: 10 })).toEqual({
+      consistency: { status: "consistent", previousId: 10 },
       actualHash: expect.any(Buffer),
     })
   })
@@ -252,7 +252,7 @@ describe("verifyMessage", async () => {
           sig_version: 1,
         },
         publicKey,
-        previousHash,
+        { hash: previousHash, id: 10 },
       ),
     ).toEqual({
       consistency: {
