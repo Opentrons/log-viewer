@@ -5,12 +5,11 @@ import { describe, it, vi, expect, beforeEach } from "vitest"
 import { buildScanDirectory } from "../scanDirectory"
 import type { State, LogChecker } from "../types"
 
-vi.mock("../../log",
-  () => (
-    { 
-      createLogger: vi.fn<(...args: any) => unknown>(
-        () => ({info: vi.fn<(...args: any) => unknown>()})) }
-  ))
+vi.mock("../../log", () => ({
+  createLogger: vi.fn<(...args: any) => unknown>(() => ({
+    info: vi.fn<(...args: any) => unknown>(),
+  })),
+}))
 const fixturesPath: string = import.meta.env.VITE_AUDITLOG_FIXTURES
 
 describe("scanDirectory", () => {

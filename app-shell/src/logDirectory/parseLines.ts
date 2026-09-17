@@ -9,7 +9,7 @@ export async function parseLines(path: string): Promise<LogLine[]> {
   if (logPeriod == null) {
     throw new Error("Failed to find log_period.json in log zip")
   }
-  const periodBuffer = await logPeriod.buffer()y
+  const periodBuffer = await logPeriod.buffer()
   const document = JSON.parse(periodBuffer.toString("utf-8"))
   return [
     // oxlint-disable-next-line no-useless-spread this reifies an iterator to an array
