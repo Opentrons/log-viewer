@@ -1,0 +1,6 @@
+{
+  "message": "{\"robot_name\": \"BornAgainArtinold\", \"robot_serial\": \"FLXA2020250321003\", \"public_hash\": \"sha256:Ze1WMVbkhBYhILfGAne5G7ir63kJUbtDPcf4CaHnGUw=\"}",
+  "messageHash": "sha256:leZYNlsEhw8gjXloFD2EAnuqbafET38vRvrSkxdzE14=",
+  "messageSignature": "ed25519:CnywQpz7UoHtWrAmT_mgCXtN4QZdVFhpowjVLczX2S7VkipdDoJ6ompLp1AGWtCqHuB052c4RBwnNpmdDKgQBw==",
+  "signatureVersion": 1
+}

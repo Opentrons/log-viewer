@@ -1,0 +1,42 @@
+{
+  "data": {
+    "id": "d3c78e4c-387d-4698-be3b-196bee4fd55c",
+    "ok": true,
+    "createdAt": "2026-08-20T20:34:58.383238Z",
+    "status": "stopped",
+    "current": false,
+    "signedBy": "Test Admin",
+    "logPeriodId": "185",
+    "actions": [
+      {
+        "id": "b47205a3-b291-4cd8-8f67-6db203804234",
+        "createdAt": "2026-08-20T20:35:38.113273Z",
+        "actionType": "stop"
+      }
+    ],
+    "errors": [],
+    "hasEverEnteredErrorRecovery": false,
+    "pipettes": [],
+    "modules": [],
+    "labware": [],
+    "liquids": [],
+    "liquidClasses": [],
+    "labwareOffsets": [
+      {
+        "id": "db74568c-d53b-4092-8f84-0a860e48942c",
+        "createdAt": "2026-08-20T20:35:01.060033Z",
+        "definitionUri": "opentrons/opentrons_flex_96_tiprack_50ul/1",
+        "location": { "slotName": "C2", "moduleModel": null, "definitionUri": null },
+        "locationSequence": [{ "kind": "onAddressableArea", "addressableAreaName": "C2" }],
+        "vector": { "x": -0.10000000000002274, "y": -1.1989999999999554, "z": 0.4990000000000805 }
+      }
+    ],
+    "runTimeParameters": [],
+    "outputFileIds": [],
+    "protocolId": "615c17da-6203-474e-8bcc-4b72696e4abc",
+    "completedAt": "2026-08-20T20:35:41.895064Z",
+    "startedAt": null,
+    "cameraSettings": null
+  },
+  "commands": { "data": [], "meta": { "cursor": 0, "totalLength": 0 } }
+}
