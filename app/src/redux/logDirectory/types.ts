@@ -47,9 +47,9 @@ export interface LogPeriod {
 export interface LogLine {
   envelope: {
     message: string
-    messageHash: string
-    messageSignature: string
-    signatureVersion: string
+    message_hash: string
+    message_sig: string
+    sig_version: string
   }
   payload: {
     loggedAt: string
@@ -59,7 +59,7 @@ export interface LogLine {
     message: string
     userNote: string
   }
-  internalConsistency: InternalConsistency
+  sequentialConsistency: SequentialConsistency<number>
   id: number
 }
 
