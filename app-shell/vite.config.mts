@@ -1,5 +1,6 @@
 import { defineConfig } from "vite"
 import type { UserConfig } from "vite"
+import { configDefaults } from "vitest/config"
 
 export default defineConfig(async (): Promise<UserConfig> => {
   return {
@@ -29,6 +30,9 @@ export default defineConfig(async (): Promise<UserConfig> => {
         target: "CommonJs",
       },
       exclude: ["node_modules"],
+    },
+    test: {
+      exclude: ["**/flycheck_*", ...configDefaults.exclude],
     },
   }
 })

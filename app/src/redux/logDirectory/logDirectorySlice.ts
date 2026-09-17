@@ -58,6 +58,20 @@ export const logDirectorySlice = createSlice({
         }
       }
     },
+    updateTrackedLogPeriod: (
+      state: LogDirectoryState,
+      action: PayloadAction<{ filePath: string; period: Partial<LogPeriod> }>,
+    ) => {
+      for (const robotState of Object.values(state.contentsByRobot)) {
+        if (Object.hasOwn(robotState.periods, action.payload.filePath)) {
+          robotState.periods[action.payload.filePath] = {
+            ...robotState.periods[action.payload.filePath],
+            ...action.payload.period,
+          }
+          return
+        }
+      }
+    },
     setSelectedLogPeriod: (
       state: LogDirectoryState,
       action: PayloadAction<{ selectedPath: string | null }>,

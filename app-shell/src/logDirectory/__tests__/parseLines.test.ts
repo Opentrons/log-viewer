@@ -20,7 +20,7 @@ describe("parseLines happy path", async () => {
   const key = createPublicKey(keyFile)
 
   it("parses log lines out of a log with no previous period", async () => {
-    expect(await parseLines(logPeriodPath, key, Buffer.from(""))).toStrictEqual([
+    expect(await Array.fromAsync(parseLines(logPeriodPath, key, Buffer.from("")))).toStrictEqual([
       {
         sequentialConsistency: {
           status: "inconsistent",
@@ -257,14 +257,14 @@ describe("parseLines happy path", async () => {
     ])
   })
   it("parses log lines out of a log with a previous period", async () => {
-    const results = await parseLines(logPeriodPath, key, Buffer.from(""))
+    const results = await Array.fromAsync(parseLines(logPeriodPath, key, Buffer.from("")))
     console.log(`last is ${JSON.stringify(results[results.length - 1].envelope.message_hash)}`)
     const lastHash = Buffer.from(
       results[results.length - 1].envelope.message_hash.split(":")[1],
       "base64url",
     )
     const subsequentTarget = path.join(fixturesPath, "logperiod_2026-08-20T20_36_54.051806Z.zip")
-    expect(await parseLines(subsequentTarget, key, lastHash)).toStrictEqual([
+    expect(await Array.fromAsync(parseLines(subsequentTarget, key, lastHash))).toStrictEqual([
       {
         envelope: {
           message:
