@@ -22,12 +22,16 @@ function RobotIdentity(props: { robotName: string; isOk: boolean }): React.React
 
 export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.ReactNode {
   const { dateFormatter } = React.useContext(I18nContext)
+
   return (
     <div className={style.container}>
       <div className={clsx(style.row_container, style.top_row_shade)}>
         <TopPanelItem title="Device">
           <div className={style.chip_container}>
-            <RobotIdentity robotName={logPeriod.robotId.name} isOk={true} />
+            <RobotIdentity
+              robotName={logPeriod.robotId.name}
+              isOk={logPeriod.attestationConsistency.status === "consistent"}
+            />
           </div>
         </TopPanelItem>
         <TopPanelItem title="Protocol Name">
