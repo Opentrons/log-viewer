@@ -5,6 +5,11 @@ import { buildScanDirectory } from "./scanDirectory"
 import { findPeriod } from "./stateHelpers"
 import type { State, LogChecker, LogPeriodFile } from "./types"
 
+/**
+ * Refresh a log checker by disposing of one and creating a new one.
+ *
+ * Best to call when the log directory changes.
+ */
 export async function refresh(
   dispatch: LogChecker["dispatch"],
   basePath: string,
@@ -14,6 +19,11 @@ export async function refresh(
   return initialize(dispatch, basePath)
 }
 
+/**
+ * Builds a LogChecker function object to use to parse and manage a directory of log files.
+ * This contains internal state and should be regenerated whenever the base path changes.
+ * Before disposing a LogChecker, teardown the old one with teardown().
+ */
 export function initialize(dispatch: LogChecker["dispatch"], basePath: string): LogChecker {
   const state: State = {}
 
