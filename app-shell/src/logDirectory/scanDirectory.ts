@@ -90,8 +90,12 @@ export function buildScanDirectory(
   }
   const check = async (): Promise<void> => {
     await Promise.allSettled(
-      Object.values(state).map(async (robotEntries) => {
+      Object.entries(state).map(async ([robotName, robotEntries]) => {
         for await (const checkedPeriod of checkSequentialConsistency(robotEntries.periods)) {
+          const periodIdx = state[robotName].periods.findIndex(
+            (period) => period.periodZip === checkedPeriod.periodZip,
+          )
+          state[robotName].periods[periodIdx] = checkedPeriod
           dispatch({
             type: "logDirectory/updateTrackedLogPeriod",
             payload: {
