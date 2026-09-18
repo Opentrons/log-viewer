@@ -23,7 +23,6 @@ export function initializeAPI(
     ipcMain.handle(apiCall, apiCallHandler)
   })
   ipcMain.on("setUiStatus", (_event, arg: { status: "ready" }) => {
-    log.info("Adding handler for setUiStatus")
     onUiStatus(arg)
   })
   return (action: Parameters<Dispatch>[0]) => {

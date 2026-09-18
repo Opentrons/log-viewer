@@ -1,6 +1,7 @@
 import { createLogger } from "../log"
 import { scanBlessedRobotIdentities } from "./attestation"
 import { checkSequentialConsistency } from "./checkSequentialConsistency"
+import { addBlessedRobotId, addTrackedLogPeriod } from "./notify"
 import { parsePeriod } from "./parsePeriod"
 import type { State, LogChecker } from "./types"
 import { walk } from "./walk"
@@ -19,17 +20,7 @@ export function buildScanDirectory(
 } {
   const scanIdentities = async () => {
     for await (const blessedId of scanBlessedRobotIdentities(path)) {
-      dispatch({
-        type: "logDirectory/addBlessedRobotId",
-        payload: {
-          robotId: {
-            name: blessedId.robot_name,
-            serial: blessedId.robot_serial,
-            publicKeyHash: blessedId.public_hash,
-            filePath: blessedId.filePath,
-          },
-        },
-      })
+      addBlessedRobotId(dispatch, blessedId)
       if (state?.[blessedId.robot_name] == null) {
         state[blessedId.robot_name] = { periods: [], blessedRobotIds: [blessedId] }
       } else {
@@ -56,30 +47,7 @@ export function buildScanDirectory(
             } else {
               state[maybeFile.robotId.parsed.robot_name].periods.push(maybeFile)
             }
-            dispatch({
-              type: "logDirectory/addTrackedLogPeriod",
-              payload: {
-                filePath: maybeFile.periodZip,
-                period: {
-                  scanStatus: "not-started",
-                  internalConsistency: maybeFile.internalConsistency,
-                  attestationConsistency: maybeFile.identityConsistency,
-                  sequentialConsistency: maybeFile.sequentialConsistency,
-                  endDate: maybeFile.endDate,
-                  startDate: maybeFile.startDate,
-                  associatedFiles: maybeFile.associatedFiles,
-                  protocolNames: maybeFile.associatedProtocols,
-                  softwareVersions: maybeFile.softwareVersions,
-                  robotId: {
-                    name: maybeFile.robotId.parsed.robot_name,
-                    serial: maybeFile.robotId.parsed.robot_serial,
-                    publicKeyHash: maybeFile.robotId.parsed.public_hash,
-                    internalConsistency: maybeFile.robotId.internalConsistency,
-                  },
-                  logCount: maybeFile.logCount,
-                },
-              },
-            })
+            addTrackedLogPeriod(dispatch, maybeFile)
           })
           .catch((err) => {
             log.info(`Could not parse ${entry.name}: ${JSON.stringify(err)}`)

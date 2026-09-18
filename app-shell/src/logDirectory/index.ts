@@ -1,4 +1,5 @@
 import { blessRobotIdentity } from "./attestation"
+import { renotify } from "./notify"
 import { parseLines } from "./parseLines"
 import { buildScanDirectory } from "./scanDirectory"
 import { findPeriod } from "./stateHelpers"
@@ -21,6 +22,9 @@ export function initialize(dispatch: LogChecker["dispatch"], basePath: string): 
     state,
     dispatch,
     scanDirectory: buildScanDirectory(state, basePath, dispatch).scanDirectory,
+    renotify: () => {
+      renotify(state, dispatch)
+    },
     teardown: () => Promise.resolve(),
     blessRobotIdentity: async (zipPath) => {
       try {
