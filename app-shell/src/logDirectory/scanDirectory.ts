@@ -1,4 +1,5 @@
 import { createLogger } from "../log"
+import { scanBlessedRobotIdentities } from "./attestation"
 import { checkSequentialConsistency } from "./checkSequentialConsistency"
 import { parsePeriod } from "./parsePeriod"
 import type { State, LogChecker } from "./types"
@@ -10,13 +11,39 @@ export function buildScanDirectory(
   state: State,
   path: string,
   dispatch: LogChecker["dispatch"],
-): { scan: () => Promise<void>; check: () => Promise<void>; scanDirectory: () => Promise<void> } {
-  const scan = async () => {
+): {
+  scanIdentities: () => Promise<void>
+  scanPeriods: () => Promise<void>
+  check: () => Promise<void>
+  scanDirectory: () => Promise<void>
+} {
+  const scanIdentities = async () => {
+    for await (const blessedId of scanBlessedRobotIdentities(path)) {
+      dispatch({
+        type: "logDirectory/addBlessedRobotId",
+        payload: {
+          robotId: {
+            name: blessedId.robot_name,
+            serial: blessedId.robot_serial,
+            publicKeyHash: blessedId.public_hash,
+            filePath: blessedId.filePath,
+          },
+        },
+      })
+      if (state?.[blessedId.robot_name] == null) {
+        state[blessedId.robot_name] = { periods: [], blessedRobotIds: [blessedId] }
+      } else {
+        state[blessedId.robot_name].blessedRobotIds.push(blessedId)
+      }
+    }
+  }
+  const scanPeriods = async () => {
     const parses: Promise<void>[] = []
+    const allBlessedIds = Object.values(state).flatMap((value) => value.blessedRobotIds)
 
     for await (const entry of walk(path)) {
       parses.push(
-        parsePeriod(entry, [])
+        parsePeriod(entry, allBlessedIds)
           .then((maybeFile) => {
             if (maybeFile == null) {
               return
@@ -24,7 +51,7 @@ export function buildScanDirectory(
             if (state?.[maybeFile.robotId.parsed.robot_name] == null) {
               state[maybeFile.robotId.parsed.robot_name] = {
                 periods: [maybeFile],
-                blessedRobotId: null,
+                blessedRobotIds: [],
               }
             } else {
               state[maybeFile.robotId.parsed.robot_name].periods.push(maybeFile)
@@ -80,12 +107,14 @@ export function buildScanDirectory(
   }
 
   return {
-    scan,
+    scanPeriods,
     check,
+    scanIdentities,
     scanDirectory: () => {
       dispatch({ type: "logDirectory/directoryScanStart" })
-      return scan()
-        .then(() => check())
+      return scanIdentities()
+        .then(scanPeriods)
+        .then(check)
         .finally(() => dispatch({ type: "logDirectory/directoryScanDone" }))
     },
   }

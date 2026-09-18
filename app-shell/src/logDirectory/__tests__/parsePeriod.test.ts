@@ -140,10 +140,13 @@ describe("parsePeriod happy path", () => {
       withFileTypes: true,
     })
     const found = direntries.filter((entry) => entry.name === target)[0]
-    const identityPath = path.join(fixturesPath, "ComplianceReady.json")
+    const identityPath = path.join(
+      fixturesPath,
+      "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+    )
     const identityContents = await readFile(identityPath, { encoding: "utf-8" })
-    const identityMessage = JSON.parse(identityContents)
-    const identityPayload = JSON.parse(identityMessage.message)
+    const identityFile = JSON.parse(identityContents)
+    const identityPayload = JSON.parse(identityFile.message)
     expect(
       await parsePeriod(found, [{ ...identityPayload, filePath: identityPath }]),
     ).toStrictEqual({
@@ -152,7 +155,10 @@ describe("parsePeriod happy path", () => {
       softwareVersions: [],
       associatedProtocols: [],
       identityConsistency: {
-        attestedIdentityPath: path.join(fixturesPath, "ComplianceReady.json"),
+        attestedIdentityPath: path.join(
+          fixturesPath,
+          "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+        ),
         status: "consistent",
       },
       robotId: {

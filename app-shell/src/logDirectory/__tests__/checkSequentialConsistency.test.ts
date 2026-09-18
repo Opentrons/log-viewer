@@ -20,14 +20,14 @@ describe("scanDirectory", () => {
   beforeEach(async () => {
     vi.resetAllMocks()
     state = {}
-    await buildScanDirectory(state, fixturesPath, dispatch).scan()
+    await buildScanDirectory(state, fixturesPath, dispatch).scanPeriods()
   })
   it("should rely on a stable sort", async () => {
     const sorted1 = state["ComplianceReady"].periods
       .toSorted((a, b) => Date.parse(a.startDate) - Date.parse(b.startDate))
       .map((period) => period.periodZip)
     const state2: State = {}
-    await buildScanDirectory(state2, fixturesPath, dispatch).scan()
+    await buildScanDirectory(state2, fixturesPath, dispatch).scanPeriods()
     const sorted2 = state2["ComplianceReady"].periods
       .toSorted((a, b) => Date.parse(a.startDate) - Date.parse(b.startDate))
       .map((period) => period.periodZip)
@@ -194,7 +194,7 @@ describe("scanDirectory", () => {
       await Array.fromAsync(checkSequentialConsistency(state["ComplianceReady"].periods))
     ).map((period) => pick(period, "periodZip", "sequentialConsistency"))
     const state2: State = {}
-    await buildScanDirectory(state2, fixturesPath, dispatch).scan()
+    await buildScanDirectory(state2, fixturesPath, dispatch).scanPeriods()
     const consistency2 = (
       await Array.fromAsync(checkSequentialConsistency(state2["ComplianceReady"].periods))
     ).map((period) => pick(period, "periodZip", "sequentialConsistency"))

@@ -1,4 +1,4 @@
-import type { LogLine } from "@log-verifier/app/src/redux/logDirectory/types"
+import type { LogLine, BlessedRobotId } from "@log-verifier/app/src/redux/logDirectory/types"
 import type { Dispatch } from "@log-verifier/app/src/redux/store"
 import type { RemoteAPI } from "@log-verifier/app/src/remote/api"
 import type { Config } from "@log-verifier/app/src/remote/config/types"
@@ -26,5 +26,8 @@ contextBridge.exposeInMainWorld("shell", {
   },
   loadLogsForPeriod: (payload: { zipPath: string }): Promise<LogLine[]> => {
     return ipcRenderer.invoke("loadLogsForPeriod", { zipPath: payload.zipPath })
+  },
+  blessRobotIdentity: (payload: { zipPath: string }): Promise<BlessedRobotId> => {
+    return ipcRenderer.invoke("blessRobotIdentity", { zipPath: payload.zipPath })
   },
 } as RemoteAPI)

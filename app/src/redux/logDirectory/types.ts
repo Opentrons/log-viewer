@@ -28,10 +28,13 @@ export type SequentialConsistency<Tid> = Consistency<
   { previousId: Tid }
 >
 
-export interface RobotId {
+export interface RobotIdPayload {
   name: string
   publicKeyHash: string
   serial: string
+}
+
+export interface RobotId extends RobotIdPayload {
   internalConsistency: InternalConsistency
 }
 export interface LogPeriod {
@@ -67,13 +70,17 @@ export interface LogLine {
   id: number
 }
 
+export interface BlessedRobotId extends RobotIdPayload {
+  filePath: string
+}
+
 export interface LogDirectoryState {
   directoryPath: string | null
   scanStatus: "done" | "not-started" | "ongoing"
   selectedLogPeriod: { fileName: string; robotName: string } | null
   contentsByRobot: {
     [robotName: string]: {
-      blessedIdentityFiles: { filePath: string; robotId: RobotId }[]
+      blessedIdentityFiles: BlessedRobotId[]
       periods: {
         [filePath: string]: LogPeriod
       }
