@@ -10,6 +10,7 @@ export interface TreeItemProps {
   text: React.ReactNode
   active?: boolean
   onClick?: () => void
+  status: "normal" | "warning" | "error" | React.JSX.Element
 }
 export function TreeItem(props: TreeItemProps): React.ReactNode {
   const active = props?.active ?? false
@@ -20,24 +21,37 @@ export function TreeItem(props: TreeItemProps): React.ReactNode {
   })
   return onClick == null ? (
     <div className={klass}>
-      <Contents text={props.text} type={props.type} />
+      <Contents text={props.text} type={props.type} status={props.status} />
     </div>
   ) : (
     <button onClick={onClick} className={klass}>
-      <Contents text={props.text} type={props.type} />
+      <Contents text={props.text} type={props.type} status={props.status} />
     </button>
   )
 }
 
-function Contents({ text, type }: TreeItemProps): React.ReactNode {
+function Contents({ text, type, status }: TreeItemProps): React.ReactNode {
   return (
     <>
-      <div className={style.icon_alignment_container}>
-        <div className={style.icon_container}>
-          <Icon name={ICON_LOOKUP[type]} className={style.icon} />
+      <div className={style.content_container}>
+        <div className={style.icon_alignment_container}>
+          <div className={style.icon_container}>
+            <Icon name={ICON_LOOKUP[type]} className={style.icon} />
+          </div>
         </div>
+        {text}
       </div>
-      <p className={style.text}>{text}</p>
+      {status === "normal" ? null : status === "warning" || status === "error" ? (
+        <Icon
+          name="error"
+          className={clsx(style.status_icon, {
+            [style.status_icon_warning]: status === "warning",
+            [style.status_icon_error]: status === "error",
+          })}
+        />
+      ) : (
+        status
+      )}
     </>
   )
 }

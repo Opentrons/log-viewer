@@ -17,7 +17,11 @@ export function WorkingDirectory(props: WorkingDirectoryProps): React.ReactNode 
         {props.workingDirectory == null ? (
           <p className={style.directory_name}>No directory found</p>
         ) : (
-          <TreeItem type="folder" text={props.workingDirectory} />
+          <TreeItem
+            type="folder"
+            text={<p className={style.tree_item_text}>{props.workingDirectory}</p>}
+            status="normal"
+          />
         )}
       </div>
       {props.workingDirectory == null ? (
