@@ -15,7 +15,7 @@ export function buildScanDirectory(
     dispatch({ type: "logDirectory/directoryScanStart" })
     for await (const entry of walk(path)) {
       parses.push(
-        parsePeriod(entry)
+        parsePeriod(entry, [])
           .then((maybeFile) => {
             if (maybeFile == null) {
               return
@@ -34,8 +34,9 @@ export function buildScanDirectory(
                 filePath: maybeFile.periodZip,
                 period: {
                   scanStatus: "not-started",
-                  internalConsistency: "unverified",
-                  attestationConsistency: "unverified",
+                  internalConsistency: maybeFile.internalConsistency,
+                  attestationConsistency: maybeFile.identityConsistency,
+                  sequentialConsistency: maybeFile.sequentialConsistency,
                   endDate: maybeFile.endDate,
                   startDate: maybeFile.startDate,
                   associatedFiles: maybeFile.associatedFiles,
@@ -45,7 +46,7 @@ export function buildScanDirectory(
                     name: maybeFile.robotId.parsed.robot_name,
                     serial: maybeFile.robotId.parsed.robot_serial,
                     publicKeyHash: maybeFile.robotId.parsed.public_hash,
-                    internalConsistency: "unverified",
+                    internalConsistency: maybeFile.robotId.internalConsistency,
                   },
                   logCount: maybeFile.logCount,
                 },

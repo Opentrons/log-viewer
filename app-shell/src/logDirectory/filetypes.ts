@@ -1,8 +1,8 @@
 export interface SignedMessage {
   message: string
-  messageHash: string
-  messageSignature: string
-  signatureVersion: string
+  message_hash: string
+  message_sig: string
+  sig_version: string | number
 }
 
 export interface LogPeriodJson {
@@ -15,7 +15,13 @@ export interface RobotIdPayload {
   robot_serial: string
   public_hash: string
 }
-export type RobotIdJson = SignedMessage
+
+export interface RobotIdJson {
+  message: string
+  messageHash: string
+  messageSignature: string
+  signatureVersion: string | number
+}
 
 export interface LogMessage {
   action: string

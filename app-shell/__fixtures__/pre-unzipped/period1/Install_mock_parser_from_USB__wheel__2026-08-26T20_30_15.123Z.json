@@ -1,0 +1,206 @@
+{
+  "data": {
+    "id": "1fd0a257-8130-4d1b-8140-c2deb9ccd069",
+    "ok": true,
+    "createdAt": "2026-08-26T20:30:15.123451Z",
+    "status": "succeeded",
+    "current": false,
+    "signedBy": "Test Admin",
+    "logPeriodId": "30",
+    "actions": [
+      {
+        "id": "bc608904-41d1-4be7-b3b1-8708ae35933a",
+        "createdAt": "2026-08-26T20:30:43.113368Z",
+        "actionType": "play"
+      },
+      {
+        "id": "54919b9d-28f3-4bd6-9ec3-85c5a5b2c67f",
+        "createdAt": "2026-08-26T20:31:07.782068Z",
+        "actionType": "play"
+      }
+    ],
+    "errors": [],
+    "hasEverEnteredErrorRecovery": false,
+    "pipettes": [],
+    "modules": [],
+    "labware": [],
+    "liquids": [],
+    "liquidClasses": [],
+    "labwareOffsets": [],
+    "runTimeParameters": [],
+    "outputFileIds": [],
+    "protocolId": "3cd75c55-0192-476d-942c-55962775a7a5",
+    "completedAt": "2026-08-26T20:31:14.269817Z",
+    "startedAt": "2026-08-26T20:30:43.524142Z",
+    "cameraSettings": {
+      "cameraEnabled": true,
+      "liveStreamEnabled": false,
+      "errorRecoveryCameraEnabled": false
+    }
+  },
+  "commands": {
+    "data": [
+      {
+        "id": "50bbad16-784e-4380-8aea-ca4359fa32ae",
+        "key": "50c7ae73a4e3f7129874f39dfb514803",
+        "commandType": "home",
+        "createdAt": "2026-08-26T20:30:43.650007Z",
+        "startedAt": "2026-08-26T20:30:43.865207Z",
+        "completedAt": "2026-08-26T20:30:45.561076Z",
+        "status": "succeeded",
+        "error": null,
+        "params": { "axes": null, "skipIfMountPositionOk": null },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "ef2a8fac-3ec7-4efc-99cf-6ee576ec9fb2",
+        "key": "c9cac9dba72ab541665f112752004fbc",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:45.699505Z",
+        "startedAt": "2026-08-26T20:30:45.831828Z",
+        "completedAt": "2026-08-26T20:30:45.969394Z",
+        "status": "succeeded",
+        "error": null,
+        "params": {
+          "message": "==> Searching /media USB mounts for mock_parser-0.1.0-py3-none-any.whl ..."
+        },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "b17a8e94-cb61-4cf5-8f41-97a1b88598fa",
+        "key": "2c70a990bdc4d6e06f98204ffb9f5b3a",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:46.228629Z",
+        "startedAt": "2026-08-26T20:30:46.474401Z",
+        "completedAt": "2026-08-26T20:30:46.699030Z",
+        "status": "succeeded",
+        "error": null,
+        "params": {
+          "message": "==> Found wheel at: /media/ENFAIN-sda/mock_parser-0.1.0-py3-none-any.whl"
+        },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "22dd97a2-4a10-4877-8484-f3c44e14f129",
+        "key": "c2ca5a8a358795ff36c54b47b04ff5dd",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:47.109055Z",
+        "startedAt": "2026-08-26T20:30:47.496329Z",
+        "completedAt": "2026-08-26T20:30:47.870078Z",
+        "status": "succeeded",
+        "error": null,
+        "params": { "message": "==> Using interpreter: /usr/bin/python3 (3.12.11)" },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "6e4e30ad-7e7d-4159-b359-c65a02d4f901",
+        "key": "932da4a7e22bed6dc0e9d8368d5c1e13",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:48.328906Z",
+        "startedAt": "2026-08-26T20:30:48.736402Z",
+        "completedAt": "2026-08-26T20:30:49.001454Z",
+        "status": "succeeded",
+        "error": null,
+        "params": {
+          "message": "==> Copying to /tmp/mock_parser.yf4sln50/mock_parser-0.1.0-py3-none-any.whl for install"
+        },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "c1389797-e799-45e0-aa4a-068c17310d56",
+        "key": "d9d6d2044cb052abad52fd971c5ed6f2",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:49.353387Z",
+        "startedAt": "2026-08-26T20:30:49.628237Z",
+        "completedAt": "2026-08-26T20:30:49.822496Z",
+        "status": "succeeded",
+        "error": null,
+        "params": {
+          "message": "==> Installing wheel /tmp/mock_parser.yf4sln50/mock_parser-0.1.0-py3-none-any.whl"
+        },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "59729da0-0fd4-4cc7-9351-db0f0c3f9855",
+        "key": "fff498474415f5f2d18d52844a902bc0",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:59.040734Z",
+        "startedAt": "2026-08-26T20:30:59.098382Z",
+        "completedAt": "2026-08-26T20:30:59.150666Z",
+        "status": "succeeded",
+        "error": null,
+        "params": { "message": "==> Refreshing import cache" },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "9218d968-eb0e-4c30-b60f-15e49122acea",
+        "key": "4528d0588e2eb6fefde59fa436183ec7",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:59.225103Z",
+        "startedAt": "2026-08-26T20:30:59.303999Z",
+        "completedAt": "2026-08-26T20:30:59.377052Z",
+        "status": "succeeded",
+        "error": null,
+        "params": { "message": "==> Verifying import" },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "8d1ebfd1-0caf-4054-86a4-450697dc4b28",
+        "key": "7ac9b2d52077fed6f890b6084e2b7fca",
+        "commandType": "comment",
+        "createdAt": "2026-08-26T20:30:59.481966Z",
+        "startedAt": "2026-08-26T20:30:59.594124Z",
+        "completedAt": "2026-08-26T20:30:59.688868Z",
+        "status": "succeeded",
+        "error": null,
+        "params": {
+          "message": "==> ok: mock_parser imported; parse_csv returned [{'a': '1', 'b': '2'}]"
+        },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      },
+      {
+        "id": "9ad75061-b259-4037-9581-57170a2afb75",
+        "key": "b16ad5f6bd302bc8f8c4c90531b96eac",
+        "commandType": "waitForResume",
+        "createdAt": "2026-08-26T20:30:59.765043Z",
+        "startedAt": "2026-08-26T20:30:59.854249Z",
+        "completedAt": "2026-08-26T20:31:08.038875Z",
+        "status": "succeeded",
+        "error": null,
+        "params": { "message": "Install complete. The USB stick can be removed." },
+        "intent": null,
+        "notes": [],
+        "failedCommandId": null,
+        "commandAnnotationIds": null
+      }
+    ],
+    "meta": { "cursor": 0, "totalLength": 10 }
+  }
+}

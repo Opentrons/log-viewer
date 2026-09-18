@@ -1,8 +1,21 @@
 import type { KeyObject } from "crypto"
 
+import type {
+  InternalConsistency,
+  AttestationConsistency,
+  SequentialConsistency,
+} from "@log-verifier/app/src/redux/logDirectory/types"
 import type { Dispatch } from "@log-verifier/app/src/redux/store"
 
-import type { SignedMessage } from "./filetypes"
+export type {
+  InternalConsistency,
+  AttestationConsistency,
+  SequentialConsistency,
+  AttestationConsistencyError,
+  InternalConsistencyError,
+} from "@log-verifier/app/src/redux/logDirectory/types"
+
+import type { SignedMessage, RobotIdJson } from "./filetypes"
 
 export interface State {
   [robotName: string]: {
@@ -28,7 +41,8 @@ export interface RobotIdParsed {
 
 export interface RobotId {
   parsed: RobotIdParsed
-  raw: SignedMessage
+  raw: RobotIdJson
+  internalConsistency: InternalConsistency
 }
 
 export interface LogPeriodFile {
@@ -41,9 +55,13 @@ export interface LogPeriodFile {
   startDate: string
   endDate: string
   logCount: number
+  internalConsistency: InternalConsistency
+  sequentialConsistency: SequentialConsistency<string>
+  identityConsistency: AttestationConsistency
+  trailingLogHash?: Buffer
 }
 
-interface BlessedRobotId extends RobotId {
+export interface BlessedRobotId extends RobotIdParsed {
   filePath: string
 }
 
@@ -55,6 +73,8 @@ export interface LogLine {
     legalName: string
     message: string
     userNote: string
+    loggedAt: string
   }
   id: number
+  sequentialConsistency: SequentialConsistency<number>
 }
