@@ -108,8 +108,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T16:04:32.385812Z",
@@ -138,8 +140,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T15:57:29.966634Z",
@@ -194,8 +198,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T19:45:56.655466Z",
@@ -224,8 +230,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T19:37:43.326662Z",
@@ -306,8 +314,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-25T15:43:26.168888Z",
@@ -336,8 +346,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: null,
@@ -366,8 +378,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-25T14:29:00.514942Z",
@@ -448,8 +462,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-26T20:20:26.985422Z",
@@ -478,8 +494,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: [],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T16:11:07.590070Z",
@@ -536,8 +554,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB_with_better_errors_2026-08-24T15_16_17.505Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T15:18:38.104546Z",
@@ -568,8 +588,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__walk_usb_drive__2026-08-24T17_35_29.930Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T17:36:34.777712Z",
@@ -600,8 +622,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__simple__2026-08-24T17_27_08.316Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T17:29:16.433677Z",
@@ -632,8 +656,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB_better_usb_search_2026-08-24T16_26_57.776Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T16:34:33.503007Z",
@@ -664,8 +690,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB_better_usb_search_2026-08-24T16_15_22.159Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T16:17:12.692342Z",
@@ -696,8 +724,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__simple__2026-08-25T14_31_06.780Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-25T14:37:55.910697Z",
@@ -728,8 +758,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__simple__2026-08-24T17_41_16.803Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T17:42:16.633604Z",
@@ -786,8 +818,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__simple__2026-08-25T18_42_23.608Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-26T20:12:26.049483Z",
@@ -818,8 +852,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__wheel__2026-08-25T15_33_57.353Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-25T15:35:20.675291Z",
@@ -900,8 +936,10 @@ describe("scanDirectory", () => {
             period: {
               associatedFiles: ["Library_Import_Proof_of_Concept_2026-08-24T14_52_35.312Z.json"],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-24T14:59:40.395954Z",
@@ -932,8 +970,10 @@ describe("scanDirectory", () => {
                 "Install_mock_parser_from_USB__wheel__2026-08-26T20_30_15.123Z.json",
               ],
               attestationConsistency: {
-                attestedIdentityPath:
-                  "/Users/seth/dev/log-viewer/app-shell/__fixtures__/ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                attestedIdentityPath: path.join(
+                  fixturesPath,
+                  "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
+                ),
                 status: "consistent",
               },
               endDate: "2026-08-26T20:31:30.918793Z",
