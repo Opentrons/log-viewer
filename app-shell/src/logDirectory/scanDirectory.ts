@@ -1,4 +1,5 @@
 import { createLogger } from "../log"
+import { checkSequentialConsistency } from "./checkSequentialConsistency"
 import { parsePeriod } from "./parsePeriod"
 import type { State, LogChecker } from "./types"
 import { walk } from "./walk"
@@ -9,10 +10,10 @@ export function buildScanDirectory(
   state: State,
   path: string,
   dispatch: LogChecker["dispatch"],
-): () => Promise<void> {
+): { scan: () => Promise<void>; check: () => Promise<void>; scanDirectory: () => Promise<void> } {
   const scan = async () => {
     const parses: Promise<void>[] = []
-    dispatch({ type: "logDirectory/directoryScanStart" })
+
     for await (const entry of walk(path)) {
       parses.push(
         parsePeriod(entry, [])
@@ -60,5 +61,32 @@ export function buildScanDirectory(
     }
     await Promise.allSettled(parses)
   }
-  return () => scan().finally(() => dispatch({ type: "logDirectory/directoryScanDone" }))
+  const check = async (): Promise<void> => {
+    await Promise.allSettled(
+      Object.values(state).map(async (robotEntries) => {
+        for await (const checkedPeriod of checkSequentialConsistency(robotEntries.periods)) {
+          dispatch({
+            type: "logDirectory/updateTrackedLogPeriod",
+            payload: {
+              filePath: checkedPeriod.periodZip,
+              period: {
+                sequentialConsistency: checkedPeriod.sequentialConsistency,
+              },
+            },
+          })
+        }
+      }),
+    )
+  }
+
+  return {
+    scan,
+    check,
+    scanDirectory: () => {
+      dispatch({ type: "logDirectory/directoryScanStart" })
+      return scan()
+        .then(() => check())
+        .finally(() => dispatch({ type: "logDirectory/directoryScanDone" }))
+    },
+  }
 }

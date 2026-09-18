@@ -16,10 +16,10 @@ describe("scanDirectory", () => {
   beforeEach(() => {
     vi.resetAllMocks()
   })
-  it("works in the happy path", async () => {
+  it("scan works in the happy path with fixtures", async () => {
     const state: State = {}
     const dispatch = vi.fn<LogChecker["dispatch"]>()
-    const scanDirectory = buildScanDirectory(state, fixturesPath, dispatch)
+    const { scan } = buildScanDirectory(state, fixturesPath, dispatch)
 
     const periodCalls = [
       [
@@ -850,15 +850,466 @@ describe("scanDirectory", () => {
       ],
     ]
 
-    await scanDirectory()
-    expect(dispatch.mock.calls.length).toEqual(periodCalls.length + 2)
-    // this is 1 indexed, for some reason
-    expect(dispatch).toHaveBeenNthCalledWith(1, { type: "logDirectory/directoryScanStart" })
-    expect(dispatch).toHaveBeenNthCalledWith(periodCalls.length + 2, {
-      type: "logDirectory/directoryScanDone",
-    })
+    await scan()
+    expect(dispatch.mock.calls.length).toEqual(periodCalls.length)
     periodCalls.forEach((call) => {
       expect(dispatch).toHaveBeenCalledWith(...call)
     })
+  })
+  it("check works in the happy path with fixtures", async () => {
+    const state: State = {}
+    const dispatch = vi.fn<LogChecker["dispatch"]>()
+    const { scan, check } = buildScanDirectory(state, fixturesPath, dispatch)
+    await scan()
+    dispatch.mockReset()
+    await check()
+    const periodUpdates = [
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_34_18.573005Z.zip"),
+            period: {
+              sequentialConsistency: {
+                status: "inconsistent",
+                type: "no-target",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-09-04T14_59_29.775386Z.zip"),
+            period: {
+              sequentialConsistency: {
+                status: "inconsistent",
+                type: "no-target",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-21T20_31_28.456269Z.zip"),
+            period: {
+              sequentialConsistency: {
+                status: "inconsistent",
+                type: "no-target",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-09-04T17_51_28.055775Z.zip"),
+            period: {
+              sequentialConsistency: {
+                status: "inconsistent",
+                type: "no-target",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_36_54.051806Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-20T20_34_18.573005Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T14_59_40.451528Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-21T20_31_28.456269Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-20T20_39_22.907267Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-20T20_36_54.051806Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T15_18_38.176148Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T14_59_40.451528Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-21T14_55_40.417815Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-20T20_39_22.907267Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T15_57_30.111933Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T15_18_38.176148Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T17_17_11.194276Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-21T14_55_40.417815Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_04_32.489243Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T15_57_30.111933Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T19_00_38.301799Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T17_17_11.194276Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_11_07.664478Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T16_04_32.489243Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T20_00_49.424927Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T19_00_38.301799Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_17_12.721535Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T16_11_07.664478Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T20_59_12.800184Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T20_00_49.424927Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T16_34_33.542044Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T16_17_12.721535Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T21_13_46.219267Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T20_59_12.800184Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_29_16.469301Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T16_34_33.542044Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_36_34.812649Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T17_29_16.469301Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T17_42_16.714601Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T17_36_34.812649Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T19_37_43.791395Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T17_42_16.714601Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-24T19_45_56.706329Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T19_37_43.791395Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T14_29_00.590608Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-24T19_45_56.706329Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T14_37_55.964002Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T14_29_00.590608Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T15_35_20.709482Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T14_37_55.964002Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-25T15_43_26.407157Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T15_35_20.709482Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_12_26.097145Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-25T15_43_26.407157Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_20_27.055642Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-26T20_12_26.097145Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+      [
+        {
+          payload: {
+            filePath: path.join(fixturesPath, "logperiod_2026-08-26T20_31_30.960544Z.zip"),
+            period: {
+              sequentialConsistency: {
+                previousId: path.join(fixturesPath, "logperiod_2026-08-26T20_20_27.055642Z.zip"),
+                status: "consistent",
+              },
+            },
+          },
+          type: "logDirectory/updateTrackedLogPeriod",
+        },
+      ],
+    ]
+    periodUpdates.forEach((update) => expect(dispatch).toHaveBeenCalledWith(...update))
+    expect(dispatch.mock.calls.length).toEqual(periodUpdates.length)
+  })
+  it("scanDirectory scans and updates", async () => {
+    const state: State = {}
+    const dispatch = vi.fn<LogChecker["dispatch"]>()
+    const { scanDirectory } = buildScanDirectory(state, fixturesPath, dispatch)
+    await scanDirectory()
+    // 31 periods, added and updated, and beginning + end notifications
+    expect(dispatch.mock.calls).toHaveLength(31 * 2 + 2)
+    expect(dispatch).toHaveBeenNthCalledWith(1, { type: "logDirectory/directoryScanStart" })
+    expect(dispatch).toHaveBeenNthCalledWith(31 * 2 + 2, { type: "logDirectory/directoryScanDone" })
   })
 })

@@ -5,6 +5,7 @@ export type InternalConsistencyError =
   | { type: "invalid-hash"; failure: string }
   | { type: "bad-crypto-id"; failure: string }
   | { type: "invalid-signature"; failure: string }
+export type SequentialConsistencyError = InternalConsistencyError | { type: "no-target" }
 export type AttestationConsistencyError =
   | {
       type: "mismatch"
@@ -22,7 +23,10 @@ export type AttestationConsistency = Consistency<
   AttestationConsistencyError,
   { attestedIdentityPath: string }
 >
-export type SequentialConsistency<Tid> = Consistency<InternalConsistencyError, { previousId: Tid }>
+export type SequentialConsistency<Tid> = Consistency<
+  SequentialConsistencyError,
+  { previousId: Tid }
+>
 
 export interface RobotId {
   name: string

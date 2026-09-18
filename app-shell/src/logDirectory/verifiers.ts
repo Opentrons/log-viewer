@@ -237,7 +237,7 @@ export async function verifyMessages(
       throw new Error("Failed to check message")
     }
     if (status.status === "inconsistent") {
-      consistency = status
+      consistency = status.type === "no-target" ? { status: "consistent" } : status
     }
 
     previousHash = actualHash
