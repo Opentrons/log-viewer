@@ -71,6 +71,9 @@ void app
           logChecker?.parseLines(payload.zipPath).then((result) => {
             return result
           }) ?? Promise.reject("No base directory selected"),
+        blessRobotIdentity: (_event: unknown, payload: { zipPath: string }) =>
+          logChecker?.blessRobotIdentity(payload.zipPath) ??
+          Promise.reject("No base directory selected"),
 
         updateConfigBy: (
           _event: unknown,

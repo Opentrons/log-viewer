@@ -4,6 +4,7 @@ import type {
   InternalConsistency,
   AttestationConsistency,
   SequentialConsistency,
+  BlessedRobotId as ReduxBlessedRobotId,
 } from "@log-verifier/app/src/redux/logDirectory/types"
 import type { Dispatch } from "@log-verifier/app/src/redux/store"
 
@@ -20,7 +21,7 @@ import type { SignedMessage, RobotIdJson } from "./filetypes"
 export interface State {
   [robotName: string]: {
     periods: LogPeriodFile[]
-    blessedRobotId: BlessedRobotId | null
+    blessedRobotIds: BlessedRobotId[]
   }
 }
 
@@ -31,6 +32,7 @@ export interface LogChecker {
   scanDirectory: () => Promise<void>
   teardown: () => Promise<void>
   parseLines: (logPath: string) => Promise<LogLine[]>
+  blessRobotIdentity: (logPath: string) => Promise<ReduxBlessedRobotId>
 }
 
 export interface RobotIdParsed {

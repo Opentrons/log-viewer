@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 import { api } from "@/remote/api"
 
-import type { LogPeriod, LogDirectoryState } from "./types"
+import type { LogPeriod, LogDirectoryState, BlessedRobotId } from "./types"
 
 const initialState: LogDirectoryState = {
   directoryPath: null,
@@ -28,6 +28,14 @@ export const logDirectorySlice = createSlice({
     },
     directoryScanStart: (state: LogDirectoryState) => {
       state.scanStatus = "ongoing"
+    },
+    addBlessedRobotId: (
+      state: LogDirectoryState,
+      action: PayloadAction<{ robotId: BlessedRobotId }>,
+    ) => {
+      state.contentsByRobot[action.payload.robotId.name].blessedIdentityFiles.push(
+        action.payload.robotId,
+      )
     },
     addTrackedLogPeriod: (
       state: LogDirectoryState,
