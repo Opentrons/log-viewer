@@ -33,9 +33,16 @@ export const logDirectorySlice = createSlice({
       state: LogDirectoryState,
       action: PayloadAction<{ robotId: BlessedRobotId }>,
     ) => {
-      state.contentsByRobot[action.payload.robotId.name].blessedIdentityFiles.push(
-        action.payload.robotId,
-      )
+      if (!Object.hasOwn(state.contentsByRobot, action.payload.robotId.name)) {
+        state.contentsByRobot[action.payload.robotId.name] = {
+          blessedIdentityFiles: [action.payload.robotId],
+          periods: {},
+        }
+      } else {
+        state.contentsByRobot[action.payload.robotId.name].blessedIdentityFiles.push(
+          action.payload.robotId,
+        )
+      }
     },
     addTrackedLogPeriod: (
       state: LogDirectoryState,
