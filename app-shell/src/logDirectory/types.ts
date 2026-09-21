@@ -33,6 +33,7 @@ export interface LogChecker {
   teardown: () => Promise<void>
   parseLines: (logPath: string) => Promise<LogLine[]>
   blessRobotIdentity: (logPath: string) => Promise<ReduxBlessedRobotId>
+  renotify: () => void
 }
 
 export interface RobotIdParsed {

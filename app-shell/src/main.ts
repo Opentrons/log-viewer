@@ -134,8 +134,13 @@ void app
         })
         if (logChecker == null && loadedConfig.logFiles.workingDirectory != null) {
           logChecker = initializeLogChecker(dispatch, loadedConfig.logFiles.workingDirectory)
+          return logChecker.scanDirectory()
+        } else {
+          return new Promise<void>((resolve) => {
+            logChecker?.renotify()
+            resolve()
+          })
         }
-        return logChecker != null && logChecker?.scanDirectory()
       },
     )
 

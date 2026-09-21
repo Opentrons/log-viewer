@@ -1,3 +1,8 @@
+/**
+ * verifiers.ts: cryptographic verification for messages.
+ *
+ * For structural verification, see parsers.ts.
+ */
 import type { KeyObject } from "crypto"
 import { hash, verify } from "crypto"
 
@@ -13,6 +18,15 @@ import type {
   RobotId,
 } from "./types"
 
+/**
+ * Verify the internal consistency of a robot id.
+ *
+ * This function checks that the envelope is OK: the hash matches the
+ * content and the signature matches the hash. This is different from
+ * verifyMessage because the python implementation of general log message
+ * export and robot ID export use different structures for their envelopes
+ * (snake_case vs camelCase).
+ */
 export function verifyRobotIdInternalConsistency(
   message: RobotIdJson,
   key: KeyObject,
@@ -28,6 +42,9 @@ export function verifyRobotIdInternalConsistency(
   ).consistency
 }
 
+/**
+ * Verify a message for internal or sequential consistency.
+ */
 export function verifyMessage(
   message: SignedMessage,
   key: KeyObject,
