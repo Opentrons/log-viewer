@@ -77,3 +77,26 @@ export function renotify(state: State, dispatch: LogChecker["dispatch"]): void {
     })
   })
 }
+
+/**
+ * Send a change in identity consistency to the app.
+ *
+ * Picks just the identity consistency from the period and sends it.
+ *
+ * @param {LogPeriodFile} logPeriod The log period to send
+ * @param {LogChecker["dispatch"]} dispatch The dispatch function.
+ */
+export function updateLogPeriodIdentity(
+  logPeriod: LogPeriodFile,
+  dispatch: LogChecker["dispatch"],
+): void {
+  dispatch({
+    type: "logDirectory/updateTrackedLogPeriod",
+    payload: {
+      filePath: logPeriod.periodZip,
+      period: {
+        attestationConsistency: logPeriod.identityConsistency,
+      },
+    },
+  })
+}
