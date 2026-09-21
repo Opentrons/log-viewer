@@ -1,3 +1,4 @@
+import * as NiceModal from "@ebay/nice-modal-react"
 import countBy from "lodash/countBy"
 import * as React from "react"
 
@@ -8,6 +9,7 @@ import { OverflowBtn } from "@/components-copy/atoms/MenuList/OverflowBtn"
 import { useOnClickOutside } from "@/components-copy/interaction-enhancers"
 import { LogPeriodTopPanel } from "@/molecules/LogPeriodTopPanel"
 import { LogEntries } from "@/organisms/LogEntries"
+import { TrustRobotIdentityModal } from "@/organisms/TrustRobotIdentityModal"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
 import { useFilteredLogs } from "@/redux/logDirectory/hooks"
 
@@ -36,7 +38,17 @@ const bannerPropsFromConsistency = (
       message: `${errorCount} ${errorCount === 1 ? "issue" : "issues"} detected`,
     }
   } else if (logPeriod.attestationConsistency.status !== "consistent") {
-    return { type: "alert", message: "Robot identity is unknown" }
+    return {
+      type: "alert",
+      message: "Robot identity is unknown",
+      linkText: "Authorize robot identity",
+      onLinkClick: () => {
+        void NiceModal.show(TrustRobotIdentityModal, {
+          robotId: logPeriod.robotId,
+          zipPath: logPeriod.filePath,
+        })
+      },
+    }
   } else {
     return { type: "success", message: "All log entries verified" }
   }

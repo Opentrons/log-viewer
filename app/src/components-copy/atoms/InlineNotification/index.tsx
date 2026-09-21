@@ -18,9 +18,9 @@ export interface InlineNotificationProps extends StyleProps {
   /** Optional dynamic width based on contents */
   hug?: boolean
   /** optional handler to show close button/clear alert  */
-  onCloseClick?: (() => void) | MouseEventHandler<HTMLButtonElement>
+  onCloseClick?: (() => unknown) | MouseEventHandler<HTMLButtonElement>
   linkText?: string
-  onLinkClick?: (() => void) | MouseEventHandler<HTMLAnchorElement>
+  onLinkClick?: (() => unknown) | MouseEventHandler<HTMLAnchorElement>
 
   className?: string
 }
