@@ -1,4 +1,11 @@
 import type { State, LogChecker, LogPeriodFile, BlessedRobotId } from "./types"
+
+/**
+ * Send a notification to the app that a new period is known.
+ *
+ * @param {LogChecker["dispatch"]} dispatch: The dispatch function.
+ * @param {LogPeriodFile} file: The file to notify about.
+ */
 export function addTrackedLogPeriod(dispatch: LogChecker["dispatch"], file: LogPeriodFile): void {
   dispatch({
     type: "logDirectory/addTrackedLogPeriod",
@@ -26,6 +33,12 @@ export function addTrackedLogPeriod(dispatch: LogChecker["dispatch"], file: LogP
   })
 }
 
+/**
+ * Send a notification to the app that a new blessed robot ID was found.
+ *
+ * @param {LogChecker["dispatch"]} dispatch: The dispatch function.
+ * @param {BlessedRobotId} blessedId: The ID that was found.
+ */
 export function addBlessedRobotId(
   dispatch: LogChecker["dispatch"],
   blessedId: BlessedRobotId,
@@ -43,6 +56,17 @@ export function addBlessedRobotId(
   })
 }
 
+/**
+ * Send notifications to the app for everything in state, as if a directory
+ * scan was happening.
+ *
+ * This is really important for performance in dev; the frontend reloading
+ * because of hot-module reload otherwise would dispatch quite a few
+ * redundant scans.
+ *
+ * @param {State} state: The shell state.
+ * @param {LogChecker["dispatch"]} dispatch: The dispatch function.
+ */
 export function renotify(state: State, dispatch: LogChecker["dispatch"]): void {
   Object.values(state).forEach(({ periods, blessedRobotIds }) => {
     blessedRobotIds.forEach((robotId) => {

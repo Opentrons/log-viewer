@@ -26,6 +26,11 @@ import type {
  * verifyMessage because the python implementation of general log message
  * export and robot ID export use different structures for their envelopes
  * (snake_case vs camelCase).
+ *
+ * @param {RobotIdJson} message: A raw serialized JSON document with a robot id
+ * @param {KeyObject} key: the public key that should correspodn to the hash
+ * in the robot id.
+ * @return {InternalConsistency} The results of the check.
  */
 export function verifyRobotIdInternalConsistency(
   message: RobotIdJson,
@@ -44,6 +49,21 @@ export function verifyRobotIdInternalConsistency(
 
 /**
  * Verify a message for internal or sequential consistency.
+ *
+ * This function checks an envelope for either internal (hash matches message
+ * content, signature matches hash) or sequential (hash matches message content,
+ * signature matches hash + previous hash) consistency depending on its overload
+ * set. For convenience it returns the hash of the message in addition to the
+ * consistency, so that calls for sequential consistency can be chained (i.e.
+ * {consistency1, actualHash1} = verifyMessage(message1, key, {hash: actualHash0, id: 0}));
+ * {consistency2, actualHash2} = verifyMessage(message2, key, {hash: actualHash1, id: 1});
+ *
+ * @param {SignedMessage} message: The message (envelope) to verify
+ * @param {KeyObject} key: The loaded key that should have signed the message
+ * @param {{hash: Buffer; id: number} | null} previousDetails: The details of the
+ * previous message. If provided, check sequential consistency with the previous
+ * message; if not, check internal consistency only.
+ * @return {consistency: SequentialConsistency<number> | InternalConsistency; actualHash: buffer} The results of the check.
  */
 export function verifyMessage(
   message: SignedMessage,
@@ -160,6 +180,22 @@ function checkCryptoId<CryptoId extends string>(
   }
 }
 
+/**
+ * verifyPeriodIdentity: check the attestation consistency of a log period
+ * as a whole.
+ *
+ * Attestation consistency is whether or not a log period's robot ID matches
+ * one that has been previously blessed. Matching means that the name and
+ * key hash are the same.
+ *
+ * Since logs are stored on user storage, it should be left to the user
+ * explicitly to bless a robot ID for attestation.
+ *
+ * @param {RobotId} robotId: The robot ID from the period.
+ * @param {KeyObject} key: The public key from the period
+ * @param {BlessedRobotId[]} knownRobots: The robot IDs previous blessed by the user.
+ * @return {{robotId: RobotId, identityConsistency: AttestationConsistency}} The results of the check.
+ */
 export function verifyPeriodIdentity(
   robotId: RobotId,
   key: KeyObject,
@@ -223,6 +259,33 @@ function verifyFirstMessage(
   }
 }
 
+/**
+ * verifyMessages: Check the internal consistency of a string of messages.
+ *
+ * This is used for the first pass at verifying a log period. Before all log
+ * periods have been checked, you can't check sequential consistency becauses log
+ * periods have to be parsed to know how to order them. This function checks
+ * the internal consistency of an entire log period in one go, rather than
+ * message by message.
+ *
+ * The result here is the internal consistency of _the log period as a whole_,
+ * not the internal consistency of a given message. For a log period to be
+ * internally consistent,
+ * - The key must match the robot ID (checked elsewhere)
+ * - The log messages must be signed by the key, except the first
+ * - If the first log message is consistent except that its signature cannot
+ *   be verified, this does not break period internal consistency because
+ *   it's likely due to not checking the previous period
+ *
+ * Because of this, the UI can't rely on the period internal consistency alone
+ * to show that a message is good; instead, the period sequential consistency
+ * should be used.
+ *
+ * @param {SignedMessage[]} messages: The log messages from a log period.
+ * @param {KeyObject} key: The key from a log period.
+ * @param {Buffer?} initialHash: The initial hash to append to the first message.
+ * @return {Promise<{consistency: InternalConsistency; finalHash?: Buffer}>} The results of the check.
+ */
 export async function verifyMessages(
   messages: SignedMessage[],
   key: KeyObject,
