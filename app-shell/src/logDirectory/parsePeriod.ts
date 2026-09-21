@@ -24,6 +24,20 @@ async function operateOnFile<T>(
   throw new Error(`Could not find ${fileName}`)
 }
 
+/**
+ * Parse a log period and verify its attestation and internal consistency.
+ *
+ * This function should provide enough data about a period to render its details.
+ * Note that it does not verify sequential consistency so that it can operate
+ * independently.
+ *
+ * @param {Dirent} entry: The log period zip file.
+ * @param {BlessedRobotId[]} knownIdentities: Any known robot IDs that should
+ * be trusted for attestation.
+ *
+ * @returns {Promise<LogPeriodFile | null>} The parsed period, or null if it
+ * could not be parsed.
+ */
 export async function parsePeriod(
   entry: Dirent,
   knownIdentities: BlessedRobotId[],

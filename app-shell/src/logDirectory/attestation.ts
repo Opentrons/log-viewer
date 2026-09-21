@@ -6,6 +6,16 @@ import sanitize from "sanitize-filename"
 import { parseSignedRobotId, parseRobotId } from "./parsers"
 import type { LogPeriodFile, BlessedRobotId } from "./types"
 
+/**
+ * Bless a robot identity file by moving it to the working directory.
+ *
+ * @param {LogPeriodFile} periodFile: The period file whose identity should be
+ * blessed.
+ * @param {string} basePath: The base path of the working directory.
+ * @throws {Error} If the ID is not consistent.
+ * @throws {Error} from FS functions.
+ * @returns {Promise<BlessedRobotId>} The newly blessed ID.
+ */
 export async function blessRobotIdentity(
   periodFile: LogPeriodFile,
   basePath: string,
@@ -21,6 +31,17 @@ export async function blessRobotIdentity(
   return { ...periodFile.robotId.parsed, filePath }
 }
 
+/**
+ * Scan for known blessed robot IDs.
+ *
+ * Only the top level of the directory is scanned; this isn't recursive. Any
+ * file that looks like a robot ID is loaded.
+ *
+ * @param {string} basePath: The base path to scan.
+ * @yields {BlessedRobotId}: Found robot IDs
+ * @returns {AsyncGenerator<BlessedRobotId>}
+ * @generator
+ */
 export async function* scanBlessedRobotIdentities(
   basePath: string,
 ): AsyncGenerator<BlessedRobotId> {

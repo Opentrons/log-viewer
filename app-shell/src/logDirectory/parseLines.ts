@@ -6,6 +6,22 @@ import { parseUserLog, parseLogLine } from "./parsers"
 import type { LogLine } from "./types"
 import { verifyMessage } from "./verifiers"
 
+/**
+ * Parse the lines out of a log file and verify them.
+ *
+ * This is the one-stop-shop solution for producing log lines and their
+ * verification status from a period zip. The period should previously have
+ * had its sequential consistency verified so that the appropriate final hash
+ * of the previous period is known. The hash of the last message from this
+ * generator can be used as the final hash for this period.
+ *
+ * @param {string} path: The path to the log period zip.
+ * @param {KeyObject} key: The signing key that was preloaded.
+ * @param {Buffer} finalHash: The hash of the last line of the period period.
+ * @yields {LogLine} The line parsed from the file.
+ * @returns {AsyncGenerator<LogLine>}
+ * @generator
+ */
 export async function* parseLines(
   path: string,
   key: KeyObject,

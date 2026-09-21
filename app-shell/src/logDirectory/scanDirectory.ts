@@ -8,16 +8,27 @@ import { walk } from "./walk"
 
 const log = createLogger("logDirectory.scanDirectory")
 
-export function buildScanDirectory(
-  state: State,
-  path: string,
-  dispatch: LogChecker["dispatch"],
-): {
+export interface DirectoryScanner {
   scanIdentities: () => Promise<void>
   scanPeriods: () => Promise<void>
   check: () => Promise<void>
   scanDirectory: () => Promise<void>
-} {
+}
+
+/**
+ * Build a scan directory object.
+ *
+ * @params {State} state: The shell staet.
+ * @params {string} path: The base path.
+ * @params {LogChecker["dispatch"]} The dispatch function
+ * @constructor {DirectoryScanner}
+ * @returns {DirectoryScanner}
+ */
+export function buildScanDirectory(
+  state: State,
+  path: string,
+  dispatch: LogChecker["dispatch"],
+): DirectoryScanner {
   const scanIdentities = async () => {
     for await (const blessedId of scanBlessedRobotIdentities(path)) {
       addBlessedRobotId(dispatch, blessedId)

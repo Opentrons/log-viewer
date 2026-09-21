@@ -7,6 +7,16 @@ import type {
   LogPeriodJson,
   RobotIdJson,
 } from "./filetypes"
+
+/**
+ * parseSignedMessage: Check that a message envelope has correct structure.
+ *
+ * Checks the envelope structure only, nothing cryptograhic.
+ *
+ * @param {any} document: A JSON.parse() result that should be a signed message.
+ * @return {SignedMessage} The message envelope, known to be the correct structure and ready for verification.
+ * @throws {Error} If the structure fails. e.message contains a description.
+ */
 export function parseSignedMessage(document: any): SignedMessage {
   if (typeof document?.message !== "string") {
     throw new Error(
@@ -36,6 +46,15 @@ export function parseSignedMessage(document: any): SignedMessage {
   }
 }
 
+/**
+ * parseSignedRobotId: Check that a robot ID envelope has correct structure.
+ *
+ * Checks the envelope structure only, nothing cryptographic.
+ *
+ * @param {any} document: A JSON.parse() result that should be a signed robot ID.
+ * @return {RobotIdJson} The ID envelope, known to be the correct structure and ready for verification.
+ * @throws {Error} If the structure fails. e.message contains a description.
+ */
 export function parseSignedRobotId(document: any): RobotIdJson {
   if (typeof document?.message !== "string") {
     throw new Error(
@@ -68,6 +87,16 @@ export function parseSignedRobotId(document: any): RobotIdJson {
   }
 }
 
+/**
+ * parseRobotId: Check that a robot ID document is correct.
+ *
+ * This takes a message, probably parsed from a robot ID envelope, to the
+ * checked structure of a robot ID.
+ *
+ * @param {any} document: The result of a JSON.parse that should contain a robot ID.
+ * @returns {RobotIdPayload} A robot ID known to be in the correct structure.
+ * @throws {Error} If the structure is incorrect.
+ */
 export function parseRobotId(document: any): RobotIdPayload {
   if (typeof document?.robot_name !== "string") {
     throw new Error(
@@ -91,6 +120,17 @@ export function parseRobotId(document: any): RobotIdPayload {
   }
 }
 
+/**
+ * parseLogOverview: Parse key data from a set of log lines.
+ *
+ * There are a couple magic logs that establish data that the log viewer displays;
+ * this function grabs them. Note that each result is an array; there could be
+ * multiple, whether because the robot booted multiple times and did an update, or
+ * because something went wrong in the log.
+ *
+ * @param {SignedMessage[]} logLines: The logs from a log period.
+ * @returns {{softwareVersions: string[], associatedProtocols: string[]}}
+ */
 export function parseLogOverview(logLines: SignedMessage[]): {
   softwareVersions: string[]
   associatedProtocols: string[]
@@ -107,6 +147,16 @@ export function parseLogOverview(logLines: SignedMessage[]): {
   return { softwareVersions, associatedProtocols }
 }
 
+/**
+ * parseLogPeriodFile: Check the structure of a log period file.
+ *
+ * Note that this only checks file structure; it does not do cryptographic
+ * verification.
+ *
+ * @param {any} document: A result of JSON.parse that should be a log period.
+ * @returns {LogPeriodJson}: The parsed file, now known to be the correct structure.
+ * @throws {Error} If the parse fails. e.message has some details.
+ */
 export function parseLogPeriodFile(document: any): LogPeriodJson {
   if (typeof document?.startedAt !== "string") {
     throw new Error("Cannot parse log start date: startedAt is not present or misformatted")
@@ -170,6 +220,14 @@ function* logParseGenerator(
   }
 }
 
+/**
+ * parseUserLog is a generator producing structure-verified log lines.
+ *
+ * @param {any} document: The log period file to check.
+ * @yields {SignedMessage}: Each line as it's parsed. This will have the correct structure but not be cryptographically verified.
+ * @returns {Generator<SignedMessage>}: The generator to yield through.
+ * @generator
+ */
 export function* parseUserLog(document: any): Generator<SignedMessage> {
   if (typeof document !== "object") {
     throw new Error("Incorrect shape of JSON document")
@@ -180,34 +238,7 @@ export function* parseUserLog(document: any): Generator<SignedMessage> {
   }
   let index = 0
   for (const line of lines) {
-    if (typeof line !== "object") {
-      throw new Error(`Incorrect shape of log line ${index}`)
-    }
-    const message = line?.message
-    const message_hash = line?.message_hash
-    const message_sig = line?.message_sig
-    const sig_version = line?.sig_version
-    if (typeof message !== "string") {
-      throw new Error(`Incorrect type of log message at ${index}: ${typeof message}`)
-    }
-    if (typeof message_hash !== "string") {
-      throw new Error(`Incorrect type of log message hash at ${index}: ${typeof message_hash}`)
-    }
-    if (typeof message_sig !== "string") {
-      throw new Error(`Incorrect type of log message signature at ${index}: ${typeof message_sig}`)
-    }
-    if (typeof sig_version !== "string") {
-      throw new Error(
-        `Incorrect type of log message signature version at ${index}: ${typeof sig_version}`,
-      )
-    }
-    const result = {
-      message,
-      message_hash,
-      message_sig,
-      sig_version,
-    }
-    yield result
+    yield parseSignedMessage(line)
     index++
   }
 }
@@ -215,6 +246,14 @@ export function* parseUserLog(document: any): Generator<SignedMessage> {
 const parseOrStringify = <T>(val: any, pred: (val: any) => val is T): T | string =>
   pred(val) ? val : JSON.stringify(val)
 
+/**
+ * parseLogLine parses an envelope into a structured log.
+ *
+ * It does not do cryptographic verification.
+ *
+ * @param {SignedMessage} inputMessage: The message to check.
+ * @returns {LogMessage}: The parsed message object.
+ */
 export function parseLogLine(inputMessage: SignedMessage): LogMessage {
   const parsedMessage = JSON.parse(inputMessage.message)
   if (typeof parsedMessage !== "object") {
@@ -236,6 +275,15 @@ export function parseLogLine(inputMessage: SignedMessage): LogMessage {
   }
 }
 
+/**
+ * parseCryptoIdentifier parses the strings the robot uses to identify base64 blobs.
+ *
+ * For hashes and signatures, the robot emits strings like `${identifier}:${payload}`.
+ * This is a utility that splits them.
+ *
+ * @param {string} line: The identifier.
+ * @returns {[string, string]} [identifier, payload]
+ */
 export function parseCryptoIdentifier(line: string): [string, string] {
   const parts = line.split(":")
   if (parts.length < 2) {
