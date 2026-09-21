@@ -3,20 +3,43 @@ import * as React from "react"
 
 import { LogStatus } from "@/atoms/LogStatus"
 import { I18nContext } from "@/i18n"
-import type { LogLine } from "@/redux/logDirectory/types"
+import type {
+  LogLine,
+  LogPeriod,
+  SequentialConsistency,
+  AttestationConsistency,
+} from "@/redux/logDirectory/types"
 
 import style from "./logline.module.css"
 export interface LogLineProps {
-  log: LogLine["payload"]
+  period: LogPeriod
+  log: LogLine
   onClick: () => void
   selected: boolean
 }
 
-export function LogLine({ log, selected, onClick }: LogLineProps): React.ReactNode {
+function logStatus(
+  sequential: SequentialConsistency<any>,
+  attestation: AttestationConsistency,
+): React.ComponentProps<typeof LogStatus>["status"] {
+  if (sequential.status === "unverified") {
+    return "unvalidated"
+  }
+  if (sequential.status === "inconsistent") {
+    return "inconsistent"
+  }
+  if (attestation.status === "inconsistent") {
+    return "unverified"
+  }
+  return "consistent"
+}
+
+export function LogLine({ log, selected, onClick, period }: LogLineProps): React.ReactNode {
   const { dateFormatter } = React.useContext(I18nContext)
-  const date = new Date(log.loggedAt)
+  const date = new Date(log.payload.loggedAt)
   // @ts-expect-error: i don't want to talk about it
   const formattedDate = isNaN(date) ? log.loggedAt : dateFormatter.format(date)
+
   return (
     <button
       onClick={onClick}
@@ -26,11 +49,11 @@ export function LogLine({ log, selected, onClick }: LogLineProps): React.ReactNo
       })}
     >
       <p className={clsx(style.log_field, style.text_field)}>{formattedDate}</p>
-      <p className={clsx(style.log_field, style.text_field)}>{log.action}</p>
-      <p className={clsx(style.log_field, style.text_field)}>{log.userName}</p>
-      <p className={clsx(style.log_field, style.text_field)}>{log.legalName}</p>
+      <p className={clsx(style.log_field, style.text_field)}>{log.payload.action}</p>
+      <p className={clsx(style.log_field, style.text_field)}>{log.payload.userName}</p>
+      <p className={clsx(style.log_field, style.text_field)}>{log.payload.legalName}</p>
       <div className={style.log_field}>
-        <LogStatus status="unverified" />
+        <LogStatus status={logStatus(log.sequentialConsistency, period.attestationConsistency)} />
       </div>
     </button>
   )

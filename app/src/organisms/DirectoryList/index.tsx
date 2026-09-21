@@ -2,11 +2,13 @@ import { clsx } from "clsx"
 import * as React from "react"
 
 import { TreeItem } from "@/atoms/TreeItem"
+import { Chip } from "@/components-copy/atoms/Chip"
 import { I18nContext } from "@/i18n"
 import {
   useLogPeriodsForRobot,
   useSelectedLogPeriod,
   useKnownRobots,
+  useIdentitiesForRobot,
 } from "@/redux/logDirectory/hooks"
 import { setSelectedLogPeriod, loadLogs } from "@/redux/logDirectory/logDirectorySlice"
 import { useAppDispatch } from "@/redux/store"
@@ -16,11 +18,13 @@ import style from "./directorylist.module.css"
 interface LogPeriodPathProps {
   path: string
   dateString: string
+  status: "normal" | "warning" | "error"
 }
 function LogPeriodPath(props: LogPeriodPathProps): React.ReactNode {
   const selectedPeriod = useSelectedLogPeriod()
   const isSelected = selectedPeriod != null && selectedPeriod.filePath === props.path
   const dispatch = useAppDispatch()
+
   return (
     <TreeItem
       type="file"
@@ -29,7 +33,8 @@ function LogPeriodPath(props: LogPeriodPathProps): React.ReactNode {
         return isSelected ? Promise.resolve() : dispatch(loadLogs({ zipPath: props.path }))
       }}
       active={isSelected}
-      text={props.dateString}
+      text={<p className={style.tree_item_text}>{props.dateString}</p>}
+      status={props.status}
     />
   )
 }
@@ -39,15 +44,34 @@ interface RobotContainerProps {
 }
 function RobotContainer(props: RobotContainerProps): React.ReactNode {
   const periodsForRobot = useLogPeriodsForRobot(props.robotName)
+  const identitiesForRobot = useIdentitiesForRobot(props.robotName)
   const [displayed, setDisplayed] = React.useState<boolean>(false)
   const { dateFormatter } = React.useContext(I18nContext)
   return (
     <div className={style.robot_container}>
-      <TreeItem
-        text={props.robotName}
-        type={displayed ? "directory-expanded" : "directory-collapsed"}
-        onClick={() => setDisplayed(!displayed)}
-      />
+      <div className={style.robot_name_container}>
+        <TreeItem
+          text={<p className={style.tree_item_text}>{props.robotName}</p>}
+          type={displayed ? "directory-expanded" : "directory-collapsed"}
+          onClick={() => setDisplayed(!displayed)}
+          status={
+            identitiesForRobot.length === 0 ? (
+              <div className={style.chip_container}>
+                <Chip
+                  background
+                  iconName="error"
+                  chipSize="small"
+                  type="warning"
+                  text="Unknown ID"
+                  hasIcon
+                />
+              </div>
+            ) : (
+              "normal"
+            )
+          }
+        />
+      </div>
       <div
         className={clsx({
           [style.log_entries_for_robot_container]: displayed,
@@ -59,6 +83,13 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
             <LogPeriodPath
               path={filePath}
               dateString={dateFormatter.format(new Date(period.endDate))}
+              status={
+                period.sequentialConsistency.status === "consistent"
+                  ? period.attestationConsistency.status === "consistent"
+                    ? "normal"
+                    : "warning"
+                  : "error"
+              }
               key={`${props.robotName}-${filePath}`}
             />
           )
@@ -74,9 +105,10 @@ export function DirectoryList(): React.ReactNode {
   return (
     <div className={style.overall_container}>
       <TreeItem
-        text="Device"
+        text={<p className={style.tree_item_text}>Device</p>}
         type={deviceExpanded ? "directory-expanded" : "directory-collapsed"}
         onClick={() => setDeviceExpanded(!deviceExpanded)}
+        status="normal"
       />
       {deviceExpanded
         ? knownRobots.map((robotName) => <RobotContainer robotName={robotName} key={robotName} />)

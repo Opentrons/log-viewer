@@ -3,7 +3,7 @@ import * as React from "react"
 
 import { LogLine } from "@/atoms/LogLine"
 import { Skeleton } from "@/atoms/Skeleton"
-import { useFilteredLogs, useSelectedLog } from "@/redux/logDirectory/hooks"
+import { useFilteredLogs, useSelectedLog, useSelectedLogPeriod } from "@/redux/logDirectory/hooks"
 import { setSelectedLogLine } from "@/redux/logDirectory/logDirectorySlice"
 import { useAppDispatch } from "@/redux/store"
 
@@ -18,6 +18,7 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const selectedLogLine = useSelectedLog()
   const dispatch = useAppDispatch()
+  const selectedPeriod = useSelectedLogPeriod()
   const [itemCount, setItemCount] = React.useState(0)
   const [shimmerWidth, setShimmerWidth] = React.useState(0)
   React.useEffect(() => {
@@ -64,7 +65,8 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
         {logs.status === "loaded" &&
           logs.filteredLines.map((logLine) => (
             <LogLine
-              log={logLine.payload}
+              log={logLine}
+              period={selectedPeriod!}
               key={logLine.id}
               selected={selectedLogLine?.id === logLine.id}
               onClick={() =>
