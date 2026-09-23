@@ -1,28 +1,43 @@
 import * as React from "react"
 
 import { LogDetailItem } from "@/atoms/LogDetailItem"
+import { InlineNotification } from "@/components-copy/atoms/InlineNotification"
 import { I18nContext } from "@/i18n"
 import type { LogLine } from "@/redux/logDirectory/types"
 
 export interface LogMessageDetailProps {
-  message: LogLine["payload"]
+  payload: LogLine["payload"]
+  errorMessage?: string | null
 }
-
 import style from "./logmessagedetail.module.css"
 
-export function LogMessageDetail({ message }: LogMessageDetailProps): React.ReactNode {
+function LogLineStatusBanner({
+  errorMessage,
+}: {
+  errorMessage?: string | null
+}): React.ReactNode | null {
+  if (errorMessage == null) {
+    return null
+  }
+  return <InlineNotification type="error" message={errorMessage} />
+}
+
+export function LogMessageDetail({
+  payload,
+  errorMessage,
+}: LogMessageDetailProps): React.ReactNode {
   const { dateFormatter } = React.useContext(I18nContext)
-  const date = new Date(message.loggedAt)
+  const date = new Date(payload.loggedAt)
   // @ts-expect-error: i don't want to talk about it
-  const formattedDate = isNaN(date) ? message.loggedAt : dateFormatter.format(date)
+  const formattedDate = isNaN(date) ? payload.loggedAt : dateFormatter.format(date)
   return (
     <div className={style.container}>
+      <LogLineStatusBanner errorMessage={errorMessage} />
       <LogDetailItem title="Timestamp" content={formattedDate} />
-      <LogDetailItem title="Action" content={message.action} />
-      <LogDetailItem title="User" content={message.userName} />
-      <LogDetailItem title="Legal Name" content={message.legalName} />
-      <LogDetailItem title="Message" content={message.message} />
-      <LogDetailItem title="Reason" content={message.userNote} />
+      <LogDetailItem title="Action" content={payload.action} />
+      <LogDetailItem title="User" content={payload.userName} />
+      <LogDetailItem title="Legal Name" content={payload.legalName} />
+      <LogDetailItem title="Reason" content={payload.userNote} />
     </div>
   )
 }
