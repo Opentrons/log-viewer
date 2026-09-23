@@ -1,5 +1,11 @@
 import { clsx } from "clsx"
-import type { MouseEvent, MouseEventHandler, ReactNode } from "react"
+import type {
+  MouseEvent,
+  MouseEventHandler,
+  ReactNode,
+  KeyboardEvent,
+  KeyboardEventHandler,
+} from "react"
 import { JSX } from "react"
 
 import type { StyleProps } from "../primitives/types"
@@ -12,6 +18,8 @@ export interface ModalShellProps extends StyleProps {
   children: ReactNode
   /** Optional close on outside click **/
   onOutsideClick?: MouseEventHandler
+  /** Optional close on escape press **/
+  onEscapePress?: KeyboardEventHandler
   /** Optional header */
   header?: ReactNode
   /** Optional footer */
@@ -51,6 +59,7 @@ export function ModalShell(props: ModalShellProps): JSX.Element {
     position = "center",
     showOverlay = true,
     noPadding = false,
+    onEscapePress,
     ...styleProps
   } = props
 
@@ -69,6 +78,13 @@ export function ModalShell(props: ModalShellProps): JSX.Element {
       onClick={(e: MouseEvent) => {
         e.stopPropagation()
         if (onOutsideClick != null) onOutsideClick(e)
+      }}
+      onKeyUp={(e: KeyboardEvent) => {
+        if (e.key === "Escape" && onEscapePress != null) {
+          console.log("handling escape key event")
+          onEscapePress(e)
+          e.stopPropagation()
+        }
       }}
     >
       <div
@@ -90,6 +106,7 @@ export function ModalShell(props: ModalShellProps): JSX.Element {
           onClick={(e: MouseEvent) => {
             e.stopPropagation()
           }}
+
           {...styleProps}
         >
           {header != null ? <div className={styles.header}>{header}</div> : null}

@@ -1,4 +1,5 @@
-import type { MouseEventHandler, ReactNode, JSX } from "react"
+import { FocusTrap } from "focus-trap-react"
+import type { ReactNode, JSX } from "react"
 
 import { COLORS } from "../helix-design-system"
 import type { IconProps } from "../icons/Icon"
@@ -14,7 +15,7 @@ type ModalType = "info" | "warning" | "error"
 
 export interface ModalProps extends StyleProps {
   type?: ModalType
-  onClose?: MouseEventHandler
+  onClose?: () => unknown
   closeOnOutsideClick?: boolean
   title?: ReactNode
   titleElement1?: JSX.Element
@@ -51,7 +52,6 @@ export const Modal = (props: ModalProps): JSX.Element => {
     hasHeader = true,
     ...styleProps
   } = props
-
   const iconColor = (type: ModalType): string => {
     let iconColor: string = ""
     switch (type) {
@@ -83,20 +83,30 @@ export const Modal = (props: ModalProps): JSX.Element => {
       backgroundColor={COLORS.white}
     />
   )
+
   return (
-    <ModalShell
-      position={position}
-      showOverlay={showOverlay}
-      zIndexOverlay={zIndexOverlay}
-      width={styleProps.width ?? "31.25rem"}
-      header={hasHeader ? modalHeader : undefined}
-      onOutsideClick={(closeOnOutsideClick ?? false) ? onClose : undefined}
-      {...styleProps}
-      footer={footer}
+    <FocusTrap
+      focusTrapOptions={{
+        onDeactivate: closeOnOutsideClick ? onClose : undefined,
+        clickOutsideDeactivates: closeOnOutsideClick,
+        escapeDeactivates: closeOnOutsideClick,
+      }}
     >
-      <div className={styles.children} style={{ padding: childrenPadding }}>
-        {children}
-      </div>
-    </ModalShell>
+      <ModalShell
+        position={position}
+        showOverlay={showOverlay}
+        zIndexOverlay={zIndexOverlay}
+        width={styleProps.width ?? "31.25rem"}
+        header={hasHeader ? modalHeader : undefined}
+        onOutsideClick={(closeOnOutsideClick ?? false) ? onClose : undefined}
+        onEscapePress={(closeOnOutsideClick ?? false) ? onClose : undefined}
+        {...styleProps}
+        footer={footer}
+      >
+        <div className={styles.children} style={{ padding: childrenPadding }}>
+          {children}
+        </div>
+      </ModalShell>
+    </FocusTrap>
   )
 }
