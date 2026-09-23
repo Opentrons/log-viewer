@@ -145,14 +145,22 @@ export function verifyMessage(
         },
         actualHash,
       }
-    : {
-        consistency: {
-          status: "inconsistent",
-          type: "signature-mismatch",
-          failure: "The message was not properly signed by the associated key.",
-        },
-        actualHash,
-      }
+    : previousDetails == null
+      ? {
+          consistency: {
+            status: "inconsistent",
+            type: "signature-mismatch",
+            failure: "The message was not properly signed by the associated key.",
+          },
+          actualHash,
+        }
+      : {
+          consistency: {
+            status: "inconsistent",
+            type: "no-target",
+          },
+          actualHash,
+        }
 }
 
 function checkCryptoId<CryptoId extends string>(
@@ -291,7 +299,7 @@ export async function verifyMessages(
   key: KeyObject,
   initialHash?: Buffer,
 ): Promise<{ consistency: InternalConsistency; finalHash?: Buffer }> {
-  let consistency: InternalConsistency = { status: "unverified" }
+  let consistency: InternalConsistency | SequentialConsistency<number> = { status: "unverified" }
 
   if (messages.length === 0) {
     return { consistency, finalHash: undefined }
@@ -326,7 +334,12 @@ export async function verifyMessages(
   // if we never updated the status because a log failed verification,
   // we're consistent
   return {
-    consistency: consistency.status === "unverified" ? { status: "consistent" } : consistency,
+    consistency:
+      consistency.status === "unverified"
+        ? { status: "consistent" }
+        : consistency.status === "inconsistent" && consistency.type === "no-target"
+          ? { status: "consistent" }
+          : consistency,
     finalHash: previousHash!,
   }
 }

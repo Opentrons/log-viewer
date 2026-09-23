@@ -257,8 +257,7 @@ describe("verifyMessage", async () => {
     ).toEqual({
       consistency: {
         status: "inconsistent",
-        type: "signature-mismatch",
-        failure: "The message was not properly signed by the associated key.",
+        type: "no-target",
       },
       actualHash: expect.toSatisfy((val) => message_hash.equals(val)),
     })

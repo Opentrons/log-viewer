@@ -47,11 +47,12 @@ export async function* checkSequentialConsistency(
       }
     } else if (
       first.sequentialConsistency.status === "inconsistent" &&
-      first.sequentialConsistency.type !== "signature-mismatch"
+      first.sequentialConsistency.type !== "no-target"
     ) {
       // if the sequential consistency of the first element of a log period is
-      // inconsistent for reasons other than an inconsistent signature, then
-      // finding the previous log period won't help
+      // inconsistent for reasons other than no-target (aka, internal consistency
+      // is violated without even considering sequential consistency), finding the
+      // previous log period won't help
       yield { ...checkedPeriod, sequentialConsistency: first.sequentialConsistency }
     } else {
       // if the sequential consistency of the first element is inconsistent
