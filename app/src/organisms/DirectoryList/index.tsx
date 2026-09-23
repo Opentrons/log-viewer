@@ -2,13 +2,11 @@ import { clsx } from "clsx"
 import * as React from "react"
 
 import { TreeItem } from "@/atoms/TreeItem"
-import { Chip } from "@/components-copy/atoms/Chip"
 import { I18nContext } from "@/i18n"
 import {
   useLogPeriodsForRobot,
   useSelectedLogPeriod,
   useKnownRobots,
-  useIdentitiesForRobot,
 } from "@/redux/logDirectory/hooks"
 import { setSelectedLogPeriod, loadLogs } from "@/redux/logDirectory/logDirectorySlice"
 import { useAppDispatch } from "@/redux/store"
@@ -44,7 +42,6 @@ interface RobotContainerProps {
 }
 function RobotContainer(props: RobotContainerProps): React.ReactNode {
   const periodsForRobot = useLogPeriodsForRobot(props.robotName)
-  const identitiesForRobot = useIdentitiesForRobot(props.robotName)
   const [displayed, setDisplayed] = React.useState<boolean>(false)
   const { dateFormatter } = React.useContext(I18nContext)
   return (
@@ -54,22 +51,7 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
           text={<p className={style.tree_item_text}>{props.robotName}</p>}
           type={displayed ? "directory-expanded" : "directory-collapsed"}
           onClick={() => setDisplayed(!displayed)}
-          status={
-            identitiesForRobot.length === 0 ? (
-              <div className={style.chip_container}>
-                <Chip
-                  background
-                  iconName="error"
-                  chipSize="small"
-                  type="warning"
-                  text="Unknown ID"
-                  hasIcon
-                />
-              </div>
-            ) : (
-              "normal"
-            )
-          }
+          status="normal"
         />
       </div>
       <div
