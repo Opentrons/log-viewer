@@ -1,0 +1,91 @@
+.overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  cursor: default;
+}
+
+.overlay_show_background {
+  background-color: var(--transparent-black-40);
+}
+
+.overlay_no_background {
+  background-color: var(--transparent);
+}
+
+.content_area {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.content_area_center {
+  align-items: center;
+  justify-content: center;
+}
+
+.content_area_end {
+  align-items: end;
+  justify-content: flex-end;
+}
+
+.content_area_padding {
+  padding: 16px;
+}
+
+.modal_area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 100%;
+  width: 100%;
+  border-radius: var(--border-radius-8);
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.23);
+  background-color: var(--white);
+  border: none;
+}
+
+.modal_area_full_page {
+  height: 100%;
+}
+
+.modal_area_fill {
+  height: auto;
+}
+
+.header {
+  flex-shrink: 0;
+  overflow: hidden;
+  background-color: white;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.footer {
+  flex-shrink: 0;
+  overflow: hidden;
+  background-color: white;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.modal_body {
+  flex: auto;
+  min-height: 0;
+}
+
+.modal_body_overflow_visible {
+  overflow-y: visible;
+}
+
+.modal_body_overflow_auto {
+  overflow-y: auto;
+}
