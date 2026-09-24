@@ -265,10 +265,7 @@ function verifyFirstMessage(
   if (initialHash != null) {
     return { consistency, actualHash }
   } else {
-    if (
-      consistency.status === "inconsistent" &&
-      consistency.type === "signature-mismatch"
-    ) {
+    if (consistency.status === "inconsistent" && consistency.type === "signature-mismatch") {
       return { consistency: { status: "consistent" } as const, actualHash }
     }
     return { consistency: omit(consistency, "previousId") as InternalConsistency, actualHash }
@@ -306,7 +303,14 @@ function verifyFirstForInternal(
   } else {
     const { consistency, actualHash } = verifyFirstMessage(message, key, initialHash)
     if (consistency.status === "inconsistent" && consistency.type === "no-target") {
-      return { consistency: { status: "inconsistent", type: 'signature-mismatch', failure: 'Invalid signature using provided previous hash' }, actualHash }
+      return {
+        consistency: {
+          status: "inconsistent",
+          type: "signature-mismatch",
+          failure: "Invalid signature using provided previous hash",
+        },
+        actualHash,
+      }
     } else {
       return { consistency, actualHash }
     }
@@ -361,7 +365,7 @@ export async function verifyMessages(
   }
   let previousHash = firstHash
   let previousIndex = 0
-  
+
   for (const message of messages.slice(1)) {
     const { consistency: status, actualHash } = verifyMessage(message, key, {
       hash: previousHash,

@@ -398,7 +398,7 @@ describe("verifyMessages", async () => {
       consistency: {
         status: "inconsistent",
         type: "signature-mismatch",
-        failure: 'Invalid signature using provided previous hash'
+        failure: "Invalid signature using provided previous hash",
       },
       finalHash: expect.any(Buffer),
     })
