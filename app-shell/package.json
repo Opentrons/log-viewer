@@ -58,13 +58,13 @@
         "zip"
       ],
       "category": "public.app-category.productivity",
-      "icon": "assets/log-verifier.icon"
+      "icon": "icons/log-verifier.icon"
     },
     "win": {
       "target": [
         "msi"
       ],
-      "icon": "assets/logverifier.ico",
+      "icon": "icons/logverifier.ico",
       "azureSignOptions": {
         "publisherName": "OPENTRONS LABWORKS INC.",
         "codeSigningAccountName": "desktop-app-signing",
