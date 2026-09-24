@@ -15,6 +15,7 @@ import type { Config } from "./config/types"
 import { createLogger } from "./log"
 import { initialize as initializeLogChecker, refresh as refreshLogChecker } from "./logDirectory"
 import type { LogChecker } from "./logDirectory/types"
+import { saveToPdf } from "./pdfExport"
 
 const log = createLogger("main")
 app.once("window-all-closed", () => {
@@ -122,6 +123,22 @@ void app
                       })
                       .catch((err) => reject(err)),
                   )
+              })
+          }),
+        exportPdf: (_event: unknown, payload: { zipPath: string }) =>
+          new Promise<{ savedTo: string }>((resolve, reject) => {
+            log.info(`save pdf of ${payload.zipPath}`)
+            return dialog
+              .showSaveDialog(mainWindow, {
+                title: `Export ${payload.zipPath} as PDF`,
+                filters: [{ name: "PDF Files", extensions: [".pdf"] }],
+                properties: ["createDirectory", "showOverwriteConfirmation"],
+              })
+              .then((saveResult) => {
+                if (saveResult.filePath === "") {
+                  return Promise.reject()
+                }
+                return saveToPdf(payload.zipPath, saveResult.filePath, logChecker)
               })
           }),
       },
