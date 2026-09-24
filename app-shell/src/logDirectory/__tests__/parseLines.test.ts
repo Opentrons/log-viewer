@@ -24,8 +24,7 @@ describe("parseLines happy path", async () => {
       {
         sequentialConsistency: {
           status: "inconsistent",
-          failure: "The message was not properly signed by the associated key.",
-          type: "signature-mismatch",
+          type: "no-target",
         },
         envelope: {
           message:

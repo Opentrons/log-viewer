@@ -388,7 +388,7 @@ describe("verifyMessages", async () => {
   it("should provide sequential consistency when given a trailing hash", async () => {
     const { finalHash } = await verifyMessages(messages1, key)
     expect(await verifyMessages(messages2, key, finalHash)).toEqual({
-      consistency: { status: "consistent" },
+      consistency: { status: "consistent", previousId: -1 },
       finalHash: expect.any(Buffer),
     })
   })
@@ -398,7 +398,7 @@ describe("verifyMessages", async () => {
       consistency: {
         status: "inconsistent",
         type: "signature-mismatch",
-        failure: "The message was not properly signed by the associated key.",
+        failure: 'Invalid signature using provided previous hash'
       },
       finalHash: expect.any(Buffer),
     })
