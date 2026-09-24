@@ -1,4 +1,4 @@
-import type { State, LogPeriodFile } from "./types"
+import type { State, LogPeriodFile, StateEntry } from "./types"
 /**
  * Find a period entry in the shell state.
  *
@@ -8,16 +8,24 @@ import type { State, LogPeriodFile } from "./types"
  * @throws {Error} If the file has no entry.
  */
 export function findPeriod(state: State, logToFind: string): LogPeriodFile {
+  const [robotName, robotEntry] = findEntryForPeriod(state, logToFind)
+  const foundPeriod = robotEntry.periods.find((file) => file.periodZip === logToFind)
+  if (foundPeriod == null) {
+    throw new Error(`Could not find log ${logToFind} in robot ${robotName}`)
+  }
+  return foundPeriod
+}
+
+export function findEntryForPeriod(state: State, logToFind: string): [string, StateEntry] {
   const foundRobot = Object.entries(state).find(
     ([_, entry]) => entry.periods.find((file) => file.periodZip === logToFind) != null,
   )
   if (foundRobot == null) {
     throw new Error(`Could not find robot containing log ${logToFind}`)
   }
-  const [robotName, robotEntry] = foundRobot
-  const foundPeriod = robotEntry.periods.find((file) => file.periodZip === logToFind)
-  if (foundPeriod == null) {
-    throw new Error(`Could not find log ${logToFind} in robot ${robotName}`)
-  }
-  return foundPeriod
+  return foundRobot
+}
+
+export function findRobotForPeriod(state: State, logToFind: string): string {
+  return findEntryForPeriod(state, logToFind)[0]
 }

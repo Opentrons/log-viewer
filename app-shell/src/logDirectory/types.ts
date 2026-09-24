@@ -18,14 +18,16 @@ export type {
 
 import type { SignedMessage, RobotIdJson } from "./filetypes"
 
+export interface StateEntry {
+  periods: LogPeriodFile[]
+  blessedRobotIds: BlessedRobotId[]
+}
+
 /**
  * The state of the shell.
  */
 export interface State {
-  [robotName: string]: {
-    periods: LogPeriodFile[]
-    blessedRobotIds: BlessedRobotId[]
-  }
+  [robotName: string]: StateEntry
 }
 
 /**
