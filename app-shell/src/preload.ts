@@ -30,4 +30,7 @@ contextBridge.exposeInMainWorld("shell", {
   blessRobotIdentity: (payload: { zipPath: string }): Promise<BlessedRobotId> => {
     return ipcRenderer.invoke("blessRobotIdentity", { zipPath: payload.zipPath })
   },
+  exportPdf: (payload: { zipPath: string }): Promise<{ savedTo: string }> => {
+    return ipcRenderer.invoke("exportPdf", { zipPath: payload.zipPath })
+  },
 } as RemoteAPI)

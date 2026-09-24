@@ -163,6 +163,8 @@ export const blessRobotIdentity = createAsyncThunk(
   api.blessRobotIdentity,
 )
 
+export const exportPdf = createAsyncThunk("logDirectory/exportPdf", api.exportPdf)
+
 export const {
   setLogFilter,
   setPath,
