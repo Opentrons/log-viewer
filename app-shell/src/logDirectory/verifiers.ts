@@ -337,7 +337,7 @@ export async function verifyMessages(
     consistency:
       consistency.status === "unverified"
         ? { status: "consistent" }
-        : consistency.status === "inconsistent" && consistency.type === "no-target"
+        : consistency.status === "inconsistent" && (consistency as any).type === "no-target"
           ? { status: "consistent" }
           : consistency,
     finalHash: previousHash!,
