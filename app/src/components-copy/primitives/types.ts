@@ -120,6 +120,7 @@ export interface StyleProps
     PositionProps,
     TransitionProps {
   className?: string
+  style?: CSSProperties
 }
 
 export type PrimitiveComponent<

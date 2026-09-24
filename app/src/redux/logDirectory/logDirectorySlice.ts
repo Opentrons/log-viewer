@@ -150,10 +150,18 @@ export const logDirectorySlice = createSlice({
         error: `${action.error?.name ?? "unknown"}: ${action.error?.message ?? "no message"}`,
       }
     })
+    builder.addCase(blessRobotIdentity.fulfilled, (state, action) => {
+      state.contentsByRobot[action.payload.name].blessedIdentityFiles.push(action.payload)
+    })
   },
 })
 
 export const loadLogs = createAsyncThunk("logDirectory/loadLogs", api.loadLogsForPeriod)
+
+export const blessRobotIdentity = createAsyncThunk(
+  "logDirectory/blessRobotIdentity",
+  api.blessRobotIdentity,
+)
 
 export const {
   setLogFilter,

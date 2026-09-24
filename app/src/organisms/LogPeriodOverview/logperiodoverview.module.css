@@ -1,8 +1,27 @@
-.container {
+.outer_container {
   display: flex;
   height: 100%;
   width: 100%;
   flex-direction: column;
+  gap: 4px;
+}
+
+.banner_container {
+  width: 100%;
+  flex-basis: min-content;
+  flex-shrink: 0;
+  flex-grow: 0;
+  padding: 12px 12px 0px;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  flex-basis: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex-direction: column;
+  position: relative;
 }
 
 .overflow_button_container {

@@ -1,9 +1,11 @@
 import { blessRobotIdentity } from "./attestation"
 import { renotify } from "./notify"
+import { addBlessedRobotId, updateLogPeriodIdentity } from "./notify"
 import { parseLines } from "./parseLines"
 import { buildScanDirectory } from "./scanDirectory"
 import { findPeriod } from "./stateHelpers"
 import type { State, LogChecker, LogPeriodFile } from "./types"
+import { verifyPeriodIdentity } from "./verifiers"
 
 /**
  * Refresh a log checker by disposing of one and creating a new one.
@@ -39,6 +41,18 @@ export function initialize(dispatch: LogChecker["dispatch"], basePath: string): 
     blessRobotIdentity: async (zipPath) => {
       try {
         const blessedIdentity = await blessRobotIdentity(findPeriod(state, zipPath), basePath)
+        state[blessedIdentity.robot_name].blessedRobotIds.push(blessedIdentity)
+        state[blessedIdentity.robot_name].periods.forEach((period) => {
+          const { identityConsistency } = verifyPeriodIdentity(
+            period.robotId,
+            period.publicKey,
+            state[blessedIdentity.robot_name].blessedRobotIds,
+          )
+          period.identityConsistency = identityConsistency
+          updateLogPeriodIdentity(period, dispatch)
+          return blessedIdentity
+        })
+        addBlessedRobotId(dispatch, blessedIdentity)
         return {
           name: blessedIdentity.robot_name,
           publicKeyHash: blessedIdentity.public_hash,

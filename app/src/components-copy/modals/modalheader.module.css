@@ -1,0 +1,46 @@
+.styled_modal_header {
+  padding: var(--spacing-16) var(--spacing-24);
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.header_title_bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+}
+
+.title_text {
+  font-size: var(--font-size-helix-product-body-large);
+  line-height: var(--line-height-helix-product-body-large);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+.close_button_container {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.close_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.875rem;
+  width: 1.625rem;
+  height: 1.625rem;
+  &:hover {
+    background-color: var(--grey-30);
+  }
+
+  &:active {
+    background-color: var(--grey-35);
+  }
+}
+
+.divider {
+  display: block;
+  border-bottom: 1px solid var(--grey-30);
+  margin: 0;
+  width: 100%;
+}

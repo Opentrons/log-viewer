@@ -1,5 +1,6 @@
+import * as NiceModal from "@ebay/nice-modal-react"
 import * as React from "react"
-import { Provider } from "react-redux"
+import * as ReactRedux from "react-redux"
 
 import { I18nContext, I18N_DATETIME_SPEC, buildFormatter } from "@/i18n"
 import { AppContainer } from "@/molecules/AppContainer"
@@ -13,20 +14,22 @@ export function App(): React.ReactNode {
   api.registerDispatch(store.dispatch)
   api.setUiStatus("ready")
   return (
-    <Provider store={store}>
-      <AppContainer>
-        <I18nContext
-          value={{
-            dateFormatter: {
-              format: buildFormatter(new Intl.DateTimeFormat(undefined, I18N_DATETIME_SPEC)),
-            },
-          }}
-        >
-          <FileSidebar />
-          <MainWindow />
-          <LogDetailSidebar />
-        </I18nContext>
-      </AppContainer>
-    </Provider>
+    <ReactRedux.Provider store={store}>
+      <NiceModal.Provider>
+        <AppContainer>
+          <I18nContext
+            value={{
+              dateFormatter: {
+                format: buildFormatter(new Intl.DateTimeFormat(undefined, I18N_DATETIME_SPEC)),
+              },
+            }}
+          >
+            <FileSidebar />
+            <MainWindow />
+            <LogDetailSidebar />
+          </I18nContext>
+        </AppContainer>
+      </NiceModal.Provider>
+    </ReactRedux.Provider>
   )
 }

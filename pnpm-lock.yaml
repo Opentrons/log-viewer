@@ -35,6 +35,9 @@ importers:
 
   app:
     dependencies:
+      '@ebay/nice-modal-react':
+        specifier: 1.2.13
+        version: 1.2.13(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fontsource-variable/reddit-mono':
         specifier: 5.3.0
         version: 5.3.0
@@ -53,6 +56,9 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
+      focus-trap-react:
+        specifier: 12.0.3
+        version: 12.0.3(@types/react-dom@19.2.0(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -555,6 +561,12 @@ packages:
 
   '@dabh/diagnostics@2.0.8':
     resolution: {integrity: sha512-R4MSXTVnuMzGD7bzHdW2ZhhdPC/igELENcq5IjEverBvq5hn1SXCWcsi6eSsdWP0/Ur+SItRRjAktmdoX/8R/Q==}
+
+  '@ebay/nice-modal-react@1.2.13':
+    resolution: {integrity: sha512-jx8xIWe/Up4tpNuM02M+rbnLoxdngTGk3Y8LjJsLGXXcSoKd/+eZStZcAlIO/jwxyz/bhPZnpqPJZWAmhOofuA==}
+    peerDependencies:
+      react: '>16.8.0'
+      react-dom: '>16.8.0'
 
   '@electron-internal/extract-zip@1.0.5':
     resolution: {integrity: sha512-+bqFCP98pLI0Tt0XQo1TmlXtwjWchISndDOxCkEcIuUgXWpBnLyRI+2DU+mesvnMMX6L1XDqYNA0lXNDHd/yiA==}
@@ -1824,6 +1836,17 @@ packages:
   fn.name@1.1.0:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
 
+  focus-trap-react@12.0.3:
+    resolution: {integrity: sha512-4eXtzhRTtFrxle9Tkl0Wkj8SFJnWz3i3yb5e53Mdn4E8XZQ/Lzqom9U4uUAJ8wd7yDmyGVP96dxwQZXLXd4sbg==}
+    peerDependencies:
+      '@types/react': ^18.0.0 || ^19.0.0
+      '@types/react-dom': ^18.0.0 || ^19.0.0
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+
+  focus-trap@8.2.2:
+    resolution: {integrity: sha512-qV0g8hRYBqgACcFOH3f9wXc4zPKhr/0z9RI2a6ZijZ72EeBi4g8oBy8zAWuUR1TsMpOzwpUMFvjdasrC41Joug==}
+
   form-data@4.0.6:
     resolution: {integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==}
     engines: {node: '>= 6'}
@@ -3025,6 +3048,9 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  tabbable@6.5.0:
+    resolution: {integrity: sha512-wieBHXygIm7OyQOu5hQlkk62/WyCFYGlWg7L6/ZCUZwx0o398Zkn4pVmMyfYhfMG8kGrj/Krt8eIk6UKC6VzwA==}
+
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
@@ -3802,6 +3828,11 @@ snapshots:
       '@so-ric/colorspace': 1.1.6
       enabled: 2.0.0
       kuler: 2.0.0
+
+  '@ebay/nice-modal-react@1.2.13(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   '@electron-internal/extract-zip@1.0.5': {}
 
@@ -4948,6 +4979,19 @@ snapshots:
 
   fn.name@1.1.0: {}
 
+  focus-trap-react@12.0.3(@types/react-dom@19.2.0(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      '@types/react': 19.2.8
+      '@types/react-dom': 19.2.0(@types/react@19.2.8)
+      focus-trap: 8.2.2
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      tabbable: 6.5.0
+
+  focus-trap@8.2.2:
+    dependencies:
+      tabbable: 6.5.0
+
   form-data@4.0.6:
     dependencies:
       asynckit: 0.4.0
@@ -6070,6 +6114,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  tabbable@6.5.0: {}
 
   tagged-tag@1.0.0: {}
 
