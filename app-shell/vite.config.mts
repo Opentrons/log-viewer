@@ -6,7 +6,7 @@ export default defineConfig(async (): Promise<UserConfig> => {
   return {
     // this makes imports relative rather than absolute
     base: "",
-    publicDir: false,
+    publicDir: "assets",
     build: {
       // Relative to the root
       ssr: "src/main.ts",
