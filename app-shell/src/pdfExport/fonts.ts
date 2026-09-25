@@ -1,12 +1,12 @@
 import path from "path"
 
 import { flattenDeep, last } from "lodash"
-import type { PDFDocument, PDFFont } from "pdf-lib"
+import type {Font} from 'fontkit'
 
 import { FONTS } from "./constants"
 import type { AvailableFont, LoadedFonts, FontStyle, FontWeight, StringChunk } from "./types"
 
-export async function embedPdfFonts(doc: PDFDocument): Promise<LoadedFonts> {
+export async function loadFonts(): Promise<LoadedFonts> {
   const eachFont = flattenDeep(Object.values(FONTS).map((vals) => Object.values(vals)))
   return Promise.all(
     eachFont.map(async (fontName) => {

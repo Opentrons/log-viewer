@@ -1,7 +1,7 @@
 import path from "path"
 
-import fontkit from "@pdf-lib/fontkit"
-import { PDFDocument, PDFFont } from "pdf-lib"
+import fontkit from "fontkit"
+import { PDFDocument } from "pdfkit"
 
 import { findPeriod, findEntryForPeriod } from "../logDirectory/stateHelpers"
 import type { LogChecker } from "../logDirectory/types"
