@@ -145,14 +145,22 @@ export function verifyMessage(
         },
         actualHash,
       }
-    : {
-        consistency: {
-          status: "inconsistent",
-          type: "signature-mismatch",
-          failure: "The message was not properly signed by the associated key.",
-        },
-        actualHash,
-      }
+    : previousDetails == null
+      ? {
+          consistency: {
+            status: "inconsistent",
+            type: "signature-mismatch",
+            failure: "The message was not properly signed by the associated key.",
+          },
+          actualHash,
+        }
+      : {
+          consistency: {
+            status: "inconsistent",
+            type: "no-target",
+          },
+          actualHash,
+        }
 }
 
 function checkCryptoId<CryptoId extends string>(
@@ -239,23 +247,73 @@ export function verifyPeriodIdentity(
 function verifyFirstMessage(
   message: SignedMessage,
   key: KeyObject,
+): { consistency: InternalConsistency; actualHash: Buffer }
+function verifyFirstMessage(
+  message: SignedMessage,
+  key: KeyObject,
+  initialHash: Buffer,
+): { consistency: SequentialConsistency<number>; actualHash: Buffer }
+function verifyFirstMessage(
+  message: SignedMessage,
+  key: KeyObject,
   initialHash?: Buffer,
-): { consistency: InternalConsistency; actualHash: Buffer } {
+): { consistency: InternalConsistency | SequentialConsistency<number>; actualHash: Buffer } {
   const { consistency, actualHash } =
     initialHash == null
       ? verifyMessage(message, key)
       : verifyMessage(message, key, { hash: initialHash, id: -1 })
   if (initialHash != null) {
-    return { consistency: omit(consistency, "previousId") as InternalConsistency, actualHash }
+    return { consistency, actualHash }
   } else {
-    if (
-      consistency.status === "inconsistent" &&
-      consistency.type === "signature-mismatch" &&
-      initialHash == null
-    ) {
-      return { consistency: { status: "unverified" } as const, actualHash }
+    if (consistency.status === "inconsistent" && consistency.type === "signature-mismatch") {
+      return { consistency: { status: "consistent" } as const, actualHash }
     }
     return { consistency: omit(consistency, "previousId") as InternalConsistency, actualHash }
+  }
+}
+
+/**
+ * Verify the first message in a log period for the purpose of
+ * _period_ internal consistency.
+ *
+ * This is a subtle distinction from verifying the first message in a log
+ * period for the purpose of period sequential consistency or log sequential
+ * consistency. As mentioned in the docstring for verifyMessages, a log
+ * _period_ is internally consistent if the only consistency error in it
+ * is that the first log message has a signature error because the initial hash
+ * was not provided.
+ *
+ * It's not exported because this really should not be used on its own anywhere.
+ *
+ * @param {SignedMessage} message: The first message in a period.
+ * @param {KeyObject} key: The public key for the period
+ * @param {Buffer | undefined} initialHash: The hash of the last message of the
+ * previous period, if known.
+ */
+function verifyFirstForInternal(
+  message: SignedMessage,
+  key: KeyObject,
+  initialHash?: Buffer,
+): {
+  consistency: InternalConsistency
+  actualHash: Buffer
+} {
+  if (initialHash == null) {
+    return verifyFirstMessage(message, key)
+  } else {
+    const { consistency, actualHash } = verifyFirstMessage(message, key, initialHash)
+    if (consistency.status === "inconsistent" && consistency.type === "no-target") {
+      return {
+        consistency: {
+          status: "inconsistent",
+          type: "signature-mismatch",
+          failure: "Invalid signature using provided previous hash",
+        },
+        actualHash,
+      }
+    } else {
+      return { consistency, actualHash }
+    }
   }
 }
 
@@ -296,17 +354,18 @@ export async function verifyMessages(
   if (messages.length === 0) {
     return { consistency, finalHash: undefined }
   }
-  const { consistency: firstConsistency, actualHash: firstHash } = verifyFirstMessage(
+  const { consistency: firstConsistency, actualHash: firstHash } = verifyFirstForInternal(
     messages[0],
     key,
     initialHash,
   )
+  consistency = firstConsistency
   if (messages.length === 1) {
-    return { consistency: firstConsistency, finalHash: firstHash }
+    return { consistency, finalHash: firstHash }
   }
   let previousHash = firstHash
   let previousIndex = 0
-  consistency = firstConsistency
+
   for (const message of messages.slice(1)) {
     const { consistency: status, actualHash } = verifyMessage(message, key, {
       hash: previousHash,
@@ -323,10 +382,8 @@ export async function verifyMessages(
     previousHash = actualHash
     previousIndex += 1
   }
-  // if we never updated the status because a log failed verification,
-  // we're consistent
   return {
-    consistency: consistency.status === "unverified" ? { status: "consistent" } : consistency,
-    finalHash: previousHash!,
+    consistency,
+    finalHash: previousHash,
   }
 }
