@@ -20,6 +20,7 @@ export default defineConfig(async (): Promise<UserConfig> => {
         entry: {
           main: "src/main.ts",
           preload: "src/preload.ts",
+          preloadPdf: "src/preload-pdf.ts",
         },
 
         formats: ["cjs"],

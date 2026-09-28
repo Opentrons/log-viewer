@@ -52,4 +52,9 @@ export interface ConfigV1 extends Omit<ConfigV0, "version"> {
   }
 }
 
-export type Config = ConfigV1
+export interface ConfigV2 extends Omit<ConfigV1, "version"> {
+  version: 2
+  ui: ConfigV1["ui"] & { url: ConfigV1["ui"]["url"] & { pdfPath: string } }
+}
+
+export type Config = ConfigV2

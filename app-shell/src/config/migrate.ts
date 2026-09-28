@@ -1,6 +1,6 @@
 import flow from "lodash/flow"
 
-import type { Config, ConfigV0, ConfigV1 } from "./types"
+import type { Config, ConfigV0, ConfigV1, ConfigV2 } from "./types"
 
 const CONFIG_VERSION_LATEST = 1
 
@@ -46,7 +46,22 @@ const toVersion1 = (prevConfig: ConfigV0): ConfigV1 => {
   return nextConfig
 }
 
-const MIGRATIONS = [toVersion1] as const
+const toVersion2 = (prevConfig: ConfigV1): ConfigV2 => {
+  const nextConfig = {
+    ...prevConfig,
+    version: 2 as const,
+    ui: {
+      ...prevConfig.ui,
+      url: {
+        ...prevConfig.ui.url,
+        pdfPath: "lib/ui/pdf.html",
+      },
+    },
+  }
+  return nextConfig
+}
+
+const MIGRATIONS = [toVersion1, toVersion2] as const
 
 export const DEFAULTS: Config = migrate(DEFAULTS_V0)
 

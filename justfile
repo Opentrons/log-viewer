@@ -42,6 +42,7 @@ dev-shell port=default_port: dist-shell-dev
     --log.level.console="debug" \
     --ui.url.protocol="http:" \
     --ui.url.path="localhost:{{port}}" \
+    --ui.url.pdfPath="localhost:{{port}}/pdf.html" \
 
 [working-directory: './app-shell']
 dev-shell-dist: dist-shell
@@ -50,6 +51,7 @@ dev-shell-dist: dist-shell
     --log.level.console="debug" \
     --ui.url.protocol="file:" \
     --ui.url.path="../app/lib/index.html" \
+    --ui.url.pdfPath="../app/lib/pdf.html" \
 
 [working-directory: './app']
 dev-app port=default_port:
