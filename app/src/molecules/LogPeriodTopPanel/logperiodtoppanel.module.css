@@ -39,7 +39,18 @@
   gap: var(--spacing-8);
   padding: 8px 16px 9px 16px;
   height: min-content;
+  background-color: var(--grey-30);
   border-radius: var(--spacing-8);
+  &:hover {
+    background-color: var(--grey-35);
+  }
+  &:active {
+    background-color: var(--grey-40);
+  }
+  &:focus-visible {
+    border: 2px solid var(--blue-50);
+    background-color: var(--grey-35);
+  }
 }
 
 .visual_button_icon_container {

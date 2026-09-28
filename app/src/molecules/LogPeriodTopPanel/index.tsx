@@ -6,6 +6,8 @@ import { Chip } from "@/components-copy/atoms/Chip"
 import { Icon } from "@/components-copy/icons/Icon"
 import { I18nContext } from "@/i18n"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
+import { exportPdf } from "@/redux/logDirectory/logDirectorySlice"
+import { useAppDispatch } from "@/redux/store"
 
 import style from "./logperiodtoppanel.module.css"
 export interface LogPeriodTopPanelProps {
@@ -22,7 +24,7 @@ function RobotIdentity(props: { robotName: string; isOk: boolean }): React.React
 
 export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.ReactNode {
   const { dateFormatter } = React.useContext(I18nContext)
-
+  const dispatch = useAppDispatch()
   return (
     <div className={style.container}>
       <div className={clsx(style.row_container, style.top_row_shade)}>
@@ -61,11 +63,15 @@ export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.
           <p className={style.card_text}>{logPeriod.logCount}</p>
         </TopPanelItem>
         <TopPanelItem justify="center">
-          <button aria-label="Export PDF" className={style.visual_button}>
+          <button
+            aria-label="Export PDF"
+            className={style.visual_button}
+            onClick={() => dispatch(exportPdf({ zipPath: logPeriod.filePath }))}
+          >
             <div className={style.visual_button_icon_container}>
               <Icon name="download" />
             </div>
-            <p className={style.button_text}>Export PDF</p>
+            <div className={style.button_text}>Export PDF</div>
           </button>
         </TopPanelItem>
       </div>
