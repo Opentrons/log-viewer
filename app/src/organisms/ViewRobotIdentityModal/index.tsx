@@ -5,7 +5,7 @@ import { Modal } from "@/components-copy/modals"
 import { RobotIdentityDetails } from "@/molecules/RobotIdentityDetails"
 import type { RobotId } from "@/redux/logDirectory/types"
 
-import styles from "./trustrobotidentitymodal.module.css"
+import styles from "./viewrobotidentitymodal.module.css"
 export interface ViewRobotIdentityModalProps {
   robotId: RobotId
 }
