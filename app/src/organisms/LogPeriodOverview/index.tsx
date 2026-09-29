@@ -13,6 +13,8 @@ import { TrustRobotIdentityModal } from "@/organisms/TrustRobotIdentityModal"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
 import { useFilteredLogs } from "@/redux/logDirectory/hooks"
 
+import { ViewRobotIdentityModal } from "../ViewRobotIdentityModal"
+
 import style from "./logperiodoverview.module.css"
 
 export interface LogPeriodOverviewProps {
@@ -97,10 +99,8 @@ export function LogPeriodOverview({ logPeriod }: LogPeriodOverviewProps): React.
             <MenuList>
               <MenuItem
                 onClick={() => {
-                  void NiceModal.show(TrustRobotIdentityModal, {
+                  void NiceModal.show(ViewRobotIdentityModal, {
                     robotId: logPeriod.robotId,
-                    zipPath: logPeriod.filePath,
-                    viewMode: true,
                   })
                   setShowOverflowMenu(false)
                 }}
