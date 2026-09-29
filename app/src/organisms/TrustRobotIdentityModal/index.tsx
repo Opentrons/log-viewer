@@ -11,15 +11,20 @@ import styles from "./trustrobotidentitymodal.module.css"
 export interface TrustRobotIdentityModalProps {
   robotId: RobotId
   zipPath: string
+  viewMode?: boolean
 }
 
 export const TrustRobotIdentityModal = NiceModal.create(
-  ({ robotId, zipPath }: TrustRobotIdentityModalProps) => {
+  ({ robotId, zipPath, viewMode = false }: TrustRobotIdentityModalProps) => {
     const modal = NiceModal.useModal()
     const dispatch = useAppDispatch()
     return (
       <Modal
-        title={`Authorize robot identity for ${robotId.name}`}
+        title={
+          viewMode
+            ? `Robot identity for ${robotId.name}`
+            : `Authorize robot identity for ${robotId.name}`
+        }
         style={{ width: "32.25rem" }}
         closeOnOutsideClick
         onClose={() => {
@@ -28,38 +33,48 @@ export const TrustRobotIdentityModal = NiceModal.create(
         }}
         footer={
           <div className={styles.modal_footer_container}>
-            <button
-              className={styles.cancel_button}
-              onClick={() => {
-                modal.remove()
-                modal.reject(new Error("cancelled"))
-              }}
-            >
-              Cancel
-            </button>
+            {!viewMode && (
+              <button
+                className={styles.cancel_button}
+                onClick={() => {
+                  modal.remove()
+                  modal.reject(new Error("cancelled"))
+                }}
+              >
+                Cancel
+              </button>
+            )}
             <button
               className={styles.authorize_button}
-              onClick={() => {
-                modal.remove()
-                void dispatch(blessRobotIdentity({ zipPath })).then(() => modal.resolve(robotId))
-              }}
+              onClick={
+                viewMode
+                  ? modal.remove
+                  : () => {
+                      modal.remove()
+                      void dispatch(blessRobotIdentity({ zipPath })).then(() =>
+                        modal.resolve(robotId),
+                      )
+                    }
+              }
             >
-              Trust this robot
+              {viewMode ? "Done" : "Trust this robot"}
             </button>
           </div>
         }
       >
         <div className={styles.modal_content}>
-          <div className={styles.modal_text}>
-            <p>
-              This is the first log period recorded for this robot. New robots need to be authorized
-              as trusted before their logs can be verified.
-            </p>
-            <br />
-            <p>
-              Please review the details below and confirm they match <span>{robotId.name}</span>.
-            </p>
-          </div>
+          {!viewMode && (
+            <div className={styles.modal_text}>
+              <p>
+                This is the first log period recorded for this robot. New robots need to be
+                authorized as trusted before their logs can be verified.
+              </p>
+              <br />
+              <p>
+                Please review the details below and confirm they match <span>{robotId.name}</span>.
+              </p>
+            </div>
+          )}
           <RobotIdentityDetails robotId={robotId} />
         </div>
       </Modal>

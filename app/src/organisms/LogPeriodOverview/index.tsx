@@ -95,7 +95,18 @@ export function LogPeriodOverview({ logPeriod }: LogPeriodOverviewProps): React.
             role="presentation"
           >
             <MenuList>
-              <MenuItem>View robot ID</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  void NiceModal.show(TrustRobotIdentityModal, {
+                    robotId: logPeriod.robotId,
+                    zipPath: logPeriod.filePath,
+                    viewMode: true,
+                  })
+                  setShowOverflowMenu(false)
+                }}
+              >
+                View robot ID
+              </MenuItem>
               <MenuItem>Show associated files</MenuItem>
             </MenuList>
           </div>
