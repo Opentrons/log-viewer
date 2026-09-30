@@ -22,6 +22,10 @@ export const cssModuleSideEffect = (): Plugin => {
 
 export default defineConfig(async (): Promise<UserConfig> => {
   return {
+    input: {
+      main: path.resolve(import.meta.dirname, "index.html"),
+      pdf: path.resolve(import.meta.dirname, "pdf.html"),
+    },
     base: "",
     build: {
       outDir: "lib",
