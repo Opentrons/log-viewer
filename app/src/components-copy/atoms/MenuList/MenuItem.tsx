@@ -6,13 +6,14 @@ import style from "./menuitem.module.css"
 
 interface ButtonProps extends StyleProps {
   children: React.ReactNode
+  onClick?: () => void
 }
 
 export function MenuItem(props: ButtonProps): React.ReactNode {
-  const { children, ...styleProps } = props
+  const { children, onClick, ...styleProps } = props
   return (
-    <div className={style.container} {...styleProps}>
+    <button className={style.container} {...styleProps} onClick={onClick}>
       {children}
-    </div>
+    </button>
   )
 }
