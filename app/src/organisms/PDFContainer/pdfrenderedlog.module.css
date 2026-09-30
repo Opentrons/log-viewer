@@ -1,0 +1,60 @@
+.pdf_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.5cm;
+}
+
+.title_container {
+  display: flex;
+  flex-direction: column;
+}
+
+.document_title {
+  font-size: var(--font-size-helix-product-heading-large);
+  line-height: var(--line-height-helix-product-heading-large);
+  font-weight: var(--font-weight-semi-bold);
+  margin-bottom: 1em;
+}
+
+.caption {
+  font-size: var(--font-size-helix-product-caption);
+  line-height: var(--line-height-helix-product-caption);
+  font-weight: var(--font-weight-regular);
+}
+
+.summary_row {
+  display: flex;
+  flex-direction: row;
+}
+
+.summary_label {
+  flex: 0 0 50%;
+  font-size: var(--font-size-helix-product-body-default);
+  line-height: var(--line-height-helix-product-body-default);
+  font-weight: var(--font-weight-semi-bold);
+}
+.summary_content {
+  flex: 0 0 50%;
+  font-size: var(--font-size-helix-product-body-default);
+  line-height: var(--line-height-helix-product-body-default);
+  font-weight: var(--font-weight-regular);
+}
+
+.log_lines_container {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-helix-product-body-default);
+  gap: 0.5em;
+  border-top: 1px solid var(--black-90);
+  padding-top: 0.5em;
+  border-bottom: 1px solid var(--black-90);
+}
+
+.log_line_row_outer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid var(--black-90);
+}

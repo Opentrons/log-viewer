@@ -6,7 +6,6 @@ import { useZipPathFromUrl } from "@/util/useZipPathFromUrl"
 
 import { PDFContent } from "./PDFContent"
 
-import styles from "./pdfcontainer.module.css"
 export function PDFContainer(): React.ReactNode {
   const zipPath = useZipPathFromUrl()
   const dispatch = usePdfDispatch()
@@ -22,11 +21,5 @@ export function PDFContainer(): React.ReactNode {
     }
   }, [zipPath, dispatch])
 
-  return zipPath == null ? (
-    <div>No log period was selected for PDF export.</div>
-  ) : (
-    <div className={styles.pdf_container}>
-      <PDFContent />
-    </div>
-  )
+  return zipPath == null ? <div>No log period was selected for PDF export.</div> : <PDFContent />
 }
