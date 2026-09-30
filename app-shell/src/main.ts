@@ -1,13 +1,6 @@
 import { stat, mkdir } from "fs/promises"
-import path from "path"
-import { setInterval } from "timers/promises"
 
-import { app, BrowserWindow, dialog, session } from "electron"
-import {
-  installExtension,
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
-} from "electron-extension-installer"
+import { app, dialog, session } from "electron"
 
 import { initializeAPI } from "./api"
 import { getConfig, updateConfigBySlice, setConfig, handleConfigChange } from "./config"
@@ -15,6 +8,8 @@ import type { Config } from "./config/types"
 import { createLogger } from "./log"
 import { initialize as initializeLogChecker, refresh as refreshLogChecker } from "./logDirectory"
 import type { LogChecker } from "./logDirectory/types"
+import { generatePdf } from "./pdf-generation"
+import { buildBrowserWindow, loadExtensions, loadMainContent } from "./ui"
 
 const log = createLogger("main")
 app.once("window-all-closed", () => {
@@ -38,23 +33,8 @@ void app
         },
       })
     })
-    const uiConfig = getConfig("ui")
-    const mainWindow = new BrowserWindow({
-      show: false,
-      width: uiConfig.width,
-      minWidth: uiConfig.minWidth,
-      height: uiConfig.height,
-      minHeight: uiConfig.minHeight,
-      webPreferences: {
-        devTools: true,
-        webSecurity: true,
-        allowRunningInsecureContent: false,
-        sandbox: true,
-        contextIsolation: true,
-        preload: path.join(__dirname, "./preload.js"),
-      },
-    })
-    mainWindow.once("ready-to-show", () => mainWindow.show())
+
+    const mainWindow = buildBrowserWindow("preload", true)
     let logChecker: LogChecker | null = null
     const dispatch = initializeAPI(
       mainWindow,
@@ -124,6 +104,8 @@ void app
                   )
               })
           }),
+        exportPdf: (_event: unknown, payload: { zipPath: string }) =>
+          generatePdf(payload.zipPath, mainWindow, logChecker!),
       },
       (_args: unknown) => {
         const loadedConfig = getConfig()
@@ -160,34 +142,8 @@ void app
         return logChecker.scanDirectory()
       }
     })
-
-    const uiPath =
-      uiConfig.url.protocol === "file:"
-        ? path.join(app.getAppPath(), uiConfig.url.path)
-        : uiConfig.url.path
-    const uiUrl = `${uiConfig.url.protocol}//${uiPath}`
-
-    try {
-      await Promise.all([
-        installExtension(REACT_DEVELOPER_TOOLS, {
-          loadExtensionOptions: { allowFileAccess: true },
-        }),
-        installExtension(REDUX_DEVTOOLS),
-      ])
-    } catch (err: unknown) {
-      log.warning(`Error loading extensions: ${JSON.stringify(err)}`)
-    }
-
-    for await (const _ of setInterval(1000)) {
-      try {
-        log.info(`Loading main window from ${uiUrl} from config ${JSON.stringify(uiConfig.url)}`)
-        await mainWindow.webContents.loadURL(uiUrl)
-        log.info(`Loaded UI from ${uiUrl}`)
-        break
-      } catch (e: unknown) {
-        log.error(`Failed to load ${uiUrl}: ${JSON.stringify(e)}`)
-      }
-    }
+    await loadExtensions()
+    await loadMainContent(mainWindow)
   })
   .catch((err: unknown) => {
     log.error(`Failed to execute app load: ${JSON.stringify(err)}`)

@@ -10,6 +10,7 @@ export interface RemoteAPI {
   setUiStatus: (status: "ready") => void
   loadLogsForPeriod: (payload: { zipPath: string }) => Promise<LogLine[]>
   blessRobotIdentity: (payload: { zipPath: string }) => Promise<BlessedRobotId>
+  exportPdf: (payload: { zipPath: string }) => Promise<{ savedTo: string }>
 }
 
 // @ts-expect-error(sf): this is injected by preload
