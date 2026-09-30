@@ -33,4 +33,7 @@ contextBridge.exposeInMainWorld("shell", {
   exportPdf: (payload: { zipPath: string }): Promise<{ savedTo: string }> => {
     return ipcRenderer.invoke("exportPdf", { zipPath: payload.zipPath })
   },
+  openFile: (payload: { logPath: string; fileName: string }): Promise<void> => {
+    return ipcRenderer.invoke("openFile", payload)
+  },
 } as RemoteAPI)

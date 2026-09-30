@@ -1,0 +1,96 @@
+.associated_files_modal {
+  width: 32.25rem;
+}
+
+.associated_files_list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.list_item {
+  height: 2.25rem;
+}
+
+.list_item_label {
+  font-size: var(--font-size-helix-product-body-default);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+  color: var(--grey-60);
+  flex-shrink: 0;
+  width: var(--spacing-120);
+}
+
+.list_item_value {
+  font-size: var(--font-size-helix-product-body-default);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+  color: var(--black-90);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list_item_button {
+  font-size: var(--font-size-helix-product-body-default);
+  cursor: pointer;
+  height: var(--spacing-20);
+  padding: var(--spacing-4);
+  gap: var(--spacing-8);
+  text-decoration: underline;
+  color: var(--black-90);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+  align-items: center;
+  flex-shrink: 0;
+  display: flex;
+  background-color: transparent;
+}
+
+.modal_footer_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 8px;
+  align-items: center;
+  padding: 24px;
+}
+
+.done_button {
+  background: none;
+  font-size: var(--font-size-helix-product-body-default);
+  line-height: var(--line-height-helix-product-body-default);
+  font-weight: var(--font-weight-semi-bold);
+  background-color: var(--grey-30);
+  border-radius: 8px;
+  padding: 7px 16px 9px 16px;
+  &:focus-visible {
+    border: 2px solid var(--blue-50);
+  }
+  &:hover {
+    background-color: var(--grey-35);
+  }
+}
+
+.list_item_left {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-8);
+  overflow: hidden;
+}
+
+.list_item_header {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-8);
+  padding: 0 var(--spacing-4);
+}
+
+.list_item_header_label {
+  font-size: var(--font-size-helix-product-body-default);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+  color: var(--grey-60);
+  flex-shrink: 0;
+  width: var(--spacing-120);
+}

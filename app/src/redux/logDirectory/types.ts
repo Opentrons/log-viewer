@@ -51,6 +51,10 @@ export interface LogPeriod {
   robotId: RobotId
 }
 
+export interface SelectedLogPeriod extends LogPeriod {
+  filePath: string
+}
+
 export interface LogLine {
   envelope: {
     message: string

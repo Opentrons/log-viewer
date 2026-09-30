@@ -49,6 +49,7 @@ export interface ModalShellProps extends StyleProps {
  */
 export function ModalShell(props: ModalShellProps): JSX.Element {
   const {
+    className,
     onOutsideClick,
     zIndex = 10,
     header,
@@ -99,7 +100,7 @@ export function ModalShell(props: ModalShellProps): JSX.Element {
         <dialog
           aria-label="ModalShell_ModalArea"
           aria-modal="true"
-          className={clsx(styles.modal_area, {
+          className={clsx(styles.modal_area, className, {
             [styles.modal_area_full_page]: fullPage,
             [styles.modal_area_fill]: !fullPage,
           })}

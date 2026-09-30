@@ -1,7 +1,13 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import { useAppSelector } from "../store"
-import type { LogPeriod, LogDirectoryState, LogLine, BlessedRobotId } from "./types"
+import type {
+  LogPeriod,
+  LogDirectoryState,
+  LogLine,
+  BlessedRobotId,
+  SelectedLogPeriod,
+} from "./types"
 
 export interface KnownLogPeriods {
   [robotName: string]: { [filePath: string]: LogPeriod }
@@ -23,10 +29,6 @@ export function useIdentitiesForRobot(robot: string): BlessedRobotId[] {
 
 export function useLogPeriodsForRobot(robot: string): { [filepath: string]: LogPeriod } {
   return useAppSelector((state) => state.logDirectory.contentsByRobot[robot]?.periods)
-}
-
-export interface SelectedLogPeriod extends LogPeriod {
-  filePath: string
 }
 
 export function useSelectedLogPeriod(): SelectedLogPeriod | null {

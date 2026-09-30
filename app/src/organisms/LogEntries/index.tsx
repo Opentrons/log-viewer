@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { LogEntriesHeader } from "@/molecules/LogEntriesHeader"
 import { LogLines } from "@/molecules/LogLines"
-import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
+import type { SelectedLogPeriod } from "@/redux/logDirectory/types"
 
 import style from "./logentries.module.css"
 export interface LogEntriesProps {

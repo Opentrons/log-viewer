@@ -10,9 +10,10 @@ import { useOnClickOutside } from "@/components-copy/interaction-enhancers"
 import { LogPeriodTopPanel } from "@/molecules/LogPeriodTopPanel"
 import { LogEntries } from "@/organisms/LogEntries"
 import { TrustRobotIdentityModal } from "@/organisms/TrustRobotIdentityModal"
-import type { SelectedLogPeriod } from "@/redux/logDirectory/hooks"
 import { useFilteredLogs } from "@/redux/logDirectory/hooks"
+import type { SelectedLogPeriod } from "@/redux/logDirectory/types"
 
+import { AssociatedFilesModal } from "../AssociatedFilesModal"
 import { ViewRobotIdentityModal } from "../ViewRobotIdentityModal"
 
 import style from "./logperiodoverview.module.css"
@@ -107,7 +108,16 @@ export function LogPeriodOverview({ logPeriod }: LogPeriodOverviewProps): React.
               >
                 View robot ID
               </MenuItem>
-              <MenuItem>Show associated files</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  void NiceModal.show(AssociatedFilesModal, {
+                    logPeriod: logPeriod,
+                  })
+                  setShowOverflowMenu(false)
+                }}
+              >
+                Show associated files
+              </MenuItem>
             </MenuList>
           </div>
         )}
