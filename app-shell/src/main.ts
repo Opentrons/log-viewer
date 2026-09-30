@@ -7,6 +7,7 @@ import { getConfig, updateConfigBySlice, setConfig, handleConfigChange } from ".
 import type { Config } from "./config/types"
 import { createLogger } from "./log"
 import { initialize as initializeLogChecker, refresh as refreshLogChecker } from "./logDirectory"
+import { openFile } from "./logDirectory/openfile"
 import type { LogChecker } from "./logDirectory/types"
 import { generatePdf } from "./pdf-generation"
 import { buildBrowserWindow, loadExtensions, loadMainContent } from "./ui"
@@ -106,6 +107,10 @@ void app
           }),
         exportPdf: (_event: unknown, payload: { zipPath: string }) =>
           generatePdf(payload.zipPath, mainWindow, logChecker!),
+        openFile: (
+          _event: unknown,
+          payload: { logPath: string; fileName: string },
+        ): Promise<void> => openFile(payload),
       },
       (_args: unknown) => {
         const loadedConfig = getConfig()
