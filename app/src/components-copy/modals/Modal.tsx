@@ -29,6 +29,7 @@ export interface ModalProps extends StyleProps {
   showOverlay?: boolean
   position?: Position
   hasHeader?: boolean
+  className?: string
 }
 
 /**
@@ -50,6 +51,7 @@ export const Modal = (props: ModalProps): JSX.Element => {
     position,
     showOverlay,
     hasHeader = true,
+    className,
     ...styleProps
   } = props
   const iconColor = (type: ModalType): string => {
@@ -102,6 +104,7 @@ export const Modal = (props: ModalProps): JSX.Element => {
         onEscapePress={(closeOnOutsideClick ?? false) ? onClose : undefined}
         {...styleProps}
         footer={footer}
+        className={className}
       >
         <div className={styles.children} style={{ padding: childrenPadding }}>
           {children}
