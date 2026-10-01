@@ -6,6 +6,12 @@
   overflow-y: scroll;
   flex: 1;
   min-height: 0;
+  margin-right: -12px;
+  padding-right: 12px;
+}
+
+.overall_container::-webkit-scrollbar-track {
+  background: var(--transparent);
 }
 
 .chip_container {
