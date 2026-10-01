@@ -76,6 +76,7 @@
   font-weight: var(--font-weight-regular);
   text-decoration: underline;
   white-space: nowrap;
+  color: var(--black-90);
 }
 
 .button {
