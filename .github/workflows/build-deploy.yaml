@@ -107,6 +107,29 @@ jobs:
         run: |
           aws s3 sync --acl=public-read to_upload/ \
             "s3://${{ steps.target.outputs.bucket }}/${{ env._DEPLOY_FOLDER }}"
+      - name: "Write download links summary"
+        shell: bash
+        run: |
+          set -euo pipefail
+          bucket="${{ steps.target.outputs.bucket }}"
+          folder="${{ env._DEPLOY_FOLDER }}"
+          base_url="https://${bucket}/${folder}"
+
+          {
+            echo "## Deployed artifacts"
+            echo ""
+            echo "| File | URL |"
+            echo "| --- | --- |"
+            for filepath in to_upload/*; do
+              [[ -f "$filepath" ]] || continue
+              filename="$(basename "$filepath")"
+              encoded="$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))' "$filename")"
+              url="${base_url}/${encoded}"
+              # Escape pipe chars in markdown cells; keep the href copy-pastable
+              display_name="${filename//|/\\|}"
+              echo "| \`${display_name}\` | [\`${url}\`](${url}) |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: "Invalidate CloudFront cache (builds.opentrons.com)"
         if: steps.target.outputs.invalidate == 'true' && vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID != ''
         run: |
