@@ -49,4 +49,5 @@
   align-items: left;
   justify-content: flex-start;
   margin-left: 0.5rem;
+  gap: 4px;
 }
