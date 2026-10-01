@@ -1,10 +1,17 @@
+import * as NiceModal from "@ebay/nice-modal-react"
 import { clsx } from "clsx"
 import * as React from "react"
 
 import { TopPanelItem } from "@/atoms/TopPanelItem"
 import { Chip } from "@/components-copy/atoms/Chip"
+import { MenuList } from "@/components-copy/atoms/MenuList"
+import { MenuItem } from "@/components-copy/atoms/MenuList/MenuItem"
+import { OverflowBtn } from "@/components-copy/atoms/MenuList/OverflowBtn"
 import { Icon } from "@/components-copy/icons/Icon"
+import { useOnClickOutside } from "@/components-copy/interaction-enhancers"
 import { I18nContext } from "@/i18n"
+import { AssociatedFilesModal } from "@/organisms/AssociatedFilesModal"
+import { ViewRobotIdentityModal } from "@/organisms/ViewRobotIdentityModal"
 import { exportPdf } from "@/redux/logDirectory/logDirectorySlice"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/types"
 import { useAppDispatch } from "@/redux/store"
@@ -25,9 +32,15 @@ function RobotIdentity(props: { robotName: string; isOk: boolean }): React.React
 export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.ReactNode {
   const { dateFormatter } = React.useContext(I18nContext)
   const dispatch = useAppDispatch()
+  const [showOverflowMenu, setShowOverflowMenu] = React.useState<boolean>(false)
+  const overflowWrapperRef = useOnClickOutside<HTMLDivElement>({
+    onClickOutside: () => {
+      setShowOverflowMenu(false)
+    },
+  })
   return (
     <div className={style.container}>
-      <div className={clsx(style.row_container, style.top_row_shade)}>
+      <div className={clsx(style.row_container, style.top_row_shade, style.top_row_rel)}>
         <TopPanelItem title="Device">
           <div className={style.chip_container}>
             <RobotIdentity
@@ -51,6 +64,49 @@ export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.
         <TopPanelItem title="Associated Files">
           <p className={style.card_text}>{logPeriod.associatedFiles.length}</p>
         </TopPanelItem>
+        <div className={style.overflow_button_clipper}>
+          <div className={style.overflow_button_container}>
+            <OverflowBtn
+              onClick={() => {
+                setShowOverflowMenu(true)
+              }}
+            />
+          </div>
+        </div>
+        {showOverflowMenu && (
+          <div
+            className={style.overflow_menu_container}
+            ref={overflowWrapperRef}
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              e.preventDefault()
+              e.stopPropagation()
+            }}
+            role="presentation"
+          >
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  void NiceModal.show(ViewRobotIdentityModal, {
+                    robotId: logPeriod.robotId,
+                  })
+                  setShowOverflowMenu(false)
+                }}
+              >
+                View robot ID
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  void NiceModal.show(AssociatedFilesModal, {
+                    logPeriod: logPeriod,
+                  })
+                  setShowOverflowMenu(false)
+                }}
+              >
+                Show associated files
+              </MenuItem>
+            </MenuList>
+          </div>
+        )}
       </div>
       <div className={style.row_container}>
         <TopPanelItem title="Log period start">

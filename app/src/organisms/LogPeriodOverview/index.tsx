@@ -3,18 +3,11 @@ import countBy from "lodash/countBy"
 import * as React from "react"
 
 import { InlineNotification } from "@/components-copy/atoms/InlineNotification"
-import { MenuList } from "@/components-copy/atoms/MenuList"
-import { MenuItem } from "@/components-copy/atoms/MenuList/MenuItem"
-import { OverflowBtn } from "@/components-copy/atoms/MenuList/OverflowBtn"
-import { useOnClickOutside } from "@/components-copy/interaction-enhancers"
 import { LogPeriodTopPanel } from "@/molecules/LogPeriodTopPanel"
 import { LogEntries } from "@/organisms/LogEntries"
 import { TrustRobotIdentityModal } from "@/organisms/TrustRobotIdentityModal"
 import { useFilteredLogs } from "@/redux/logDirectory/hooks"
 import type { SelectedLogPeriod } from "@/redux/logDirectory/types"
-
-import { AssociatedFilesModal } from "../AssociatedFilesModal"
-import { ViewRobotIdentityModal } from "../ViewRobotIdentityModal"
 
 import style from "./logperiodoverview.module.css"
 
@@ -68,59 +61,10 @@ function LogPeriodStatusBanner({ logPeriod }: LogPeriodOverviewProps): React.Rea
 }
 
 export function LogPeriodOverview({ logPeriod }: LogPeriodOverviewProps): React.ReactNode {
-  const [showOverflowMenu, setShowOverflowMenu] = React.useState<boolean>(false)
-  const overflowWrapperRef = useOnClickOutside<HTMLDivElement>({
-    onClickOutside: () => {
-      setShowOverflowMenu(false)
-    },
-  })
   return (
     <div className={style.outer_container}>
       <LogPeriodStatusBanner logPeriod={logPeriod} />
       <div className={style.container}>
-        <div className={style.overflow_button_clipper}>
-          <div className={style.overflow_button_container}>
-            <OverflowBtn
-              onClick={() => {
-                setShowOverflowMenu(true)
-              }}
-            />
-          </div>
-        </div>
-        {showOverflowMenu && (
-          <div
-            className={style.overflow_menu_container}
-            ref={overflowWrapperRef}
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-              e.preventDefault()
-              e.stopPropagation()
-            }}
-            role="presentation"
-          >
-            <MenuList>
-              <MenuItem
-                onClick={() => {
-                  void NiceModal.show(ViewRobotIdentityModal, {
-                    robotId: logPeriod.robotId,
-                  })
-                  setShowOverflowMenu(false)
-                }}
-              >
-                View robot ID
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  void NiceModal.show(AssociatedFilesModal, {
-                    logPeriod: logPeriod,
-                  })
-                  setShowOverflowMenu(false)
-                }}
-              >
-                Show associated files
-              </MenuItem>
-            </MenuList>
-          </div>
-        )}
         <LogPeriodTopPanel logPeriod={logPeriod} />
         <LogEntries logPeriod={logPeriod} />
       </div>

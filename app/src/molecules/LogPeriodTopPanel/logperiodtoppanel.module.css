@@ -23,6 +23,10 @@
   background-color: var(--grey-10);
 }
 
+.top_row_rel {
+  position: relative;
+}
+
 .card_text {
   font-size: var(--font-size-helix-product-body-default);
   line-height: var(--line-height-helix-product-body-default);
@@ -63,4 +67,23 @@
   font-size: var(--font-size-helix-product-body-default);
   line-height: var(--line-height-helix-product-body-default);
   font-weight: var(--font-weight-semi-bold);
+}
+
+.overflow_button_container {
+  float: right;
+  position: relative;
+}
+
+.overflow_menu_container {
+  float: right;
+  position: absolute;
+}
+
+.overflow_button_clipper {
+  float: right;
+  right: 0px;
+  top: 0px;
+  position: absolute;
+  overflow-x: clip;
+  size: min-content;
 }
