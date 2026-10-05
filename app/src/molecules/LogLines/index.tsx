@@ -1,3 +1,4 @@
+import { clsx } from "clsx"
 import range from "lodash/range"
 import * as React from "react"
 
@@ -55,11 +56,11 @@ export function LogLines(_props: LogLinesProps): React.ReactNode {
       )}
       {!(logs.status !== "loaded" || logs.filteredLines.length === 0) && (
         <div className={style.header_container}>
-          <p className={style.column_header}>Timestamp</p>
-          <p className={style.column_header}>Action</p>
-          <p className={style.column_header}>Username</p>
-          <p className={style.column_header}>Legal name</p>
-          <p className={style.column_header}>Status</p>
+          <p className={clsx(style.column_header, style.column_header_text)}>Timestamp</p>
+          <p className={clsx(style.column_header, style.column_header_text)}>Action</p>
+          <p className={clsx(style.column_header, style.column_header_text)}>Username</p>
+          <p className={clsx(style.column_header, style.column_header_text)}>Legal name</p>
+          <p className={clsx(style.column_header_fixed, style.column_header_text)}>Status</p>
         </div>
       )}
       <div className={style.inner_container} ref={containerRef}>

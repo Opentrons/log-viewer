@@ -31,7 +31,7 @@ export function LogLine({ log, selected, onClick }: LogLineProps): React.ReactNo
       <p className={clsx(style.log_field, style.text_field)}>{log.payload.action}</p>
       <p className={clsx(style.log_field, style.text_field)}>{log.payload.userName}</p>
       <p className={clsx(style.log_field, style.text_field)}>{log.payload.legalName}</p>
-      <div className={style.log_field}>
+      <div className={style.log_field_fixed}>
         <LogStatus status={log.sequentialConsistency.status} />
       </div>
     </button>
