@@ -43,6 +43,8 @@
   gap: var(--spacing-8);
   padding: 8px 16px 9px 16px;
   height: min-content;
+  width: max-content;
+  align-items: center;
   background-color: var(--grey-30);
   border-radius: var(--spacing-8);
   &:hover {
