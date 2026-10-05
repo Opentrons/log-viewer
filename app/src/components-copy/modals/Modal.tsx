@@ -41,7 +41,7 @@ export const Modal = (props: ModalProps): JSX.Element => {
     onClose,
     closeOnOutsideClick,
     title,
-    childrenPadding = `${SPACING.spacing16} ${SPACING.spacing24} ${SPACING.spacing24}`,
+    childrenPadding = `${SPACING.spacing16} ${SPACING.spacing24} 0px`,
     children,
     footer,
     titleElement1,
