@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: left;
   justify-content: flex-start;
-  overflow-y: scroll;
+  overflow-y: auto;
   flex: 1;
   min-height: 0;
   margin-right: -12px;
