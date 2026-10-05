@@ -75,15 +75,15 @@
 }
 
 .overflow_menu_container {
-  float: right;
-  position: absolute;
+  position: static;
 }
 
-.overflow_button_clipper {
+.overflow_host {
   float: right;
   right: 0px;
   top: 0px;
   position: absolute;
-  overflow-x: clip;
-  size: min-content;
+  overflow: visible;
+  width: min-content;
+  height: min-content;
 }

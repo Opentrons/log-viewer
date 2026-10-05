@@ -78,49 +78,49 @@ export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.
         <TopPanelItem title="Associated Files">
           <p className={style.card_text}>{logPeriod.associatedFiles.length}</p>
         </TopPanelItem>
-        <div className={style.overflow_button_clipper}>
+        <div className={style.overflow_host}>
           <div className={style.overflow_button_container}>
             <OverflowBtn
               onClick={() => {
                 setShowOverflowMenu(true)
               }}
             />
+            {showOverflowMenu && (
+              <div
+                className={style.overflow_menu_container}
+                ref={overflowWrapperRef}
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+                role="presentation"
+              >
+                <MenuList>
+                  <MenuItem
+                    onClick={() => {
+                      void NiceModal.show(ViewRobotIdentityModal, {
+                        robotId: logPeriod.robotId,
+                      })
+                      setShowOverflowMenu(false)
+                    }}
+                  >
+                    View robot ID
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      void NiceModal.show(AssociatedFilesModal, {
+                        logPeriod: logPeriod,
+                      })
+                      setShowOverflowMenu(false)
+                    }}
+                  >
+                    Show associated files
+                  </MenuItem>
+                </MenuList>
+              </div>
+            )}
           </div>
         </div>
-        {showOverflowMenu && (
-          <div
-            className={style.overflow_menu_container}
-            ref={overflowWrapperRef}
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-              e.preventDefault()
-              e.stopPropagation()
-            }}
-            role="presentation"
-          >
-            <MenuList>
-              <MenuItem
-                onClick={() => {
-                  void NiceModal.show(ViewRobotIdentityModal, {
-                    robotId: logPeriod.robotId,
-                  })
-                  setShowOverflowMenu(false)
-                }}
-              >
-                View robot ID
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  void NiceModal.show(AssociatedFilesModal, {
-                    logPeriod: logPeriod,
-                  })
-                  setShowOverflowMenu(false)
-                }}
-              >
-                Show associated files
-              </MenuItem>
-            </MenuList>
-          </div>
-        )}
       </div>
       <div className={style.row_container}>
         <TopPanelItem title="Log period start">
