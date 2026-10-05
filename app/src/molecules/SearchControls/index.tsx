@@ -29,14 +29,12 @@ export function SearchControls(_props: SearchControlsProps): React.ReactNode {
         match={matches}
         currentText={filterText}
       />
-      <button
-        className={style.controls}
-        onClick={() => {
-          setFilterText("")
-          dispatch(setLogFilter({ filterText: null }))
-        }}
-      >
-        <div
+      <div className={style.controls_container}>
+        <button
+          onClick={() => {
+            setFilterText("")
+            dispatch(setLogFilter({ filterText: null }))
+          }}
           className={clsx(style.icon_container, {
             [style.icon_container_active]: filterText != null,
           })}
@@ -48,8 +46,8 @@ export function SearchControls(_props: SearchControlsProps): React.ReactNode {
             })}
             name="close"
           />
-        </div>
-      </button>
+        </button>
+      </div>
     </div>
   )
 }
