@@ -23,9 +23,23 @@ export interface LogPeriodTopPanelProps {
 
 function RobotIdentity(props: { robotName: string; isOk: boolean }): React.ReactNode {
   return props.isOk ? (
-    <Chip iconName="identity-known" type="info" text={props.robotName} background hasIcon />
+    <Chip
+      iconName="identity-known"
+      chipSize="small"
+      type="info"
+      text={props.robotName}
+      background
+      hasIcon
+    />
   ) : (
-    <Chip iconName="identity-unknown" type="warning" text={props.robotName} background hasIcon />
+    <Chip
+      iconName="identity-unknown"
+      chipSize="small"
+      type="warning"
+      text={props.robotName}
+      background
+      hasIcon
+    />
   )
 }
 
