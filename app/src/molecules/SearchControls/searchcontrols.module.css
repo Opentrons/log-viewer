@@ -20,7 +20,7 @@
   height: 20px;
   border-radius: 50%;
   background-color: var(--transparent);
-  &:focus {
+  &:focus-visible {
     border: 2px solid var(--blue-50);
   }
 }
