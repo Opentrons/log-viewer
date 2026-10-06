@@ -127,7 +127,11 @@ export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.
           <p className={style.card_text}>{dateFormatter.format(new Date(logPeriod.startDate))}</p>
         </TopPanelItem>
         <TopPanelItem title="Log period end">
-          <p className={style.card_text}>{dateFormatter.format(new Date(logPeriod.endDate))}</p>
+          <p className={style.card_text}>
+            {logPeriod.endDate == null
+              ? "Current at time of export"
+              : dateFormatter.format(new Date(logPeriod.endDate))}
+          </p>
         </TopPanelItem>
         <TopPanelItem title="Total entries">
           <p className={style.card_text}>{logPeriod.logCount}</p>

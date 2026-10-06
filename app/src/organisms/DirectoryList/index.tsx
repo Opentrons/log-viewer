@@ -64,7 +64,7 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
           return (
             <LogPeriodPath
               path={filePath}
-              dateString={dateFormatter.format(new Date(period.endDate))}
+              dateString={dateFormatter.format(new Date(period.startDate))}
               status={
                 period.sequentialConsistency.status === "consistent"
                   ? period.attestationConsistency.status === "consistent"
