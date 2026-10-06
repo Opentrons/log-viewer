@@ -60,7 +60,7 @@ export const TrustRobotIdentityModal = NiceModal.create(
               Please review the details below and confirm they match <span>{robotId.name}</span>.
             </p>
           </div>
-          <RobotIdentityDetails robotId={robotId} />
+          <RobotIdentityDetails robotId={robotId} source={zipPath} />
         </div>
       </Modal>
     )

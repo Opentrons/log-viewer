@@ -37,6 +37,13 @@ export interface RobotIdJson {
 }
 
 /**
+ * An envelope containing a blessed robot ID.
+ */
+export interface BlessedRobotIdJson extends RobotIdJson {
+  sourceFilepath?: string
+}
+
+/**
  * The payload of al og message (serialized inside the message field of the envelope.)
  */
 export interface LogMessage {

@@ -6,6 +6,7 @@ import type { RobotIdPayload } from "@/redux/logDirectory/types"
 import styles from "./robotidentitydetails.module.css"
 export interface RobotIdentityDetailsProps<TRobotId extends RobotIdPayload> {
   robotId: TRobotId
+  source: string
 }
 
 function IdentityDetail({ title, content }: { title: string; content: string }): React.ReactNode {
@@ -19,6 +20,7 @@ function IdentityDetail({ title, content }: { title: string; content: string }):
 
 export function RobotIdentityDetails<TRobotId extends RobotIdPayload>({
   robotId,
+  source,
 }: RobotIdentityDetailsProps<TRobotId>): React.ReactNode {
   return (
     <div className={styles.container}>
@@ -27,6 +29,7 @@ export function RobotIdentityDetails<TRobotId extends RobotIdPayload>({
         <IdentityDetail title="Robot name" content={robotId.name} />
         <IdentityDetail title="Serial number" content={robotId.serial} />
         <IdentityDetail title="Certificate" content={robotId.publicKeyHash} />
+        <IdentityDetail title="Source log" content={source} />
       </div>
     </div>
   )

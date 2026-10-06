@@ -58,6 +58,7 @@ export function initialize(dispatch: LogChecker["dispatch"], basePath: string): 
           publicKeyHash: blessedIdentity.public_hash,
           serial: blessedIdentity.robot_serial,
           filePath: blessedIdentity.filePath,
+          sourceLogFilepath: blessedIdentity.sourceLogFilepath,
         }
       } catch (err: any) {
         return Promise.reject(err)

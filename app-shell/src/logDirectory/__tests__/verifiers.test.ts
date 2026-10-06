@@ -279,6 +279,7 @@ describe("verifyPeriodIdentity", async () => {
       robot_name: "steve",
       robot_serial: "1234567",
       public_hash: `sha256:${pubkeyHash.toString("base64url")}`,
+      sourceLogFilepath: "/some/magic/path",
     }
     const robotIdHash = hash("sha256", JSON.stringify(robotId), "buffer")
     const robotIdSig = await promisifiedSign(null, robotIdHash, privateKey)
@@ -309,6 +310,7 @@ describe("verifyPeriodIdentity", async () => {
       robot_name: "steve0",
       robot_serial: "123456788",
       public_hash: `sha256:${pubkeyHash.toString("base64url")}`,
+      sourceLogFilepath: "/some/magic/path",
     }
     const robotIdHash = hash("sha256", JSON.stringify(robotId), "buffer")
     const robotIdSig = await promisifiedSign(null, robotIdHash, privateKey)
