@@ -3,7 +3,7 @@ import path from "path"
 
 import sanitize from "sanitize-filename"
 
-import { parseSignedRobotId, parseRobotId } from "./parsers"
+import { parseSignedBlessedRobotId, parseRobotId } from "./parsers"
 import type { LogPeriodFile, BlessedRobotId } from "./types"
 
 /**
@@ -27,8 +27,11 @@ export async function blessRobotIdentity(
     `${periodFile.robotId.parsed.robot_name}-${periodFile.robotId.parsed.robot_serial}-${periodFile.robotId.parsed.public_hash}.json`,
   )
   const filePath = path.join(basePath, fileName)
-  await writeFile(filePath, JSON.stringify(periodFile.robotId.raw))
-  return { ...periodFile.robotId.parsed, filePath }
+  await writeFile(
+    filePath,
+    JSON.stringify({ ...periodFile.robotId.raw, sourceFilepath: periodFile.periodZip }),
+  )
+  return { ...periodFile.robotId.parsed, filePath, sourceLogFilepath: periodFile.periodZip }
 }
 
 /**
@@ -52,9 +55,9 @@ export async function* scanBlessedRobotIdentities(
         const fileOnDisk = await readFile(filePath, { encoding: "utf-8" })
         try {
           const parsed = JSON.parse(fileOnDisk)
-          const idRaw = parseSignedRobotId(parsed)
+          const idRaw = parseSignedBlessedRobotId(parsed)
           const payload = parseRobotId(JSON.parse(idRaw.message))
-          yield { ...payload, filePath }
+          yield { ...payload, sourceLogFilepath: idRaw?.sourceFilepath ?? null, filePath }
           // oxlint-disable-next-line no-unused-vars
         } catch (_err: any) {}
       }

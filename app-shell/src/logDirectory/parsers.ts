@@ -6,6 +6,7 @@ import type {
   LogMessage,
   LogPeriodJson,
   RobotIdJson,
+  BlessedRobotIdJson,
 } from "./filetypes"
 
 /**
@@ -43,6 +44,28 @@ export function parseSignedMessage(document: any): SignedMessage {
     message_hash: document.message_hash,
     message_sig: document.message_sig,
     sig_version: document.sig_version,
+  }
+}
+
+/**
+ * parseSignedBlessedRobotId: Check that a blessed robot ID has correct structure.
+ *
+ * This is the envelope plus an entry for the source of the robot iD.
+ *
+ * @param {any} document: A JSON.parse() result that should be a blessed robot ID, i.e. something
+ * that was exported by this app from a log period json for later use as a reference robot ID that
+ * has been identified by a human as being associated with a specific robot.
+ * @return {RobotIdJson & { sourceFilepath?: string }} The parsed id.
+ * @throws {Error} If the structure fails. Note that the sourceFilepath _can_ be missing without
+ * causing a parse error.
+ */
+export function parseSignedBlessedRobotId(document: any): BlessedRobotIdJson {
+  const parsed = parseSignedRobotId(document)
+  return {
+    ...parsed,
+    ...(Object.hasOwn(document, "sourceFilepath")
+      ? { sourceFilepath: document.sourceFilepath }
+      : {}),
   }
 }
 

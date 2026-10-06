@@ -92,6 +92,7 @@ export interface LogPeriodFile {
  */
 export interface BlessedRobotId extends RobotIdParsed {
   filePath: string
+  sourceLogFilepath: string | null
 }
 
 /**

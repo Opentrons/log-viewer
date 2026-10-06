@@ -38,11 +38,14 @@ describe("attestation", async () => {
       },
       internalConsistency: { status: "consistent" },
     }
-    const blessed = await blessRobotIdentity({ robotId } as LogPeriodFile, workingDir)
+    const blessed = await blessRobotIdentity(
+      { robotId, periodZip: "/some/magic/path" } as LogPeriodFile,
+      workingDir,
+    )
     const filePath = path.join(workingDir, sanitizeIdentityPath(robotId.parsed))
-    expect(blessed).toEqual({ ...robotId.parsed, filePath })
+    expect(blessed).toEqual({ ...robotId.parsed, filePath, sourceLogFilepath: "/some/magic/path" })
     const fileContents = await readFile(filePath, { encoding: "utf-8" })
-    expect(JSON.parse(fileContents)).toEqual(robotId.raw)
+    expect(JSON.parse(fileContents)).toEqual({ ...robotId.raw, sourceFilepath: "/some/magic/path" })
   })
   it("overwrites a robot id with the same details", async () => {
     const robotId = {
@@ -61,8 +64,8 @@ describe("attestation", async () => {
       },
       internalConsistency: { status: "consistent" },
     }
-    await blessRobotIdentity({ robotId } as LogPeriodFile, workingDir)
-    await blessRobotIdentity({ robotId } as LogPeriodFile, workingDir)
+    await blessRobotIdentity({ robotId, periodZip: "/blah.zip" } as LogPeriodFile, workingDir)
+    await blessRobotIdentity({ robotId, periodZip: "/bloo.zip" } as LogPeriodFile, workingDir)
     const found = await Array.fromAsync(scanBlessedRobotIdentities(workingDir))
     expect(found).toHaveLength(2)
   })
@@ -83,11 +86,12 @@ describe("attestation", async () => {
       },
       internalConsistency: { status: "consistent" },
     }
-    await blessRobotIdentity({ robotId } as LogPeriodFile, workingDir)
+    await blessRobotIdentity({ robotId, periodZip: "/some/path.zip" } as LogPeriodFile, workingDir)
     const found = await Array.fromAsync(scanBlessedRobotIdentities(workingDir))
     expect(found).toHaveLength(2)
     expect(found).toContainEqual({
       ...robotId.parsed,
+      sourceLogFilepath: "/some/path.zip",
       filePath: path.join(workingDir, sanitizeIdentityPath(robotId.parsed)),
     })
     expect(found).toContainEqual({
@@ -98,6 +102,7 @@ describe("attestation", async () => {
         workingDir,
         "ComplianceReady-FLXA2020241217005-sha256Gy7hap25Tlq0wLt4h8C5bBgbcdFAFbkAf5w6nd8xtw0=.json",
       ),
+      sourceLogFilepath: null,
     })
   })
   it("finds blessed robot ids with duplicate robot names if serials are different", async () => {
@@ -133,17 +138,25 @@ describe("attestation", async () => {
       },
       internalConsistency: { status: "consistent" },
     }
-    await blessRobotIdentity({ robotId: robotId1 } as LogPeriodFile, workingDir)
-    await blessRobotIdentity({ robotId: robotId2 } as LogPeriodFile, workingDir)
+    await blessRobotIdentity(
+      { robotId: robotId1, periodZip: "/log/1.zip" } as LogPeriodFile,
+      workingDir,
+    )
+    await blessRobotIdentity(
+      { robotId: robotId2, periodZip: "/log/2.zip" } as LogPeriodFile,
+      workingDir,
+    )
     const found = await Array.fromAsync(scanBlessedRobotIdentities(workingDir))
     expect(found).toHaveLength(3)
     expect(found).toContainEqual({
       ...robotId1.parsed,
       filePath: path.join(workingDir, sanitizeIdentityPath(robotId1.parsed)),
+      sourceLogFilepath: "/log/1.zip",
     })
     expect(found).toContainEqual({
       ...robotId2.parsed,
       filePath: path.join(workingDir, sanitizeIdentityPath(robotId2.parsed)),
+      sourceLogFilepath: "/log/2.zip",
     })
   })
   it("finds blessed robot ids with duplicate robot names if key hashes are different", async () => {
@@ -179,17 +192,25 @@ describe("attestation", async () => {
       },
       internalConsistency: { status: "consistent" },
     }
-    await blessRobotIdentity({ robotId: robotId1 } as LogPeriodFile, workingDir)
-    await blessRobotIdentity({ robotId: robotId2 } as LogPeriodFile, workingDir)
+    await blessRobotIdentity(
+      { robotId: robotId1, periodZip: "/log/1.zip" } as LogPeriodFile,
+      workingDir,
+    )
+    await blessRobotIdentity(
+      { robotId: robotId2, periodZip: "/log/2.zip" } as LogPeriodFile,
+      workingDir,
+    )
     const found = await Array.fromAsync(scanBlessedRobotIdentities(workingDir))
     expect(found).toHaveLength(3)
     expect(found).toContainEqual({
       ...robotId1.parsed,
       filePath: path.join(workingDir, sanitizeIdentityPath(robotId1.parsed)),
+      sourceLogFilepath: "/log/1.zip",
     })
     expect(found).toContainEqual({
       ...robotId2.parsed,
       filePath: path.join(workingDir, sanitizeIdentityPath(robotId2.parsed)),
+      sourceLogFilepath: "/log/2.zip",
     })
   })
 })
