@@ -100,6 +100,7 @@ export function LogPeriodTopPanel({ logPeriod }: LogPeriodTopPanelProps): React.
                     onClick={() => {
                       void NiceModal.show(ViewRobotIdentityModal, {
                         robotId: logPeriod.robotId,
+                        source: logPeriod.filePath,
                       })
                       setShowOverflowMenu(false)
                     }}
