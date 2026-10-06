@@ -29,7 +29,7 @@ void app
         responseHeaders: {
           ...details.responseHeaders,
           "Content-Security-Policy": [
-            `default-src 'self'; style-src 'self' 'unsafe-inline'${import.meta.env.PROD !== true ? "; script-src 'unsafe-inline' 'self'" : ""}`,
+            `default-src 'self'; font-src 'self' data:; style-src 'self' 'unsafe-inline'${import.meta.env.PROD !== true ? "; script-src 'unsafe-inline' 'self'" : ""}`,
           ],
         },
       })
