@@ -1,6 +1,7 @@
 import { stat, mkdir } from "fs/promises"
+import path from "path"
 
-import { app, dialog, session } from "electron"
+import { app, dialog, session, Menu } from "electron"
 
 import { initializeAPI } from "./api"
 import { getConfig, updateConfigBySlice, setConfig, handleConfigChange } from "./config"
@@ -20,6 +21,32 @@ app.once("window-all-closed", () => {
 
 console.log(`Environment is prod: ${import.meta.env.PROD}`)
 
+function setMenus() {
+  // osx gets this config automatically
+  if (process.platform !== "darwin") {
+    app.setAboutPanelOptions({
+      applicationName: "Log Verifier",
+      applicationVersion: app.getVersion(),
+      copyright: "Copyright © 2026",
+      authors: ["Opentrons"],
+      website: "opentrons.com",
+      iconPath: path.join(app.getPath("assets"), "icon.png"),
+    })
+  }
+  const menuTemplate = [
+    ...(process.platform === "darwin" ? [{ role: "appMenu" as const }] : []),
+    { role: "fileMenu" } as const,
+    { role: "editMenu" } as const,
+    { role: "viewMenu" } as const,
+    { role: "windowMenu" } as const,
+    ...(process.platform !== "darwin"
+      ? [{ label: "&Help", submenu: [{ label: "About Log Verifier", role: "about" as const }] }]
+      : []),
+  ]
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
+}
+
 void app
   .whenReady()
   .then(async () => {
@@ -34,7 +61,7 @@ void app
         },
       })
     })
-
+    setMenus()
     const mainWindow = buildBrowserWindow("preload", true)
     let logChecker: LogChecker | null = null
     const dispatch = initializeAPI(

@@ -70,14 +70,20 @@
         "codeSigningAccountName": "desktop-app-signing",
         "certificateProfileName": "OpentronsDesktopApp",
         "endpoint": "https://eus.codesigning.azure.net"
-      }
+      },
+      "extraFiles": [
+        "./assets/logverifier.png"
+      ]
     },
     "linux": {
       "target": [
         "AppImage"
       ],
       "executableName": "log-verifier",
-      "category": "Science"
+      "category": "Science",
+      "extraFiles": [
+        "./assets/logverifier.png"
+      ]
     },
     "generateUpdatesFilesForAllChannels": true
   },
