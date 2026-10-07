@@ -39,13 +39,16 @@ jobs:
           manual="${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'default' }}"
           if [[ "$manual" != "default" ]]; then
             echo "environment=${manual}" >> "$GITHUB_OUTPUT"
+            echo "Deploying to ${manual}" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           ref="${{ github.ref }}"
           if [[ "$ref" == refs/tags/v* ]] || [[ "$ref" == refs/heads/release ]] || [[ "$ref" == refs/heads/chore_release-* ]]; then
             echo "environment=prod" >> "$GITHUB_OUTPUT"
+            echo "Deploying to prod" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "environment=dev" >> "$GITHUB_OUTPUT"
+            echo "Deploying to dev" >> "$GITHUB_STEP_SUMMARY"
           fi
 
   build:
@@ -104,12 +107,12 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ vars.DEPLOY_PREFIX_BUILDID }}" == "true" ]]; then
-            buildid="${{ github.run_id }}"
+            echo "prefix=${{ vars.DEPLOY_PREFIX_BASE }}/${{ github.run_id }}" >> "$GITHUB_OUTPUT"
           else
-            buildid="release"
+            echo "prefix=${{ vars.DEPLOY_PREFIX_BASE }}" >> "$GITHUB_OUTPUT"
           fi
           echo "bucket=${{ vars.DEPLOY_BUCKET }}" >> "$GITHUB_OUTPUT"
-          echo "prefix=${{ vars.DEPLOY_PREFIX }}/${buildid}" >> "$GITHUB_OUTPUT"
+
           if [[ "${{ needs.configure.outputs.environment }}" == "prod" ]]; then
             echo "invalidate=true" >> "$GITHUB_OUTPUT"
           else
