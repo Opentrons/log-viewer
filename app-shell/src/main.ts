@@ -1,4 +1,5 @@
 import { stat, mkdir } from "fs/promises"
+import path from "path"
 
 import { app, dialog, session, Menu } from "electron"
 
@@ -20,7 +21,8 @@ app.once("window-all-closed", () => {
 
 console.log(`Environment is prod: ${import.meta.env.PROD}`)
 
-function addWindowsHelpAbout() {
+function setMenus() {
+  // osx gets this config automatically
   if (process.platform !== "darwin") {
     app.setAboutPanelOptions({
       applicationName: "Log Verifier",
@@ -28,13 +30,21 @@ function addWindowsHelpAbout() {
       copyright: "Copyright © 2026",
       authors: ["Opentrons"],
       website: "opentrons.com",
+      iconPath: path.join(app.getPath("assets"), "icon.png"),
     })
-    Menu.setApplicationMenu(
-      Menu.buildFromTemplate([
-        { label: "&Help", submenu: [{ label: "About Log Verifier", role: "about" }] },
-      ]),
-    )
   }
+  Menu.setApplicationMenu(
+    Menu.buildFromTemplate([
+      ...(process.platform === "darwin" ? [{ role: "appMenu" as const }] : []),
+      { role: "fileMenu" } as const,
+      { role: "editMenu" } as const,
+      { role: "viewMenu" } as const,
+      { role: "windowMenu" } as const,
+      ...(process.platform !== "darwin"
+        ? [{ label: "&Help", submenu: [{ label: "About Log Verifier", role: "about" as const }] }]
+        : []),
+    ]),
+  )
 }
 
 void app
@@ -51,7 +61,7 @@ void app
         },
       })
     })
-    addWindowsHelpAbout()
+    setMenus()
     const mainWindow = buildBrowserWindow("preload", true)
     let logChecker: LogChecker | null = null
     const dispatch = initializeAPI(
