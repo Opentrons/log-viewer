@@ -39,7 +39,7 @@ jobs:
       - name: "Setup"
         run: just setup
       - name: "Build"
-        run: just build build_id="b${{github.run_number}}"
+        run: just build "b${{github.run_number}}"
         env:
           AZURE_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
           AZURE_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
