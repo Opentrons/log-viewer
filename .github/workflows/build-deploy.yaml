@@ -52,8 +52,9 @@ jobs:
           fi
 
   build:
-    name: "app build"
-    environment: "prod"
+    name: "app build as ${{ needs.configure.outputs.environment }}"
+    needs: ["configure"]
+    environment: ${{ needs.configure.outputs.environment }}
     strategy:
       matrix:
         os: ["windows-2022", "ubuntu-22.04", "macos-latest"]
@@ -92,7 +93,7 @@ jobs:
         run: echo "Artifact is ${{ steps.artifact-upload.outputs.artifact-url }}"
 
   deploy:
-    name: "Deploy artifacts to S3"
+    name: "Deploy artifacts to S3 ${{ needs.configure.outputs.environment }}"
     needs: ["configure", "build"]
     if: vars.OT_LOGVIEWER_DEPLOY_ROLE != ''
     runs-on: "ubuntu-22.04"
