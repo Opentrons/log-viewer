@@ -24,6 +24,7 @@ console.log(`Environment is prod: ${import.meta.env.PROD}`)
 function setMenus() {
   // osx gets this config automatically
   if (process.platform !== "darwin") {
+    log.info("updating about platform options")
     app.setAboutPanelOptions({
       applicationName: "Log Verifier",
       applicationVersion: app.getVersion(),
@@ -33,18 +34,20 @@ function setMenus() {
       iconPath: path.join(app.getPath("assets"), "icon.png"),
     })
   }
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate([
-      ...(process.platform === "darwin" ? [{ role: "appMenu" as const }] : []),
-      { role: "fileMenu" } as const,
-      { role: "editMenu" } as const,
-      { role: "viewMenu" } as const,
-      { role: "windowMenu" } as const,
-      ...(process.platform !== "darwin"
-        ? [{ label: "&Help", submenu: [{ label: "About Log Verifier", role: "about" as const }] }]
-        : []),
-    ]),
-  )
+  log.info("building application menu")
+  const menuTemplate = [
+    ...(process.platform === "darwin" ? [{ role: "appMenu" as const }] : []),
+    { role: "fileMenu" } as const,
+    { role: "editMenu" } as const,
+    { role: "viewMenu" } as const,
+    { role: "windowMenu" } as const,
+    ...(process.platform !== "darwin"
+      ? [{ label: "&Help", submenu: [{ label: "About Log Verifier", role: "about" as const }] }]
+      : []),
+  ]
+  log.info(`menu template ${JSON.stringify(menuTemplate)}`)
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
 }
 
 void app
