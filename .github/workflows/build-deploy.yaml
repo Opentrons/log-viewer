@@ -15,7 +15,7 @@ env:
   CI: true
   _DEPLOY_BUCKET_RELEASE: builds.opentrons.com
   _DEPLOY_BUCKET_INTERNAL: ot3-development.builds.opentrons.com
-  _DEPLOY_FOLDER: logviewer
+  _DEPLOY_PREFIX: logviewer
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
       - name: "Setup"
         run: just setup
       - name: "Build"
-        run: just build
+        run: just build build_id="b${{github.run_number}}"
         env:
           AZURE_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
           AZURE_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
@@ -75,9 +75,11 @@ jobs:
           ref="${{ github.ref }}"
           if [[ "$ref" == refs/tags/v* ]] || [[ "$ref" == refs/heads/release ]] || [[ "$ref" == refs/heads/chore_release-* ]]; then
             echo "bucket=${{ env._DEPLOY_BUCKET_RELEASE }}" >> "$GITHUB_OUTPUT"
+            echo prefix=${{ env._DEPLOY_PREFIX }}" >> $GITHUB_OUTPUT"
             echo "invalidate=true" >> "$GITHUB_OUTPUT"
           else
             echo "bucket=${{ env._DEPLOY_BUCKET_INTERNAL }}" >> "$GITHUB_OUTPUT"
+            echo "prefix=${{ env._DEPLOY_PREFIX }}/${{ github.run_id }}" >> "$GITHUB_OUTPUT"
             echo "invalidate=false" >> "$GITHUB_OUTPUT"
           fi
       - name: "Download build artifacts"
@@ -106,14 +108,14 @@ jobs:
       - name: "Sync artifacts to S3"
         run: |
           aws s3 sync --acl=public-read to_upload/ \
-            "s3://${{ steps.target.outputs.bucket }}/${{ env._DEPLOY_FOLDER }}"
+            "s3://${{ steps.target.outputs.bucket }}/${{ steps.target.outputs.prefix }}"
       - name: "Write download links summary"
         shell: bash
         run: |
           set -euo pipefail
           bucket="${{ steps.target.outputs.bucket }}"
-          folder="${{ env._DEPLOY_FOLDER }}"
-          base_url="https://${bucket}/${folder}"
+          prefix="${{ steps.target.outputs.prefix }}"
+          base_url="https://${bucket}/${prefix}"
 
           {
             echo "## Deployed artifacts"
