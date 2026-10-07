@@ -75,7 +75,7 @@ jobs:
           ref="${{ github.ref }}"
           if [[ "$ref" == refs/tags/v* ]] || [[ "$ref" == refs/heads/release ]] || [[ "$ref" == refs/heads/chore_release-* ]]; then
             echo "bucket=${{ env._DEPLOY_BUCKET_RELEASE }}" >> "$GITHUB_OUTPUT"
-            echo prefix=${{ env._DEPLOY_PREFIX }}" >> $GITHUB_OUTPUT"
+            echo "prefix=${{ env._DEPLOY_PREFIX }}" >> "$GITHUB_OUTPUT"
             echo "invalidate=true" >> "$GITHUB_OUTPUT"
           else
             echo "bucket=${{ env._DEPLOY_BUCKET_INTERNAL }}" >> "$GITHUB_OUTPUT"
@@ -94,8 +94,10 @@ jobs:
           set -euo pipefail
           mkdir -p to_upload
           find artifacts -type f \( \
-            -name '*.exe' -o -name '*.msi' -o -name '*.dmg' -o -name '*.zip' \
-            -o -name '*.AppImage' -o -name '*.yml' -o -name '*.yaml' \
+            -name '*.msi' \
+            -o -name '*.dmg' \
+            -o -name '*.zip' \
+            -o -name '*.AppImage' \
             -o -name '*.blockmap' \
           \) -exec cp -v {} to_upload/ \;
           echo "Staged:"
