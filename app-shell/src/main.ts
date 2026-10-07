@@ -1,6 +1,6 @@
 import { stat, mkdir } from "fs/promises"
 
-import { app, dialog, session } from "electron"
+import { app, dialog, session, Menu } from "electron"
 
 import { initializeAPI } from "./api"
 import { getConfig, updateConfigBySlice, setConfig, handleConfigChange } from "./config"
@@ -20,6 +20,23 @@ app.once("window-all-closed", () => {
 
 console.log(`Environment is prod: ${import.meta.env.PROD}`)
 
+function addWindowsHelpAbout() {
+  if (process.platform !== "darwin") {
+    app.setAboutPanelOptions({
+      applicationName: "Log Verifier",
+      applicationVersion: app.getVersion(),
+      copyright: "Copyright © 2026",
+      authors: ["Opentrons"],
+      website: "opentrons.com",
+    })
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate([
+        { label: "&Help", submenu: [{ label: "About Log Verifier", role: "about" }] },
+      ]),
+    )
+  }
+}
+
 void app
   .whenReady()
   .then(async () => {
@@ -34,7 +51,7 @@ void app
         },
       })
     })
-
+    addWindowsHelpAbout()
     const mainWindow = buildBrowserWindow("preload", true)
     let logChecker: LogChecker | null = null
     const dispatch = initializeAPI(
