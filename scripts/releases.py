@@ -1,9 +1,11 @@
 import argparse
 import copy
 import json
+import uuid
 from pathlib import Path
 from urllib.parse import quote, unquote, urlparse
 
+import boto3
 import semver
 
 INSTALLERS = {
@@ -158,6 +160,43 @@ def _filenames(artifact_dir):
     return [path.name for path in Path(artifact_dir).iterdir() if path.is_file()]
 
 
+def publish(document, bucket, prefix, distribution_id=None, s3=None, cloudfront=None):
+    client = s3 or boto3.client("s3")
+    prefix = prefix.strip("/")
+    client.put_object(
+        Bucket=bucket,
+        Key=f"{prefix}/releases.json",
+        Body=(json.dumps(document, indent=2) + "\n").encode(),
+        ACL="public-read",
+        ContentType="application/json",
+        CacheControl="max-age=60",
+    )
+    links = magic_links(document)
+    if not links:
+        print("No active release. Stable links were left unchanged.")
+    for link in links:
+        destination = f"{prefix}/{link['filename']}"
+        print(f"Stable link s3://{bucket}/{destination} -> {link['source_key']}")
+        source = client.head_object(Bucket=bucket, Key=link["source_key"])
+        client.copy_object(
+            Bucket=bucket,
+            Key=destination,
+            CopySource={"Bucket": bucket, "Key": link["source_key"]},
+            ACL="public-read",
+            CacheControl="max-age=60",
+            ContentType=source["ContentType"],
+            MetadataDirective="REPLACE",
+        )
+    if distribution_id:
+        (cloudfront or boto3.client("cloudfront")).create_invalidation(
+            DistributionId=distribution_id,
+            InvalidationBatch={
+                "Paths": {"Quantity": 1, "Items": [f"/{prefix}/*"]},
+                "CallerReference": str(uuid.uuid4()),
+            },
+        )
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -168,9 +207,12 @@ def main(argv=None):
     update.add_argument("artifact_dir")
     update.add_argument("base_url")
 
-    for name in ("activate", "revoke", "links"):
+    for name in ("activate", "revoke"):
         command = sub.add_parser(name)
         command.add_argument("releases")
+        command.add_argument("--bucket")
+        command.add_argument("--prefix")
+        command.add_argument("--distribution-id")
 
     args = parser.parse_args(argv)
     if args.command == "update":
@@ -184,16 +226,12 @@ def main(argv=None):
         )
         return
 
-    document = _load(args.releases)
-    if args.command == "links":
-        for link in magic_links(document):
-            print(f"{link['filename']}\t{link['source_key']}")
-        return
-
-    updated = {"activate": mark_latest_active, "revoke": revoke_latest}[args.command](document)
+    updated = {"activate": mark_latest_active, "revoke": revoke_latest}[args.command](_load(args.releases))
     _dump(updated, args.releases)
     active = active_release(updated)
     print("No active release" if active is None else f"Active release {active[0]}")
+    if args.bucket and args.prefix:
+        publish(updated, args.bucket, args.prefix, args.distribution_id or None)
 
 
 if __name__ == "__main__":
