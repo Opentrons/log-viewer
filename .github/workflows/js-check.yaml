@@ -13,6 +13,8 @@ on:
       - "**.json"
       - "**.css"
       - "**.md"
+      - "**.py"
+      - "scripts/requirements*.txt"
       - ".github/workflows/js-check.yaml"
   push:
     paths:
@@ -26,6 +28,8 @@ on:
       - "**.json"
       - "**.css"
       - "**.md"
+      - "**.py"
+      - "scripts/requirements*.txt"
       - ".github/workflows/js-check.yaml"
   workflow_dispatch:
 
@@ -60,7 +64,7 @@ jobs:
     strategy:
       matrix:
         os: ["windows-2022", "ubuntu-22.04", "macos-latest"]
-        target_dir: ["app", "app-shell", "scripts"]
+        target_dir: ["app", "app-shell"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
@@ -77,3 +81,13 @@ jobs:
         run: just setup
       - name: "Test"
         run: just test ${{ matrix.target_dir }}
+  release-scripts:
+    name: "release-scripts"
+    runs-on: "ubuntu-22.04"
+    steps:
+      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+      - name: "Test"
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements-dev.txt
+          .venv/bin/pytest scripts

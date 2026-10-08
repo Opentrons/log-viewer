@@ -192,7 +192,9 @@ jobs:
             fi
             echo '{"productionV1":{}}' > ./releases.json
           fi
-          node ./scripts/update-releases-json.mjs \
+          python3 -m venv .venv
+          .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements.txt
+          .venv/bin/python scripts/releases.py update \
             ./releases.json \
             "$version" \
             ./to_upload \

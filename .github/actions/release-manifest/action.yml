@@ -27,12 +27,14 @@ runs:
         prefix="${{ vars.DEPLOY_PREFIX_BASE }}"
         destination="s3://${bucket}/${prefix}/releases.json"
         aws s3 cp "$destination" ./releases.json
-        node ./scripts/update-release-state.mjs "$command" ./releases.json
+        python3 -m venv .venv
+        .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements.txt
+        .venv/bin/python scripts/releases.py "$command" ./releases.json
         aws s3 cp ./releases.json "$destination" \
           --acl public-read \
           --content-type application/json \
           --cache-control "max-age=60"
-        node ./scripts/magic-links.mjs ./releases.json > ./magic-links.tsv
+        .venv/bin/python scripts/releases.py links ./releases.json > ./magic-links.tsv
         if [[ ! -s ./magic-links.tsv ]]; then
           echo "No active release. Stable links were left unchanged."
         fi

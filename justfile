@@ -78,3 +78,8 @@ lint:
 [env('NODE_ENV', "development")]
 test target=test_target opts=test_opts:
     pnpm exec vitest {{target}} {{opts}}
+
+test-releases:
+    python3 -m venv .venv
+    .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements-dev.txt
+    .venv/bin/pytest scripts
