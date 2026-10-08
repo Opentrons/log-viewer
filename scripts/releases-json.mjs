@@ -58,3 +58,67 @@ export function updateReleasesDocument(existing, { version, filenames, baseUrl }
   document.productionV1[version] = entry
   return document
 }
+
+export const MAGIC_LINK_FILENAMES = {
+  win: "Log Viewer.msi",
+  mac: "Log Viewer.dmg",
+  linux: "Log Viewer.AppImage",
+}
+
+const PRODUCTION_VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+
+export function isProductionVersion(version) {
+  return PRODUCTION_VERSION.test(version)
+}
+
+export function compareSemver(left, right) {
+  const leftParts = left.split(".").map((part) => Number(part))
+  const rightParts = right.split(".").map((part) => Number(part))
+  for (let index = 0; index < 3; index += 1) {
+    if (leftParts[index] !== rightParts[index]) {
+      return leftParts[index] - rightParts[index]
+    }
+  }
+  return 0
+}
+
+export function latestProductionRelease(document) {
+  const releases = document?.productionV1
+  if (releases == null || typeof releases !== "object" || Array.isArray(releases)) {
+    return null
+  }
+  const versions = Object.keys(releases)
+    .filter((version) => isProductionVersion(version) && releases[version]?.revoked !== true)
+    .sort(compareSemver)
+  const version = versions.at(-1)
+  if (version == null) {
+    return null
+  }
+  return { version, release: releases[version] }
+}
+
+export function s3KeyFromArtifactUrl(artifactUrl) {
+  const pathname = new URL(artifactUrl).pathname.replace(/^\//, "")
+  return decodeURIComponent(pathname)
+}
+
+export function magicLinks(document) {
+  const latest = latestProductionRelease(document)
+  if (latest == null) {
+    return []
+  }
+  const links = []
+  for (const [platform, filename] of Object.entries(MAGIC_LINK_FILENAMES)) {
+    const artifactUrl = latest.release[platform]
+    if (typeof artifactUrl !== "string" || artifactUrl.length === 0) {
+      continue
+    }
+    links.push({
+      platform,
+      filename,
+      version: latest.version,
+      sourceKey: s3KeyFromArtifactUrl(artifactUrl),
+    })
+  }
+  return links
+}

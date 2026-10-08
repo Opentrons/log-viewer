@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { updateReleasesDocument } from "./releases-json.mjs"
+import { magicLinks, updateReleasesDocument } from "./releases-json.mjs"
 
 const baseUrl = "https://builds.opentrons.com/logviewer"
 const filenames = [
@@ -65,6 +65,54 @@ describe("updateReleasesDocument", () => {
         baseUrl,
       }),
     ).toThrow(/No installers found/)
+  })
+
+  it("points magic links at the latest non-prerelease, non-revoked build", () => {
+    const document = {
+      productionV1: {
+        "1.9.0": {
+          win: "https://builds.opentrons.com/logviewer/old.msi",
+          mac: "https://builds.opentrons.com/logviewer/old.dmg",
+          linux: "https://builds.opentrons.com/logviewer/old.AppImage",
+          revoked: false,
+        },
+        "1.10.0": {
+          win: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-win.msi",
+          mac: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-mac.dmg",
+          linux: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-linux.AppImage",
+          revoked: false,
+        },
+        "2.0.0": {
+          win: "https://builds.opentrons.com/logviewer/revoked.msi",
+          revoked: true,
+        },
+        "2.1.0-alpha.1": {
+          win: "https://builds.opentrons.com/logviewer/alpha.msi",
+          revoked: false,
+        },
+      },
+    }
+
+    expect(magicLinks(document)).toEqual([
+      {
+        platform: "win",
+        filename: "Log Viewer.msi",
+        version: "1.10.0",
+        sourceKey: "logviewer/Log Verifier-v1.10.0-win.msi",
+      },
+      {
+        platform: "mac",
+        filename: "Log Viewer.dmg",
+        version: "1.10.0",
+        sourceKey: "logviewer/Log Verifier-v1.10.0-mac.dmg",
+      },
+      {
+        platform: "linux",
+        filename: "Log Viewer.AppImage",
+        version: "1.10.0",
+        sourceKey: "logviewer/Log Verifier-v1.10.0-linux.AppImage",
+      },
+    ])
   })
 
   it("fails when a tag build has no installers", () => {
