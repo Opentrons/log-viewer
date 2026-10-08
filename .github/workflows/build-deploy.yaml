@@ -181,28 +181,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version="${GITHUB_REF_NAME#v}"
-          bucket="${{ steps.target.outputs.bucket }}"
-          prefix="${{ steps.target.outputs.prefix }}"
-          destination="s3://${bucket}/${prefix}/releases.json"
-          if ! aws s3 cp "$destination" ./releases.json; then
-            if aws s3api head-object --bucket "$bucket" --key "${prefix}/releases.json" >/dev/null 2>&1; then
-              echo "releases.json exists but could not be downloaded" >&2
-              exit 1
-            fi
-            echo '{"productionV1":{}}' > ./releases.json
-          fi
           python3 -m venv .venv
           .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements.txt
           .venv/bin/python scripts/releases.py update \
-            ./releases.json \
-            "$version" \
-            ./to_upload \
-            "https://${bucket}/${prefix}"
-          aws s3 cp ./releases.json "$destination" \
-            --acl public-read \
-            --content-type application/json \
-            --cache-control "max-age=60"
+            --bucket "${{ steps.target.outputs.bucket }}" \
+            --prefix "${{ steps.target.outputs.prefix }}" \
+            --version "${GITHUB_REF_NAME#v}" \
+            --artifact-dir ./to_upload
       - name: "Invalidate CloudFront cache (builds.opentrons.com)"
         if: steps.target.outputs.invalidate == 'true' && vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID != ''
         run: |

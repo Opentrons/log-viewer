@@ -18,18 +18,9 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        command="${{ inputs.command }}"
-        if [[ "$command" != "activate" && "$command" != "revoke" ]]; then
-          echo "Unsupported command: $command" >&2
-          exit 1
-        fi
-        bucket="${{ vars.DEPLOY_BUCKET }}"
-        prefix="${{ vars.DEPLOY_PREFIX_BASE }}"
-        destination="s3://${bucket}/${prefix}/releases.json"
-        aws s3 cp "$destination" ./releases.json
         python3 -m venv .venv
         .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements.txt
-        .venv/bin/python scripts/releases.py "$command" ./releases.json \
-          --bucket "$bucket" \
-          --prefix "$prefix" \
+        .venv/bin/python scripts/releases.py "${{ inputs.command }}" \
+          --bucket "${{ vars.DEPLOY_BUCKET }}" \
+          --prefix "${{ vars.DEPLOY_PREFIX_BASE }}" \
           --distribution-id "${{ vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID }}"

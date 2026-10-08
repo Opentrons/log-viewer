@@ -3,27 +3,21 @@ import copy
 import json
 import uuid
 from pathlib import Path
-from urllib.parse import quote, unquote, urlparse
 
 import boto3
 import semver
+from botocore.exceptions import ClientError
+from yarl import URL
 
-INSTALLERS = {
-    "win": (".msi",),
-    "mac": (".dmg",),
-    "linux": (".AppImage",),
-}
-STABLE_NAMES = {
-    "win": "Log Viewer.msi",
-    "mac": "Log Viewer.dmg",
-    "linux": "Log Viewer.AppImage",
-}
+INSTALLERS = {"win": ".msi", "mac": ".dmg", "linux": ".AppImage"}
+STABLE_NAMES = {"win": "Log Viewer.msi", "mac": "Log Viewer.dmg", "linux": "Log Viewer.AppImage"}
+PUBLIC = {"ACL": "public-read", "CacheControl": "max-age=60"}
 
 
 def select_installers(filenames):
     chosen = {}
-    for platform, extensions in INSTALLERS.items():
-        matches = [name for name in filenames if name.endswith(extensions)]
+    for platform, extension in INSTALLERS.items():
+        matches = [name for name in filenames if name.endswith(extension)]
         if len(matches) > 1:
             raise ValueError(f"Multiple {platform} installers: {', '.join(matches)}")
         if matches:
@@ -32,7 +26,7 @@ def select_installers(filenames):
 
 
 def artifact_url(base_url, filename):
-    return f"{base_url.rstrip('/')}/{quote(filename, safe='')}"
+    return str(URL(base_url) / filename)
 
 
 def update_releases(existing, version, filenames, base_url):
@@ -43,19 +37,16 @@ def update_releases(existing, version, filenames, base_url):
     if not isinstance(releases, dict):
         releases = {}
         document["productionV1"] = releases
-
     installers = select_installers(filenames)
     if not installers:
         raise ValueError(f"No installers found for {version}")
-
     previous = releases.get(version) or {}
-    entry = {
-        platform: artifact_url(base_url, filename) for platform, filename in installers.items()
+    releases[version] = {
+        platform: artifact_url(base_url, name) for platform, name in installers.items()
     }
     for flag in ("active", "revoked"):
         if isinstance(previous.get(flag), bool):
-            entry[flag] = previous[flag]
-    releases[version] = entry
+            releases[version][flag] = previous[flag]
     return document
 
 
@@ -66,50 +57,48 @@ def _releases_of(document):
     return releases
 
 
-def production_versions(releases):
-    parsed = []
-    for version, release in releases.items():
-        try:
-            parsed_version = semver.Version.parse(version)
-        except ValueError:
-            continue
-        if parsed_version.prerelease is not None or parsed_version.build is not None:
-            continue
-        if release.get("revoked") is True:
-            continue
-        parsed.append(parsed_version)
-    return [str(version) for version in sorted(parsed)]
+def _stable(version):
+    try:
+        parsed = semver.Version.parse(version)
+    except ValueError:
+        return None
+    return parsed if parsed == parsed.finalize_version() else None
 
 
-def _set_active(releases, active_version):
+def latest_version(releases):
+    versions = [
+        parsed
+        for version, release in releases.items()
+        if release.get("revoked") is not True and (parsed := _stable(version))
+    ]
+    if not versions:
+        raise ValueError("No production release")
+    return str(max(versions))
+
+
+def _flag_active(releases, chosen):
     for version, release in releases.items():
-        if version == active_version:
-            release["active"] = True
-        elif release.get("active") is True:
-            release["active"] = False
+        if version == chosen or release.get("active") is True:
+            release["active"] = version == chosen
 
 
 def mark_latest_active(document):
     document = copy.deepcopy(document)
     releases = _releases_of(document)
-    latest = production_versions(releases)
-    if not latest:
-        raise ValueError("No production release to activate")
-    _set_active(releases, latest[-1])
+    _flag_active(releases, latest_version(releases))
     return document
 
 
 def revoke_latest(document):
     document = copy.deepcopy(document)
     releases = _releases_of(document)
-    latest = production_versions(releases)
-    if not latest:
-        raise ValueError("No production release to revoke")
-    current = latest[-1]
-    releases[current]["revoked"] = True
-    releases[current]["active"] = False
-    previous = production_versions(releases)
-    _set_active(releases, previous[-1] if previous else None)
+    current = latest_version(releases)
+    releases[current].update(revoked=True, active=False)
+    try:
+        chosen = latest_version(releases)
+    except ValueError:
+        chosen = None
+    _flag_active(releases, chosen)
     return document
 
 
@@ -123,41 +112,31 @@ def active_release(document):
     return versions[0], releases[versions[0]]
 
 
-def s3_key(artifact_url):
-    return unquote(urlparse(artifact_url).path.lstrip("/"))
-
-
 def magic_links(document):
     active = active_release(document)
     if active is None:
         return []
     version, release = active
-    links = []
-    for platform, filename in STABLE_NAMES.items():
-        artifact = release.get(platform)
-        if not isinstance(artifact, str) or not artifact:
-            continue
-        links.append(
-            {
-                "platform": platform,
-                "filename": filename,
-                "version": version,
-                "source_key": s3_key(artifact),
-            }
-        )
-    return links
+    return [
+        {
+            "platform": platform,
+            "filename": filename,
+            "version": version,
+            "source_key": URL(release[platform]).path.lstrip("/"),
+        }
+        for platform, filename in STABLE_NAMES.items()
+        if isinstance(release.get(platform), str) and release[platform]
+    ]
 
 
-def _load(path):
-    return json.loads(Path(path).read_text())
-
-
-def _dump(document, path):
-    Path(path).write_text(json.dumps(document, indent=2) + "\n")
-
-
-def _filenames(artifact_dir):
-    return [path.name for path in Path(artifact_dir).iterdir() if path.is_file()]
+def fetch_releases(bucket, prefix, s3):
+    try:
+        payload = s3.get_object(Bucket=bucket, Key=f"{prefix.strip('/')}/releases.json")["Body"].read()
+    except ClientError as error:
+        if error.response["Error"]["Code"] not in {"NoSuchKey", "404"}:
+            raise
+        return {"productionV1": {}}
+    return json.loads(payload)
 
 
 def publish(document, bucket, prefix, distribution_id=None, s3=None, cloudfront=None):
@@ -166,27 +145,24 @@ def publish(document, bucket, prefix, distribution_id=None, s3=None, cloudfront=
     client.put_object(
         Bucket=bucket,
         Key=f"{prefix}/releases.json",
-        Body=(json.dumps(document, indent=2) + "\n").encode(),
-        ACL="public-read",
+        Body=json.dumps(document, indent=2).encode() + b"\n",
         ContentType="application/json",
-        CacheControl="max-age=60",
+        **PUBLIC,
     )
-    links = magic_links(document)
-    if not links:
-        print("No active release. Stable links were left unchanged.")
-    for link in links:
+    for link in magic_links(document):
         destination = f"{prefix}/{link['filename']}"
-        print(f"Stable link s3://{bucket}/{destination} -> {link['source_key']}")
         source = client.head_object(Bucket=bucket, Key=link["source_key"])
+        print(f"Stable link s3://{bucket}/{destination} -> {link['source_key']}")
         client.copy_object(
             Bucket=bucket,
             Key=destination,
             CopySource={"Bucket": bucket, "Key": link["source_key"]},
-            ACL="public-read",
-            CacheControl="max-age=60",
             ContentType=source["ContentType"],
             MetadataDirective="REPLACE",
+            **PUBLIC,
         )
+    if not magic_links(document):
+        print("No active release. Stable links were left unchanged.")
     if distribution_id:
         (cloudfront or boto3.client("cloudfront")).create_invalidation(
             DistributionId=distribution_id,
@@ -197,41 +173,34 @@ def publish(document, bucket, prefix, distribution_id=None, s3=None, cloudfront=
         )
 
 
+def _filenames(artifact_dir):
+    return [path.name for path in Path(artifact_dir).iterdir() if path.is_file()]
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    sub = parser.add_subparsers(dest="command", required=True)
-
-    update = sub.add_parser("update")
-    update.add_argument("releases")
-    update.add_argument("version")
-    update.add_argument("artifact_dir")
-    update.add_argument("base_url")
-
-    for name in ("activate", "revoke"):
-        command = sub.add_parser(name)
-        command.add_argument("releases")
-        command.add_argument("--bucket")
-        command.add_argument("--prefix")
-        command.add_argument("--distribution-id")
-
+    parser.add_argument("command", choices=["update", "activate", "revoke"])
+    parser.add_argument("--bucket", required=True)
+    parser.add_argument("--prefix", required=True)
+    parser.add_argument("--distribution-id", default="")
+    parser.add_argument("--version")
+    parser.add_argument("--artifact-dir")
     args = parser.parse_args(argv)
-    if args.command == "update":
-        try:
-            existing = _load(args.releases)
-        except FileNotFoundError:
-            existing = None
-        _dump(
-            update_releases(existing, args.version, _filenames(args.artifact_dir), args.base_url),
-            args.releases,
-        )
-        return
 
-    updated = {"activate": mark_latest_active, "revoke": revoke_latest}[args.command](_load(args.releases))
-    _dump(updated, args.releases)
-    active = active_release(updated)
-    print("No active release" if active is None else f"Active release {active[0]}")
-    if args.bucket and args.prefix:
-        publish(updated, args.bucket, args.prefix, args.distribution_id or None)
+    s3 = boto3.client("s3")
+    document = fetch_releases(args.bucket, args.prefix, s3)
+    if args.command == "update":
+        document = update_releases(
+            document,
+            args.version,
+            _filenames(args.artifact_dir),
+            f"https://{args.bucket}/{args.prefix.strip('/')}",
+        )
+    else:
+        document = {"activate": mark_latest_active, "revoke": revoke_latest}[args.command](document)
+        active = active_release(document)
+        print("No active release" if active is None else f"Active release {active[0]}")
+    publish(document, args.bucket, args.prefix, args.distribution_id or None, s3=s3)
 
 
 if __name__ == "__main__":
