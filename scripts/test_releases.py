@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#     "pytest==8.4.2",
+# ]
+# ///
+
 import pytest
 
 from releases import magic_links, mark_latest_active, revoke_latest, update_releases

@@ -176,14 +176,16 @@ jobs:
               echo "| \`${display_name}\` | [\`${url}\`](${url}) |"
             done
           } >> "$GITHUB_STEP_SUMMARY"
+      - uses: "astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7" # v10.2.0
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          version: "0.12.23"
       - name: "Publish releases.json"
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m venv .venv
-          .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements.txt
-          .venv/bin/python scripts/releases.py update \
+          uv run scripts/releases.py update \
             --bucket "${{ steps.target.outputs.bucket }}" \
             --prefix "${{ steps.target.outputs.prefix }}" \
             --version "${GITHUB_REF_NAME#v}" \

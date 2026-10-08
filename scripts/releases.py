@@ -1,3 +1,11 @@
+# /// script
+# dependencies = [
+#     "boto3==1.40.61",
+#     "semver==3.0.4",
+#     "yarl==1.22.0",
+# ]
+# ///
+
 import argparse
 import copy
 import json

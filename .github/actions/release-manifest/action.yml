@@ -18,6 +18,9 @@ runs:
       with:
         role-to-assume: ${{ vars.OT_LOGVIEWER_DEPLOY_ROLE }}
         aws-region: us-east-1
+    - uses: "astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7" # v10.2.0
+      with:
+        version: "0.12.23"
     - name: "Update releases.json and stable links"
       shell: bash
       run: |
@@ -29,9 +32,7 @@ runs:
             exit 1
             ;;
         esac
-        python3 -m venv .venv
-        .venv/bin/pip install --disable-pip-version-check -q -r scripts/requirements.txt
-        .venv/bin/python scripts/releases.py "${{ inputs.command }}" \
+        uv run scripts/releases.py "${{ inputs.command }}" \
           --bucket "${{ vars.DEPLOY_BUCKET }}" \
           --prefix "${{ vars.DEPLOY_PREFIX_BASE }}" \
           --distribution-id "${{ vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID }}"
