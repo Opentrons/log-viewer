@@ -47,6 +47,16 @@ describe("updateReleasesDocument", () => {
     expect(next.productionV1["1.2.3"].win).toContain("Log%20Verifier-v1.2.3-win-abc.msi")
   })
 
+  it("does not publish the mac zip", () => {
+    expect(() =>
+      updateReleasesDocument(null, {
+        version: "1.2.3",
+        filenames: ["Log Verifier-v1.2.3-mac-abc.zip"],
+        baseUrl,
+      }),
+    ).toThrow(/No installers found/)
+  })
+
   it("does not publish the generated windows exe", () => {
     expect(() =>
       updateReleasesDocument(null, {
