@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest"
 
-import { magicLinks, updateReleasesDocument } from "./releases-json.mjs"
+import {
+  magicLinks,
+  markLatestActive,
+  revokeLatest,
+  updateReleasesDocument,
+} from "./releases-json.mjs"
 
 const baseUrl = "https://builds.opentrons.com/logviewer"
 const filenames = [
@@ -13,14 +18,13 @@ const filenames = [
 ]
 
 describe("updateReleasesDocument", () => {
-  it("creates productionV1 entries with installer URLs and revoked false", () => {
+  it("creates productionV1 entries without active or revoked", () => {
     expect(updateReleasesDocument(null, { version: "1.2.3", filenames, baseUrl })).toEqual({
       productionV1: {
         "1.2.3": {
           win: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.2.3-win-abc.msi",
           mac: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.2.3-mac-abc.dmg",
           linux: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.2.3-linux-abc.AppImage",
-          revoked: false,
         },
       },
     })
@@ -31,7 +35,7 @@ describe("updateReleasesDocument", () => {
       productionV1: {
         "1.0.0": {
           win: "https://builds.opentrons.com/logviewer/old.msi",
-          revoked: false,
+          active: true,
         },
         "1.2.3": {
           win: "https://builds.opentrons.com/logviewer/stale.msi",
@@ -44,7 +48,9 @@ describe("updateReleasesDocument", () => {
 
     expect(next.productionV1["1.0.0"]).toEqual(existing.productionV1["1.0.0"])
     expect(next.productionV1["1.2.3"].revoked).toBe(true)
+    expect(next.productionV1["1.2.3"].active).toBeUndefined()
     expect(next.productionV1["1.2.3"].win).toContain("Log%20Verifier-v1.2.3-win-abc.msi")
+    expect(next.productionV1["1.0.0"].active).toBe(true)
   })
 
   it("does not publish the mac zip", () => {
@@ -67,51 +73,65 @@ describe("updateReleasesDocument", () => {
     ).toThrow(/No installers found/)
   })
 
-  it("points magic links at the latest non-prerelease, non-revoked build", () => {
+  it("marks the highest production version active and copies that build", () => {
     const document = {
       productionV1: {
         "1.9.0": {
           win: "https://builds.opentrons.com/logviewer/old.msi",
           mac: "https://builds.opentrons.com/logviewer/old.dmg",
           linux: "https://builds.opentrons.com/logviewer/old.AppImage",
-          revoked: false,
+          active: true,
         },
         "1.10.0": {
           win: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-win.msi",
           mac: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-mac.dmg",
           linux: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-linux.AppImage",
-          revoked: false,
         },
         "2.0.0": {
           win: "https://builds.opentrons.com/logviewer/revoked.msi",
           revoked: true,
+          active: true,
         },
         "2.1.0-alpha.1": {
           win: "https://builds.opentrons.com/logviewer/alpha.msi",
-          revoked: false,
         },
       },
     }
 
-    expect(magicLinks(document)).toEqual([
-      {
-        platform: "win",
-        filename: "Log Viewer.msi",
-        version: "1.10.0",
-        sourceKey: "logviewer/Log Verifier-v1.10.0-win.msi",
+    const active = markLatestActive(document)
+
+    expect(active.productionV1["1.10.0"].active).toBe(true)
+    expect(active.productionV1["1.9.0"].active).toBe(false)
+    expect(active.productionV1["2.0.0"].active).toBe(false)
+    expect(active.productionV1["2.1.0-alpha.1"].active).toBeUndefined()
+    expect(magicLinks(active).map((link) => link.version)).toEqual(["1.10.0", "1.10.0", "1.10.0"])
+  })
+
+  it("revokes the highest production version and moves active to the previous one", () => {
+    const document = {
+      productionV1: {
+        "1.9.0": {
+          win: "https://builds.opentrons.com/logviewer/old.msi",
+          mac: "https://builds.opentrons.com/logviewer/old.dmg",
+          linux: "https://builds.opentrons.com/logviewer/old.AppImage",
+        },
+        "1.10.0": {
+          win: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-win.msi",
+          mac: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-mac.dmg",
+          linux: "https://builds.opentrons.com/logviewer/Log%20Verifier-v1.10.0-linux.AppImage",
+          active: true,
+        },
       },
-      {
-        platform: "mac",
-        filename: "Log Viewer.dmg",
-        version: "1.10.0",
-        sourceKey: "logviewer/Log Verifier-v1.10.0-mac.dmg",
-      },
-      {
-        platform: "linux",
-        filename: "Log Viewer.AppImage",
-        version: "1.10.0",
-        sourceKey: "logviewer/Log Verifier-v1.10.0-linux.AppImage",
-      },
+    }
+
+    const revoked = revokeLatest(document)
+
+    expect(revoked.productionV1["1.10.0"]).toMatchObject({ active: false, revoked: true })
+    expect(revoked.productionV1["1.9.0"].active).toBe(true)
+    expect(magicLinks(revoked).map((link) => [link.filename, link.sourceKey])).toEqual([
+      ["Log Viewer.msi", "logviewer/old.msi"],
+      ["Log Viewer.dmg", "logviewer/old.dmg"],
+      ["Log Viewer.AppImage", "logviewer/old.AppImage"],
     ])
   })
 

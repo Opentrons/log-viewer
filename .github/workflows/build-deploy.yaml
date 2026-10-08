@@ -201,14 +201,6 @@ jobs:
             --acl public-read \
             --content-type application/json \
             --cache-control "max-age=60"
-          node ./scripts/magic-links.mjs ./releases.json > ./magic-links.tsv
-          while IFS=$'\t' read -r filename source_key; do
-            [[ -n "$filename" ]] || continue
-            echo "Magic link s3://${bucket}/${prefix}/${filename} -> ${source_key}"
-            aws s3 cp "s3://${bucket}/${source_key}" "s3://${bucket}/${prefix}/${filename}" \
-              --acl public-read \
-              --cache-control "max-age=60"
-          done < ./magic-links.tsv
       - name: "Invalidate CloudFront cache (builds.opentrons.com)"
         if: steps.target.outputs.invalidate == 'true' && vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID != ''
         run: |

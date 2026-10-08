@@ -1,0 +1,50 @@
+name: "Update release manifest"
+description: "Activate or revoke the latest production release and refresh the stable download links."
+inputs:
+  command:
+    description: "activate or revoke"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+    - name: "Configure AWS credentials (GitHub OIDC)"
+      uses: "aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a" # v4.3.1
+      with:
+        role-to-assume: ${{ vars.OT_LOGVIEWER_DEPLOY_ROLE }}
+        aws-region: us-east-1
+    - name: "Update releases.json and stable links"
+      shell: bash
+      run: |
+        set -euo pipefail
+        command="${{ inputs.command }}"
+        if [[ "$command" != "activate" && "$command" != "revoke" ]]; then
+          echo "Unsupported command: $command" >&2
+          exit 1
+        fi
+        bucket="${{ vars.DEPLOY_BUCKET }}"
+        prefix="${{ vars.DEPLOY_PREFIX_BASE }}"
+        destination="s3://${bucket}/${prefix}/releases.json"
+        aws s3 cp "$destination" ./releases.json
+        node ./scripts/update-release-state.mjs "$command" ./releases.json
+        aws s3 cp ./releases.json "$destination" \
+          --acl public-read \
+          --content-type application/json \
+          --cache-control "max-age=60"
+        node ./scripts/magic-links.mjs ./releases.json > ./magic-links.tsv
+        if [[ ! -s ./magic-links.tsv ]]; then
+          echo "No active release. Stable links were left unchanged."
+        fi
+        while IFS=$'\t' read -r filename source_key; do
+          [[ -n "$filename" ]] || continue
+          echo "Stable link s3://${bucket}/${prefix}/${filename} -> ${source_key}"
+          aws s3 cp "s3://${bucket}/${source_key}" "s3://${bucket}/${prefix}/${filename}" \
+            --acl public-read \
+            --cache-control "max-age=60"
+        done < ./magic-links.tsv
+        if [[ -n "${{ vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID }}" ]]; then
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/${prefix}/*"
+        fi

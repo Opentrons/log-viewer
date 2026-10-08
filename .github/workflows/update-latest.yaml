@@ -1,0 +1,19 @@
+name: "Update latest"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-latest:
+    name: "Copy the highest production release and mark it active"
+    runs-on: "ubuntu-22.04"
+    environment: "prod"
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+      - name: "Activate the highest production release"
+        uses: "./.github/actions/release-manifest"
+        with:
+          command: activate

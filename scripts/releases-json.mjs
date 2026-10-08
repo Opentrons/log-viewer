@@ -45,8 +45,6 @@ export function updateReleasesDocument(existing, { version, filenames, baseUrl }
   }
 
   const previous = document.productionV1[version]
-  const revoked =
-    previous != null && typeof previous.revoked === "boolean" ? previous.revoked : false
   const entry = {}
   for (const platform of PLATFORMS) {
     const filename = installers[platform.name]
@@ -54,7 +52,12 @@ export function updateReleasesDocument(existing, { version, filenames, baseUrl }
       entry[platform.name] = artifactUrl(baseUrl, filename)
     }
   }
-  entry.revoked = revoked
+  if (previous != null && typeof previous.active === "boolean") {
+    entry.active = previous.active
+  }
+  if (previous != null && typeof previous.revoked === "boolean") {
+    entry.revoked = previous.revoked
+  }
   document.productionV1[version] = entry
   return document
 }
@@ -82,15 +85,64 @@ export function compareSemver(left, right) {
   return 0
 }
 
-export function latestProductionRelease(document) {
+function releasesOf(document) {
   const releases = document?.productionV1
   if (releases == null || typeof releases !== "object" || Array.isArray(releases)) {
-    return null
+    throw new Error("releases.json is missing productionV1")
   }
-  const versions = Object.keys(releases)
+  return releases
+}
+
+function productionVersions(releases) {
+  return Object.keys(releases)
     .filter((version) => isProductionVersion(version) && releases[version]?.revoked !== true)
     .sort(compareSemver)
-  const version = versions.at(-1)
+}
+
+function clearOtherActive(releases, activeVersion) {
+  for (const [version, release] of Object.entries(releases)) {
+    if (version !== activeVersion && release.active === true) {
+      release.active = false
+    }
+  }
+}
+
+export function markLatestActive(document) {
+  const next = structuredClone(document)
+  const releases = releasesOf(next)
+  const latest = productionVersions(releases).at(-1)
+  if (latest == null) {
+    throw new Error("No production release to activate")
+  }
+  releases[latest].active = true
+  clearOtherActive(releases, latest)
+  return next
+}
+
+export function revokeLatest(document) {
+  const next = structuredClone(document)
+  const releases = releasesOf(next)
+  const latest = productionVersions(releases).at(-1)
+  if (latest == null) {
+    throw new Error("No production release to revoke")
+  }
+  releases[latest].revoked = true
+  releases[latest].active = false
+  const previous = productionVersions(releases).at(-1)
+  if (previous != null) {
+    releases[previous].active = true
+  }
+  clearOtherActive(releases, previous)
+  return next
+}
+
+export function activeRelease(document) {
+  const releases = releasesOf(document)
+  const versions = Object.keys(releases).filter((version) => releases[version]?.active === true)
+  if (versions.length > 1) {
+    throw new Error(`Multiple active releases: ${versions.join(", ")}`)
+  }
+  const version = versions[0]
   if (version == null) {
     return null
   }
@@ -103,7 +155,7 @@ export function s3KeyFromArtifactUrl(artifactUrl) {
 }
 
 export function magicLinks(document) {
-  const latest = latestProductionRelease(document)
+  const latest = activeRelease(document)
   if (latest == null) {
     return []
   }
