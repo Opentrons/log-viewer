@@ -68,6 +68,9 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: "Checkout release scripts"
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
       - name: "Choose S3 destination"
         id: "target"
         shell: bash
@@ -107,6 +110,31 @@ jobs:
         run: |
           aws s3 sync --acl=public-read to_upload/ \
             "s3://${{ steps.target.outputs.bucket }}/${{ env._DEPLOY_FOLDER }}"
+      - name: "Publish releases.json"
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          bucket="${{ steps.target.outputs.bucket }}"
+          folder="${{ env._DEPLOY_FOLDER }}"
+          destination="s3://${bucket}/${folder}/releases.json"
+          if ! aws s3 cp "$destination" ./releases.json; then
+            if aws s3api head-object --bucket "$bucket" --key "${folder}/releases.json" >/dev/null 2>&1; then
+              echo "releases.json exists but could not be downloaded" >&2
+              exit 1
+            fi
+            echo '{"productionV1":{}}' > ./releases.json
+          fi
+          node ./scripts/update-releases-json.mjs \
+            ./releases.json \
+            "$version" \
+            ./to_upload \
+            "https://${{ steps.target.outputs.bucket }}/${{ env._DEPLOY_FOLDER }}"
+          aws s3 cp ./releases.json "$destination" \
+            --acl public-read \
+            --content-type application/json \
+            --cache-control "max-age=60"
       - name: "Invalidate CloudFront cache (builds.opentrons.com)"
         if: steps.target.outputs.invalidate == 'true' && vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID != ''
         run: |
@@ -114,7 +142,7 @@ jobs:
           INVALIDATION_ID="$(
             aws cloudfront create-invalidation \
               --distribution-id '${{ vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID }}' \
-              --paths '/logverifier/*' \
+              --paths '/logverifier/*' '/${{ env._DEPLOY_FOLDER }}/releases.json' \
               --output text \
               --query 'Invalidation.Id'
           )"
