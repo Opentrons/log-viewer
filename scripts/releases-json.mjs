@@ -1,5 +1,5 @@
 const PLATFORMS = [
-  { name: "win", extensions: [".msi", ".exe"] },
+  { name: "win", extensions: [".msi"] },
   { name: "mac", extensions: [".dmg", ".zip"] },
   { name: "linux", extensions: [".AppImage"] },
 ]

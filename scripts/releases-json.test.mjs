@@ -47,6 +47,16 @@ describe("updateReleasesDocument", () => {
     expect(next.productionV1["1.2.3"].win).toContain("Log%20Verifier-v1.2.3-win-abc.msi")
   })
 
+  it("does not publish the generated windows exe", () => {
+    expect(() =>
+      updateReleasesDocument(null, {
+        version: "1.2.3",
+        filenames: ["Log Verifier-v1.2.3-win-abc.exe"],
+        baseUrl,
+      }),
+    ).toThrow(/No installers found/)
+  })
+
   it("fails when a tag build has no installers", () => {
     expect(() =>
       updateReleasesDocument(null, { version: "1.2.3", filenames: ["latest.yml"], baseUrl }),
