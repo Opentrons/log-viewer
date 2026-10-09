@@ -176,31 +176,20 @@ jobs:
               echo "| \`${display_name}\` | [\`${url}\`](${url}) |"
             done
           } >> "$GITHUB_STEP_SUMMARY"
+      - uses: "astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7" # v10.2.0
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          version: "0.12.23"
       - name: "Publish releases.json"
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: |
           set -euo pipefail
-          version="${GITHUB_REF_NAME#v}"
-          bucket="${{ steps.target.outputs.bucket }}"
-          prefix="${{ steps.target.outputs.prefix }}"
-          destination="s3://${bucket}/${prefix}/releases.json"
-          if ! aws s3 cp "$destination" ./releases.json; then
-            if aws s3api head-object --bucket "$bucket" --key "${prefix}/releases.json" >/dev/null 2>&1; then
-              echo "releases.json exists but could not be downloaded" >&2
-              exit 1
-            fi
-            echo '{"productionV1":{}}' > ./releases.json
-          fi
-          node ./scripts/update-releases-json.mjs \
-            ./releases.json \
-            "$version" \
-            ./to_upload \
-            "https://${bucket}/${prefix}"
-          aws s3 cp ./releases.json "$destination" \
-            --acl public-read \
-            --content-type application/json \
-            --cache-control "max-age=60"
+          uv run scripts/releases.py update \
+            --bucket "${{ steps.target.outputs.bucket }}" \
+            --prefix "${{ steps.target.outputs.prefix }}" \
+            --version "${GITHUB_REF_NAME#v}" \
+            --artifact-dir ./to_upload
       - name: "Invalidate CloudFront cache (builds.opentrons.com)"
         if: steps.target.outputs.invalidate == 'true' && vars.OT_LOGVIEWER_BUILDS_CLOUDFRONT_DISTRIBUTION_ID != ''
         run: |

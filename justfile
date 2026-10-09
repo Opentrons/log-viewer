@@ -78,3 +78,6 @@ lint:
 [env('NODE_ENV', "development")]
 test target=test_target opts=test_opts:
     pnpm exec vitest {{target}} {{opts}}
+
+test-releases:
+    uv run --no-project --isolated --with-requirements scripts/releases.py --with-requirements scripts/test_releases.py pytest scripts

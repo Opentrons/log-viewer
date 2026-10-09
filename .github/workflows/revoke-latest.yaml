@@ -1,0 +1,19 @@
+name: "Revoke latest"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  revoke-latest:
+    name: "Revoke the highest production release and activate the previous one"
+    runs-on: "ubuntu-22.04"
+    environment: "prod"
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+      - name: "Revoke the highest production release"
+        uses: "./.github/actions/release-manifest"
+        with:
+          command: revoke
