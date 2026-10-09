@@ -33,11 +33,11 @@
 }
 
 .chip_container_medium_background {
-  padding: var(--spacing-2) var(--spacing-8);
+  padding: var(--spacing-4) var(--spacing-8);
 }
 
 .chip_container_medium_foreground {
-  padding: var(--spacing-2) 0;
+  padding: var(--spacing-4) 0;
 }
 
 .chip_container_small_background {

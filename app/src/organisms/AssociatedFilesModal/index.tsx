@@ -1,10 +1,8 @@
 import NiceModal from "@ebay/nice-modal-react"
-import { useContext } from "react"
 
 import { ListItem } from "@/atoms/ListItem/ListItem"
 import { Icon } from "@/components-copy/icons/Icon"
 import { Modal } from "@/components-copy/modals"
-import { I18nContext } from "@/i18n"
 import { SelectedLogPeriod } from "@/redux/logDirectory/types"
 import { api } from "@/remote/api"
 
@@ -13,7 +11,6 @@ import styles from "./associatedfilesmodal.module.css"
 export const AssociatedFilesModal = NiceModal.create(
   ({ logPeriod }: { logPeriod: SelectedLogPeriod }) => {
     const modal = NiceModal.useModal()
-    const { dateFormatter } = useContext(I18nContext)
     const { associatedFiles } = logPeriod
 
     const onOpenFile = (fileName: string) => () => {
@@ -24,7 +21,7 @@ export const AssociatedFilesModal = NiceModal.create(
 
     return (
       <Modal
-        title={`Associated files for log period ${dateFormatter.format(new Date(logPeriod.startDate))}`}
+        title="Associated files for log period"
         className={styles.associated_files_modal}
         closeOnOutsideClick
         onClose={() => {

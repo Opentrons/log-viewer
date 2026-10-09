@@ -64,7 +64,7 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
           return (
             <LogPeriodPath
               path={filePath}
-              dateString={dateFormatter.format(new Date(period.endDate))}
+              dateString={dateFormatter.format(new Date(period.startDate))}
               status={
                 period.sequentialConsistency.status === "consistent"
                   ? period.attestationConsistency.status === "consistent"
@@ -83,7 +83,7 @@ function RobotContainer(props: RobotContainerProps): React.ReactNode {
 
 export function DirectoryList(): React.ReactNode {
   const knownRobots = useKnownRobots()
-  const [deviceExpanded, setDeviceExpanded] = React.useState<boolean>(false)
+  const [deviceExpanded, setDeviceExpanded] = React.useState<boolean>(true)
   return (
     <div className={style.overall_container}>
       <TreeItem

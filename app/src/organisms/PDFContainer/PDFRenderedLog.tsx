@@ -138,7 +138,11 @@ export function PDFRenderedLog({ data }: PDFRenderedLogProps): React.ReactNode {
     <div className={styles.pdf_container}>
       <div className={styles.title_container}>
         <h1 className={styles.document_title}>
-          {`Robot Logs ${dateFormatter.format(new Date(data.period.startDate))} - ${dateFormatter.format(new Date(data.period.endDate))}`}
+          {`Robot Logs ${dateFormatter.format(new Date(data.period.startDate))} - ${
+            data.period.endDate == null
+              ? "Current at time of export"
+              : dateFormatter.format(new Date(data.period.endDate))
+          }`}
         </h1>
         <p className={styles.caption}>{`Exported ${dateFormatter.format(new Date())}`}</p>
       </div>
@@ -162,7 +166,11 @@ export function PDFRenderedLog({ data }: PDFRenderedLogProps): React.ReactNode {
         />
         <SummaryRow
           label="End date"
-          content={dateFormatter.format(new Date(data.period.endDate))}
+          content={
+            data.period.endDate == null
+              ? "Current at time of export"
+              : dateFormatter.format(new Date(data.period.endDate))
+          }
         />
         <SummaryRow
           label={data.period.protocolNames.length === 1 ? "Protocol" : "Protocols"}

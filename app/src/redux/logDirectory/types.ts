@@ -76,6 +76,7 @@ export interface LogLine {
 
 export interface BlessedRobotId extends RobotIdPayload {
   filePath: string
+  sourceLogFilepath: string | null
 }
 
 export interface LogDirectoryState {

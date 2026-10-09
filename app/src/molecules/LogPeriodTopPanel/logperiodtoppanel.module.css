@@ -23,6 +23,10 @@
   background-color: var(--grey-10);
 }
 
+.top_row_rel {
+  position: relative;
+}
+
 .card_text {
   font-size: var(--font-size-helix-product-body-default);
   line-height: var(--line-height-helix-product-body-default);
@@ -39,6 +43,8 @@
   gap: var(--spacing-8);
   padding: 8px 16px 9px 16px;
   height: min-content;
+  width: max-content;
+  align-items: center;
   background-color: var(--grey-30);
   border-radius: var(--spacing-8);
   &:hover {
@@ -63,4 +69,23 @@
   font-size: var(--font-size-helix-product-body-default);
   line-height: var(--line-height-helix-product-body-default);
   font-weight: var(--font-weight-semi-bold);
+}
+
+.overflow_button_container {
+  float: right;
+  position: relative;
+}
+
+.overflow_menu_container {
+  position: static;
+}
+
+.overflow_host {
+  float: right;
+  right: 0px;
+  top: 0px;
+  position: absolute;
+  overflow: visible;
+  width: min-content;
+  height: min-content;
 }

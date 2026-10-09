@@ -1,5 +1,8 @@
 # node packages
 node_modules
+.venv/
+__pycache__/
+*.pyc
 .pnpm-store/
 package-lock.json
 

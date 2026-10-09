@@ -8,10 +8,11 @@ import type { RobotId } from "@/redux/logDirectory/types"
 import styles from "./viewrobotidentitymodal.module.css"
 export interface ViewRobotIdentityModalProps {
   robotId: RobotId
+  source: string
 }
 
 export const ViewRobotIdentityModal = NiceModal.create(
-  ({ robotId }: ViewRobotIdentityModalProps) => {
+  ({ robotId, source }: ViewRobotIdentityModalProps) => {
     const modal = NiceModal.useModal()
     return (
       <Modal
@@ -28,7 +29,7 @@ export const ViewRobotIdentityModal = NiceModal.create(
         }
       >
         <div className={styles.modal_content}>
-          <RobotIdentityDetails robotId={robotId} />
+          <RobotIdentityDetails robotId={robotId} source={source} />
         </div>
       </Modal>
     )

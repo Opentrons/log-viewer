@@ -1,3 +1,4 @@
+import { clsx } from "clsx"
 import * as React from "react"
 
 import { SearchBar } from "@/atoms/SearchBar"
@@ -28,17 +29,25 @@ export function SearchControls(_props: SearchControlsProps): React.ReactNode {
         match={matches}
         currentText={filterText}
       />
-      <button
-        className={style.controls}
-        onClick={() => {
-          setFilterText("")
-          dispatch(setLogFilter({ filterText: null }))
-        }}
-      >
-        <div className={style.icon_container}>
-          <Icon className={style.icon} name="close" />
-        </div>
-      </button>
+      <div className={style.controls_container}>
+        <button
+          onClick={() => {
+            setFilterText("")
+            dispatch(setLogFilter({ filterText: null }))
+          }}
+          className={clsx(style.icon_container, {
+            [style.icon_container_active]: filterText != null,
+          })}
+        >
+          <Icon
+            className={clsx(style.icon, {
+              [style.icon_inactive]: filterText == null,
+              [style.icon_active]: filterText != null,
+            })}
+            name="close"
+          />
+        </button>
+      </div>
     </div>
   )
 }

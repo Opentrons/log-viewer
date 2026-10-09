@@ -1,6 +1,6 @@
 {
   "name": "@log-verifier/app-shell",
-  "version": "0.0.1",
+  "version": "1.0.0-alpha.3",
   "description": "Log verifier electron shell application",
   "license": "Apache-2.0",
   "author": {
@@ -70,14 +70,20 @@
         "codeSigningAccountName": "desktop-app-signing",
         "certificateProfileName": "OpentronsDesktopApp",
         "endpoint": "https://eus.codesigning.azure.net"
-      }
+      },
+      "extraFiles": [
+        "./assets/logverifier.png"
+      ]
     },
     "linux": {
       "target": [
         "AppImage"
       ],
       "executableName": "log-verifier",
-      "category": "Science"
+      "category": "Science",
+      "extraFiles": [
+        "./assets/logverifier.png"
+      ]
     },
     "generateUpdatesFilesForAllChannels": true
   },

@@ -29,6 +29,7 @@
   border-radius: 0.875rem;
   width: 1.625rem;
   height: 1.625rem;
+  background-color: var(--transparent);
   &:hover {
     background-color: var(--grey-30);
   }

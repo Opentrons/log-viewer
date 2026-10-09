@@ -21,6 +21,7 @@ export const logDirectorySlice = createSlice({
       state.directoryPath = action.payload.directoryPath
       state.scanStatus = "not-started"
       state.contentsByRobot = {}
+      state.selectedLogPeriod = null
       state.logLines = { status: "empty" }
     },
     directoryScanDone: (state: LogDirectoryState) => {
